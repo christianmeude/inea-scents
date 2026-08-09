@@ -13,12 +13,14 @@ class Package extends Model
         'pax_options',
         'freebies',
         'price',
-        'image_url',
+        'images',
     ];
 
     protected $casts = [
         'inclusions' => 'array',
         'pax_options' => 'array',
+        'freebies' => 'array',
+        'images' => 'array',
         'price' => 'decimal:2',
     ];
 }

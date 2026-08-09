@@ -89,8 +89,8 @@ The palette is derived directly from the brand's floral and cosmetic inspiration
 
 ## Typography
 
-**Display/Logo Sans:** Bold, geometric sans-serif (e.g., used for "INEA").
-**Display/Logo Script:** Elegant cursive/script font (e.g., used for "Scents").
+**Display/Logo Sans:** Josefin Sans (Bold, 700) - Used for "INEA".
+**Display/Logo Script:** Great Vibes (Regular, 400) - Used for "Scents".
 **Body Font:** Figtree (with system sans-serif)
 
 ### Hierarchy

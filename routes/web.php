@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     
     // Admin Routes
     Route::resource('packages', \App\Http\Controllers\Admin\PackageController::class)->names('admin.packages');
+    Route::resource('bookings', \App\Http\Controllers\Admin\BookingController::class)->names('admin.bookings');
 });
 
 require __DIR__.'/auth.php';

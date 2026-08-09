@@ -39,10 +39,22 @@ class PackageController extends Controller
             'description' => 'nullable|string',
             'inclusions' => 'nullable|array',
             'pax_options' => 'nullable|array',
-            'freebies' => 'nullable|string',
+            'freebies' => 'nullable|array',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|string|url',
+            'images' => 'nullable|array|max:3',
         ]);
+
+        if (isset($validated['images'])) {
+            $imagePaths = [];
+            foreach ($request->images as $image) {
+                if (is_file($image)) {
+                    $imagePaths[] = $image->store('packages', 'public');
+                } elseif (is_string($image)) {
+                    $imagePaths[] = $image;
+                }
+            }
+            $validated['images'] = $imagePaths;
+        }
 
         Package::create($validated);
 
@@ -77,10 +89,24 @@ class PackageController extends Controller
             'description' => 'nullable|string',
             'inclusions' => 'nullable|array',
             'pax_options' => 'nullable|array',
-            'freebies' => 'nullable|string',
+            'freebies' => 'nullable|array',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|string|url',
+            'images' => 'nullable|array|max:3',
         ]);
+
+        if (isset($validated['images'])) {
+            $imagePaths = [];
+            foreach ($request->images as $image) {
+                if (is_file($image)) {
+                    $imagePaths[] = $image->store('packages', 'public');
+                } elseif (is_string($image)) {
+                    $imagePaths[] = $image;
+                }
+            }
+            $validated['images'] = $imagePaths;
+        } else {
+            $validated['images'] = [];
+        }
 
         $package->update($validated);
 
