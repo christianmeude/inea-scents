@@ -14,6 +14,8 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'logo-sans': ['"Josefin Sans"', 'sans-serif'],
+                'logo-script': ['"Great Vibes"', 'cursive'],
             },
             colors: {
                 burgundy: {
@@ -29,7 +31,15 @@ export default {
                     900: '#6f2431',
                     950: '#3e1018',
                 },
+                brand: {
+                    primary: '#6a4053',
+                    muted: '#99868c',
+                    cream: '#fdf4f5',
+                }
             },
+            boxShadow: {
+                'ambient': '0 10px 25px -5px rgba(106, 64, 83, 0.05), 0 8px 10px -6px rgba(106, 64, 83, 0.02)',
+            }
         },
     },
 

@@ -1,11 +1,8 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import { Head, useForm } from '@inertiajs/vue3';
 
 defineProps({
     canResetPassword: {
@@ -37,64 +34,50 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <form @submit.prevent="submit" class="flex flex-col gap-4">
+            <div class="mb-12 mt-4 flex justify-center sm:mb-16">
+                <!-- Translate left to visually balance the 'Scents' overhang -->
+                <ApplicationLogo />
+            </div>
 
-                <TextInput
+            <div class="relative">
+                <input
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
+                    class="block w-full rounded-full border-none bg-brand-muted px-6 py-4 text-white placeholder-white/80 shadow-sm transition-all duration-300 ease-in-out hover:bg-brand-muted/90 focus:bg-brand-muted/95 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:ring-offset-2 focus:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
+                    :class="{ 'opacity-50': form.processing }"
                     v-model="form.email"
+                    placeholder="Email:"
                     required
                     autofocus
                     autocomplete="username"
+                    :disabled="form.processing"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2 text-center" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
+            <div class="relative">
+                <input
                     id="password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="block w-full rounded-full border-none bg-brand-muted px-6 py-4 text-white placeholder-white/80 shadow-sm transition-all duration-300 ease-in-out hover:bg-brand-muted/90 focus:bg-brand-muted/95 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:ring-offset-2 focus:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
+                    :class="{ 'opacity-50': form.processing }"
                     v-model="form.password"
+                    placeholder="Password:"
                     required
                     autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
-                </label>
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
-                >
-                    Log in
-                </PrimaryButton>
+                />
+                <InputError class="mt-2 text-center" :message="form.errors.password" />
             </div>
+
+            <button 
+                type="submit" 
+                class="sr-only"
+                :disabled="form.processing"
+            >
+                Log In
+            </button>
         </form>
     </GuestLayout>
 </template>
