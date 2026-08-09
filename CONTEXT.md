@@ -9,3 +9,12 @@ _Avoid_: Reservation, appointment
 **Package**:
 A predefined service offering that a customer selects when making a booking. Defines the inclusions, freebies, and price for a specific number of pax.
 _Avoid_: Tier, option
+
+**Customer**:
+A user who books the perfume bar service via the mobile app.
+_Avoid_: User, client
+
+**Admin**:
+A business owner or manager who operates the admin web dashboard to manage bookings, packages, and settings.
+_Avoid_: Super admin, owner
+

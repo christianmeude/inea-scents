@@ -12,7 +12,7 @@ const navigation = [
     { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
     { name: 'Bookings', href: '#', active: false },
     { name: 'Calendar', href: '#', active: false },
-    { name: 'Packages', href: '#', active: false },
+    { name: 'Packages', href: route('admin.packages.index'), active: route().current('admin.packages.*') },
     { name: 'Customers', href: '#', active: false },
     { name: 'Payments', href: '#', active: false },
     { name: 'Settings', href: '#', active: false },
