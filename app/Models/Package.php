@@ -23,4 +23,9 @@ class Package extends Model
         'images' => 'array',
         'price' => 'decimal:2',
     ];
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }
