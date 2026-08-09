@@ -60,17 +60,17 @@ const updateFilter = (value) => {
 
                 <!-- Metrics Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <div class="bg-white border-[2px] border-brand-primary rounded-2xl p-6 shadow-ambient">
+                    <div class="bg-white rounded-2xl p-6 shadow-ambient">
                         <h3 class="text-brand-primary font-medium text-base mb-3">Total Bookings</h3>
                         <p class="text-4xl text-brand-primary font-semibold">{{ metrics?.totalBookings || 0 }}</p>
                     </div>
                     
-                    <div class="bg-white border-[2px] border-brand-primary rounded-2xl p-6 shadow-ambient">
+                    <div class="bg-white rounded-2xl p-6 shadow-ambient">
                         <h3 class="text-brand-primary font-medium text-base mb-3">Total Revenue</h3>
                         <p class="text-4xl text-brand-primary font-semibold">Php. {{ metrics?.totalRevenue || '0' }}</p>
                     </div>
                     
-                    <div class="bg-white border-[2px] border-brand-primary rounded-2xl p-6 shadow-ambient">
+                    <div class="bg-white rounded-2xl p-6 shadow-ambient">
                         <h3 class="text-brand-primary font-medium text-base mb-3">Confirmed Events</h3>
                         <p class="text-4xl text-brand-primary font-semibold">{{ metrics?.confirmedEvents || 0 }}</p>
                     </div>
@@ -79,7 +79,7 @@ const updateFilter = (value) => {
                 <!-- Popular Packages -->
                 <h2 class="text-2xl font-medium text-brand-primary mb-4">Popular Packages</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div v-for="pkg in popularPackages" :key="pkg.id" class="bg-white border-[2px] border-brand-primary rounded-2xl p-5 shadow-ambient flex flex-col justify-center">
+                    <div v-for="pkg in popularPackages" :key="pkg.id" class="bg-white rounded-2xl p-5 shadow-ambient flex flex-col justify-center">
                         <h3 class="text-brand-primary font-semibold text-sm mb-1">{{ pkg.name }}</h3>
                         <div class="flex items-baseline gap-2 mb-1">
                             <p class="text-3xl text-brand-primary font-semibold">{{ pkg.bookings_count }}</p>
@@ -96,22 +96,23 @@ const updateFilter = (value) => {
 
                 <!-- Upcoming Bookings -->
                 <h2 class="text-2xl font-medium text-brand-primary mb-4">Upcoming Bookings</h2>
-                <div class="bg-white border-[2px] border-brand-primary rounded-2xl p-4 sm:p-6 shadow-ambient overflow-x-auto mb-8">
+                <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-ambient overflow-x-auto mb-8">
                     <table class="w-full text-left border-collapse min-w-[600px]">
                         <thead>
-                            <tr class="text-brand-primary font-semibold text-sm">
+                            <tr class="text-brand-primary font-semibold text-sm border-b border-brand-primary/10">
                                 <th class="pb-4 px-4 font-semibold">Customer</th>
                                 <th class="pb-4 px-4 font-semibold">Package</th>
                                 <th class="pb-4 px-4 font-semibold">Event Date</th>
                                 <th class="pb-4 px-4 font-semibold">Status</th>
+                                <th class="pb-4 px-4 font-semibold text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-brand-primary text-sm">
-                            <tr v-for="(booking, index) in upcomingBookings" :key="booking.id" :class="{'bg-brand-cream/60': index % 2 === 0, 'bg-transparent': index % 2 !== 0}">
-                                <td class="py-3.5 px-4 rounded-l-lg font-medium">{{ booking.customer }}</td>
-                                <td class="py-3.5 px-4">{{ booking.package }}</td>
-                                <td class="py-3.5 px-4">{{ booking.event_date }}</td>
-                                <td class="py-3.5 px-4 rounded-r-lg">
+                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="router.visit(route('admin.bookings.show', booking.id))">
+                                <td class="py-4 px-4 font-medium">{{ booking.customer }}</td>
+                                <td class="py-4 px-4">{{ booking.package }}</td>
+                                <td class="py-4 px-4">{{ booking.event_date }}</td>
+                                <td class="py-4 px-4">
                                     <span :class="{
                                         'text-yellow-500': booking.status === 'pending',
                                         'text-green-500': booking.status === 'confirmed',
@@ -119,9 +120,12 @@ const updateFilter = (value) => {
                                         'text-red-500': booking.status === 'cancelled'
                                     }" class="text-xs font-bold uppercase tracking-wider">{{ booking.status }}</span>
                                 </td>
+                                <td class="py-4 px-4 text-right">
+                                    <span class="text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">View &rarr;</span>
+                                </td>
                             </tr>
                             <tr v-if="!upcomingBookings || upcomingBookings.length === 0">
-                                <td colspan="4" class="py-8 text-center text-brand-muted">
+                                <td colspan="5" class="py-8 text-center text-brand-muted">
                                     No upcoming bookings found.
                                 </td>
                             </tr>
