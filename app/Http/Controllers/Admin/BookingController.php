@@ -38,7 +38,16 @@ class BookingController extends Controller
             'customer_phone' => 'nullable|string|max:255',
             'package_id' => 'required|exists:packages,id',
             'pax' => 'nullable|integer|min:1',
-            'event_date' => 'required|date',
+            'event_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $dateStr = \Carbon\Carbon::parse($value)->toDateString();
+                    if (\App\Models\BlockedDate::whereDate('date', $dateStr)->exists()) {
+                        $fail('The selected date is marked as unavailable.');
+                    }
+                },
+            ],
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
@@ -59,7 +68,16 @@ class BookingController extends Controller
             'customer_phone' => 'nullable|string|max:255',
             'package_id' => 'required|exists:packages,id',
             'pax' => 'nullable|integer|min:1',
-            'event_date' => 'required|date',
+            'event_date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $dateStr = \Carbon\Carbon::parse($value)->toDateString();
+                    if (\App\Models\BlockedDate::whereDate('date', $dateStr)->exists()) {
+                        $fail('The selected date is marked as unavailable.');
+                    }
+                },
+            ],
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',

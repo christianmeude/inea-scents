@@ -44,6 +44,10 @@ class CalendarController extends Controller
 
         $dateStr = Carbon::parse($validated['date'])->toDateString();
 
+        if (Booking::whereDate('event_date', $dateStr)->exists()) {
+            return redirect()->back()->withErrors(['date' => 'Cannot block a date that already has bookings.']);
+        }
+
         $blocked = BlockedDate::whereDate('date', $dateStr)->first();
 
         if ($blocked) {

@@ -81,6 +81,14 @@ const calendarDays = computed(() => {
         });
     }
 
+    // Fill next month days to complete the grid
+    const remaining = days.length % 7;
+    if (remaining > 0) {
+        for (let i = 0; i < (7 - remaining); i++) {
+            days.push(null);
+        }
+    }
+
     return days;
 });
 
@@ -140,7 +148,7 @@ const isDateBlocked = (dateString) => {
                     <div class="grid grid-cols-7 auto-rows-[160px]">
                         <div v-for="(dayObj, index) in calendarDays" :key="index" 
                              class="p-3 border-b border-r border-brand-primary/10 flex flex-col transition-colors relative group"
-                             :class="{ 'bg-gray-50/50': !dayObj, 'hover:bg-brand-cream/20 cursor-pointer': dayObj && getBookingsForDate(dayObj.dateString).length === 0, 'border-r-0': (index + 1) % 7 === 0 }"
+                             :class="{ 'bg-brand-primary/5': !dayObj, 'hover:bg-brand-cream/20 cursor-pointer': dayObj && getBookingsForDate(dayObj.dateString).length === 0, 'border-r-0': (index + 1) % 7 === 0 }"
                              @click="dayObj && toggleBlockDate(dayObj.dateString)"
                              >
                             
