@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
     show: Boolean,
@@ -8,62 +8,100 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
+// Keyboard accessibility: close on Escape
+const closeOnEscape = (e) => {
+    if (e.key === 'Escape' && props.show) {
+        emit('close');
+    }
+};
+
+onMounted(() => document.addEventListener('keydown', closeOnEscape));
+onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+
 const formattedDate = computed(() => {
     if (!props.booking?.event_date) return '';
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
     return new Date(props.booking.event_date).toLocaleDateString('en-US', options);
 });
 
 const formattedPrice = computed(() => {
-    if (props.booking?.total_price == null) return 'Php. 0.00';
-    return `Php. ${parseFloat(props.booking.total_price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (props.booking?.total_price == null) return '₱0.00';
+    return new Intl.NumberFormat('en-PH', { 
+        style: 'currency', 
+        currency: 'PHP' 
+    }).format(props.booking.total_price);
 });
 </script>
 
 <template>
     <!-- Background overlay -->
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center">
+    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
         <div class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" @click="emit('close')"></div>
 
-        <!-- Modal Panel -->
-        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden transform transition-all">
-            <div class="p-8">
-                <!-- Header -->
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-3xl font-bold text-brand-primary">Details</h2>
-                    <button @click="emit('close')" class="text-brand-primary hover:opacity-70 transition-opacity">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <!-- Modal Panel (VIP Dossier) -->
+        <div class="relative bg-brand-cream dark:bg-brand-dark-surface rounded-[2rem] shadow-2xl w-full max-w-2xl mx-auto overflow-hidden transform transition-all border border-brand-primary/10 dark:border-brand-dark-border flex flex-col max-h-full">
+            
+            <!-- Dossier Header -->
+            <div class="px-8 pt-8 pb-6 bg-white dark:bg-brand-dark-base border-b border-brand-primary/10 dark:border-brand-dark-border flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Booking Reference</h2>
+                    <div class="text-3xl font-black text-brand-primary dark:text-brand-cream tracking-tight">{{ booking?.booking_reference }}</div>
+                </div>
+                <div class="flex items-center gap-3 self-start">
+                    <span :class="{
+                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/20': booking?.status?.toLowerCase() === 'pending',
+                        'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20': booking?.status?.toLowerCase() === 'confirmed',
+                        'bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-gray-300 dark:border-white/20': booking?.status?.toLowerCase() === 'completed',
+                        'bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20': booking?.status?.toLowerCase() === 'cancelled'
+                    }" class="px-4 py-1.5 border border-transparent rounded-full text-xs font-black uppercase tracking-widest">{{ booking?.status }}</span>
+                    
+                    <button @click="emit('close')" class="p-2 rounded-full bg-brand-primary/5 hover:bg-brand-primary/10 dark:bg-white/5 dark:hover:bg-white/10 text-brand-primary dark:text-brand-cream transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-
-                <!-- Content: Alternating Key-Value Rows -->
-                <div class="flex flex-col text-lg text-brand-primary" v-if="booking">
-                    <div class="px-4 py-3 bg-white">
-                        Booking ID: {{ booking.booking_reference }}
-                    </div>
-                    <div class="px-4 py-3 bg-brand-cream/30 rounded-lg">
-                        Customer: {{ booking.customer_name }}
-                    </div>
-                    <div class="px-4 py-3 bg-white">
-                        Package: {{ booking.package?.name || 'N/A' }}
-                    </div>
-                    <div class="px-4 py-3 bg-brand-cream/30 rounded-lg">
-                        Pax: {{ booking.pax || 'N/A' }}
-                    </div>
-                    <div class="px-4 py-3 bg-white">
-                        Date: {{ formattedDate }}
-                    </div>
-                    <div class="px-4 py-3 bg-brand-cream/30 rounded-lg">
-                        Address/Venue: {{ booking.venue_address || 'N/A' }}
-                    </div>
-                    <div class="px-4 py-3 bg-white">
-                        Total Paid: {{ formattedPrice }}
-                    </div>
-                    <div class="px-4 py-3 bg-brand-cream/30 rounded-lg">
-                        Status: {{ booking.status }}
-                    </div>
-                </div>
             </div>
+
+            <!-- Dossier Body -->
+            <div class="p-8 overflow-y-auto" v-if="booking">
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
+                    
+                    <!-- Customer Info Chunk -->
+                    <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8 p-6 rounded-2xl bg-white dark:bg-brand-dark-base shadow-sm border border-brand-primary/5 dark:border-brand-dark-border">
+                        <div>
+                            <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-2">Customer</dt>
+                            <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.customer_name }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-2">Pax (Guests)</dt>
+                            <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.pax || 'N/A' }}</dd>
+                        </div>
+                    </div>
+
+                    <!-- Event Details Chunk -->
+                    <div class="flex flex-col gap-2">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Event Date</dt>
+                        <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ formattedDate }}</dd>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Venue / Address</dt>
+                        <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream leading-snug">{{ booking.venue_address || 'N/A' }}</dd>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="sm:col-span-2 h-px bg-brand-primary/10 dark:bg-brand-dark-border my-2"></div>
+
+                    <!-- Financials Chunk -->
+                    <div class="flex flex-col gap-2">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Package Selected</dt>
+                        <dd class="text-lg font-medium text-brand-primary dark:text-brand-cream">{{ booking.package?.name || 'N/A' }}</dd>
+                    </div>
+                    <div class="flex flex-col gap-2 sm:text-right">
+                        <dt class="text-xs font-bold tracking-widest uppercase text-brand-muted dark:text-brand-cream/50 mb-1">Total Amount Paid</dt>
+                        <dd class="text-3xl font-black text-brand-primary dark:text-brand-cream tracking-tight">{{ formattedPrice }}</dd>
+                    </div>
+                </dl>
+            </div>
+            
         </div>
     </div>
 </template>

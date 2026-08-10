@@ -70,22 +70,22 @@ const submit = () => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-[#6a4053]">
+                <h2 class="text-xl font-semibold leading-tight text-brand-primary dark:text-brand-cream">
                     Edit Package: {{ package.name }}
                 </h2>
                 <Link
                     :href="route('admin.packages.index')"
-                    class="text-sm font-medium text-[#99868c] hover:text-[#6a4053]"
+                    class="text-sm font-medium text-brand-muted dark:text-brand-cream/70 hover:text-brand-primary dark:text-brand-cream"
                 >
                     Back to Packages
                 </Link>
             </div>
-            <p class="text-sm text-[#99868c]">Manages the perfume-bar packages.</p>
+            <p class="text-sm text-brand-muted dark:text-brand-cream/70">Manages the perfume-bar packages.</p>
         </template>
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white shadow-sm rounded-3xl overflow-hidden p-6 sm:p-10 border border-[#c4acac]/30 flex flex-col lg:flex-row gap-10">
+                <div class="bg-white dark:bg-brand-dark-surface shadow-sm rounded-3xl overflow-hidden p-6 sm:p-10 border border-[#c4acac]/30 flex flex-col lg:flex-row gap-10">
                     
                     <!-- Left Column: Form -->
                     <div class="flex-1">
@@ -93,11 +93,11 @@ const submit = () => {
                             
                             <!-- Images -->
                             <div>
-                                <InputLabel value="Add Image" class="text-[#6a4053]" />
+                                <InputLabel value="Add Image" class="text-brand-primary dark:text-brand-cream" />
                                 <div class="flex gap-4 mt-2">
                                     <div v-for="(preview, index) in imagePreviews" :key="index" class="relative w-32 h-24 bg-[#fdf4f5] border border-[#c4acac] rounded-lg overflow-hidden flex items-center justify-center">
-                                        <input type="file" @change="e => handleImageUpload(index, e)" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" />
-                                        <img v-if="preview" :src="preview" class="w-full h-full object-cover" />
+                                        <input type="file" @change="e => handleImageUpload(index, e)" accept="image/*" class="bg-white dark:bg-brand-dark-base absolute inset-0 opacity-0 cursor-pointer" />
+                                        <img alt="Image" v-if="preview" :src="preview" class="w-full h-full object-cover" />
                                         <div v-else class="text-[#c4acac] text-2xl">+</div>
                                     </div>
                                 </div>
@@ -105,11 +105,11 @@ const submit = () => {
 
                             <!-- Name -->
                             <div>
-                                <InputLabel for="name" value="Package Name:" class="text-[#6a4053]" />
+                                <InputLabel for="name" value="Package Name:" class="text-brand-primary dark:text-brand-cream" />
                                 <TextInput
                                     id="name"
                                     type="text"
-                                    class="mt-1 block w-full border-[#6a4053] rounded-lg text-[#6a4053]"
+                                    class="mt-1 block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
                                     v-model="form.name"
                                     required
                                 />
@@ -118,77 +118,77 @@ const submit = () => {
 
                             <!-- Description -->
                             <div>
-                                <InputLabel for="description" value="Package Description:" class="text-[#6a4053]" />
+                                <InputLabel for="description" value="Package Description:" class="text-brand-primary dark:text-brand-cream" />
                                 <textarea
                                     id="description"
-                                    class="mt-1 block w-full border-[#6a4053] focus:border-[#6a4053] focus:ring-[#6a4053] rounded-lg shadow-sm text-[#6a4053]"
+                                    class="bg-white dark:bg-brand-dark-base mt-1 block w-full border-brand-primary focus:border-brand-primary focus:ring-brand-primary rounded-lg shadow-sm text-brand-primary dark:text-brand-cream"
                                     v-model="form.description"
                                     rows="3"
                                     maxlength="200"
                                 ></textarea>
-                                <div class="text-right text-xs text-[#99868c] mt-1">200 Char</div>
+                                <div class="text-right text-xs text-brand-muted dark:text-brand-cream/70 mt-1">200 Char</div>
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
 
                             <!-- Inclusions -->
                             <div>
-                                <InputLabel value="Add Inclusion/s:" class="text-[#6a4053]" />
+                                <InputLabel value="Add Inclusion/s:" class="text-brand-primary dark:text-brand-cream" />
                                 <div v-for="(inclusion, index) in form.inclusions" :key="`inc-${index}`" class="flex gap-2 mt-1">
                                     <TextInput
                                         type="text"
-                                        class="block w-full border-[#6a4053] rounded-lg text-[#6a4053]"
+                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
                                         v-model="form.inclusions[index]"
                                     />
                                     <button type="button" @click="removeField('inclusions', index)" v-if="form.inclusions.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
                                 </div>
                                 <div class="text-right mt-1">
-                                    <button type="button" @click="addField('inclusions')" class="text-sm text-[#6a4053] hover:underline">Add More +</button>
+                                    <button type="button" @click="addField('inclusions')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
                                 </div>
                                 <InputError class="mt-2" :message="form.errors.inclusions" />
                             </div>
 
                             <!-- Pax -->
                             <div>
-                                <InputLabel value="Add Pax:" class="text-[#6a4053]" />
+                                <InputLabel value="Add Pax:" class="text-brand-primary dark:text-brand-cream" />
                                 <div v-for="(pax, index) in form.pax_options" :key="`pax-${index}`" class="flex gap-2 mt-1">
                                     <TextInput
                                         type="text"
-                                        class="block w-full border-[#6a4053] rounded-lg text-[#6a4053]"
+                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
                                         v-model="form.pax_options[index]"
                                     />
                                     <button type="button" @click="removeField('pax_options', index)" v-if="form.pax_options.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
                                 </div>
                                 <div class="text-right mt-1">
-                                    <button type="button" @click="addField('pax_options')" class="text-sm text-[#6a4053] hover:underline">Add More +</button>
+                                    <button type="button" @click="addField('pax_options')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
                                 </div>
                                 <InputError class="mt-2" :message="form.errors.pax_options" />
                             </div>
 
                             <!-- Freebies -->
                             <div>
-                                <InputLabel value="Freebie/s:" class="text-[#6a4053]" />
+                                <InputLabel value="Freebie/s:" class="text-brand-primary dark:text-brand-cream" />
                                 <div v-for="(freebie, index) in form.freebies" :key="`freebie-${index}`" class="flex gap-2 mt-1">
                                     <TextInput
                                         type="text"
-                                        class="block w-full border-[#6a4053] rounded-lg text-[#6a4053]"
+                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
                                         v-model="form.freebies[index]"
                                     />
                                     <button type="button" @click="removeField('freebies', index)" v-if="form.freebies.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
                                 </div>
                                 <div class="text-right mt-1">
-                                    <button type="button" @click="addField('freebies')" class="text-sm text-[#6a4053] hover:underline">Add More +</button>
+                                    <button type="button" @click="addField('freebies')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
                                 </div>
                                 <InputError class="mt-2" :message="form.errors.freebies" />
                             </div>
 
                             <!-- Price -->
                             <div>
-                                <InputLabel for="price" value="Price" class="text-[#6a4053]" />
+                                <InputLabel for="price" value="Price" class="text-brand-primary dark:text-brand-cream" />
                                 <TextInput
                                     id="price"
                                     type="number"
                                     step="0.01"
-                                    class="mt-1 block w-full border-[#6a4053] rounded-lg text-[#6a4053]"
+                                    class="mt-1 block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
                                     v-model="form.price"
                                     required
                                 />
@@ -196,7 +196,7 @@ const submit = () => {
                             </div>
 
                             <div class="flex items-center justify-end mt-8">
-                                <PrimaryButton class="ms-4 bg-[#6a4053] hover:bg-[#99868c] rounded-full px-8 py-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                <PrimaryButton class="ms-4 bg-brand-primary hover:bg-brand-muted rounded-full px-8 py-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                                     Update Package
                                 </PrimaryButton>
                             </div>
@@ -205,7 +205,7 @@ const submit = () => {
 
                     <!-- Right Column: Mobile App Preview -->
                     <div class="hidden lg:block w-80 relative flex-shrink-0">
-                        <h3 class="text-sm font-medium text-[#6a4053] mb-4 text-center">Preview on Mobile App</h3>
+                        <h3 class="text-sm font-medium text-brand-primary dark:text-brand-cream mb-4 text-center">Preview on Mobile App</h3>
                         
                         <div class="relative w-full h-[600px] bg-black rounded-[40px] p-2 shadow-xl border-4 border-gray-800 flex flex-col overflow-hidden">
                             <!-- Dynamic Island notch -->
@@ -214,7 +214,7 @@ const submit = () => {
                             </div>
 
                             <!-- App UI Content -->
-                            <div class="flex-1 bg-white rounded-[32px] overflow-hidden flex flex-col text-sm pb-16 relative">
+                            <div class="flex-1 bg-white dark:bg-brand-dark-surface rounded-[32px] overflow-hidden flex flex-col text-sm pb-16 relative">
                                 
                                 <!-- App Header -->
                                 <div class="pt-8 pb-3 px-4 flex items-center justify-between border-b border-gray-100">
@@ -236,32 +236,32 @@ const submit = () => {
                                     <!-- Image Preview Slider -->
                                     <div class="relative h-48 bg-[#fdf4f5] w-full flex items-center justify-center overflow-hidden">
                                         <!-- Top tags -->
-                                        <div class="absolute top-3 left-3 bg-[#6a4053] text-white text-[10px] px-2 py-1 rounded-full z-10">Massage</div>
-                                        <div class="absolute top-3 right-3 bg-white/80 text-[#6a4053] text-[10px] px-2 py-1 rounded-full z-10 backdrop-blur-sm">Add to Checklist</div>
+                                        <div class="absolute top-3 left-3 bg-brand-primary text-white text-xs px-2 py-1 rounded-full z-10">Massage</div>
+                                        <div class="absolute top-3 right-3 bg-white dark:bg-brand-dark-surface/80 text-brand-primary dark:text-brand-cream text-xs px-2 py-1 rounded-full z-10 backdrop-blur-sm">Add to Checklist</div>
 
-                                        <img v-if="imagePreviews[0]" :src="imagePreviews[0]" class="w-full h-full object-cover" />
+                                        <img alt="Image" v-if="imagePreviews[0]" :src="imagePreviews[0]" class="w-full h-full object-cover" />
                                         <div v-else class="text-[#c4acac] text-xs">No image</div>
                                         
                                         <!-- Indicators -->
                                         <div class="absolute bottom-3 inset-x-0 flex justify-center gap-1">
-                                            <div v-for="(_, i) in imagePreviews" :key="i" class="w-1.5 h-1.5 rounded-full" :class="imagePreviews[i] ? 'bg-white' : 'bg-white/50'"></div>
+                                            <div v-for="(_, i) in imagePreviews" :key="i" class="w-1.5 h-1.5 rounded-full" :class="imagePreviews[i] ? 'bg-white dark:bg-brand-dark-surface' : 'bg-white dark:bg-brand-dark-surface/50'"></div>
                                         </div>
                                     </div>
 
                                     <!-- Content Details -->
-                                    <div class="p-4 text-[#6a4053]">
+                                    <div class="p-4 text-brand-primary dark:text-brand-cream">
                                         <h4 class="font-bold text-lg mb-1">{{ form.name || 'Package Name' }}</h4>
-                                        <div class="flex items-center text-xs text-[#99868c] mb-3">
+                                        <div class="flex items-center text-xs text-brand-muted dark:text-brand-cream/70 mb-3">
                                             <span class="text-yellow-400 mr-1">&#9733;</span> 4.5 <span class="ml-1">(232 reviews)</span>
                                         </div>
 
-                                        <p class="text-xs text-[#99868c] mb-4 min-h-[40px]">
+                                        <p class="text-xs text-brand-muted dark:text-brand-cream/70 mb-4 min-h-[40px]">
                                             {{ form.description || 'Description of the package will appear here. It offers a premium perfume experience.' }}
                                         </p>
 
                                         <div class="mb-4">
                                             <strong class="text-xs mb-1 block">Includes:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-[#99868c]">
+                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
                                                 <li v-for="(inc, i) in form.inclusions.filter(Boolean)" :key="i">{{ inc }}</li>
                                                 <li v-if="!form.inclusions.filter(Boolean).length">No inclusions listed</li>
                                             </ul>
@@ -269,30 +269,30 @@ const submit = () => {
 
                                         <div class="mb-4">
                                             <strong class="text-xs mb-1 block">Pax Options:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-[#99868c]">
+                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
                                                 <li v-for="(pax, i) in form.pax_options.filter(Boolean)" :key="i">{{ pax }} pax</li>
                                             </ul>
                                         </div>
 
                                         <div class="mb-4" v-if="form.freebies.filter(Boolean).length">
                                             <strong class="text-xs mb-1 block">Freebies:</strong>
-                                            <ul class="list-disc pl-4 text-xs text-[#99868c]">
+                                            <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
                                                 <li v-for="(fb, i) in form.freebies.filter(Boolean)" :key="i">{{ fb }}</li>
                                             </ul>
                                         </div>
 
                                         <div class="flex items-center justify-between mt-6">
                                             <div>
-                                                <span class="text-[10px] text-[#99868c]">Starting at</span>
+                                                <span class="text-xs text-brand-muted dark:text-brand-cream/70">Starting at</span>
                                                 <div class="font-bold">&#8369;{{ form.price || '0.00' }}</div>
                                             </div>
-                                            <button class="bg-[#6a4053] text-white text-xs px-4 py-2 rounded-full">Book Now</button>
+                                            <button class="bg-brand-primary text-white text-xs px-4 py-2 rounded-full">Book Now</button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- App Bottom Nav -->
-                                <div class="absolute bottom-0 inset-x-0 h-16 bg-[#6a4053]/90 backdrop-blur text-white flex justify-around items-center text-[10px] rounded-b-[32px]">
+                                <div class="absolute bottom-0 inset-x-0 h-16 bg-brand-primary/90 backdrop-blur text-white flex justify-around items-center text-xs rounded-b-[32px]">
                                     <div class="flex flex-col items-center opacity-50">
                                         <span class="text-lg mb-0.5">&#8962;</span>
                                         <span>HOME</span>

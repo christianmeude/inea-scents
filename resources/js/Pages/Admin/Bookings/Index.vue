@@ -33,11 +33,11 @@ const openViewModal = (booking) => {
 
 const getStatusColor = (status) => {
     switch (status) {
-        case 'Confirmed': return 'text-green-500 font-semibold';
-        case 'Pending': return 'text-yellow-500 font-semibold';
-        case 'Unavailable': return 'text-red-500 font-semibold';
-        case 'Cancelled': return 'text-gray-500 font-semibold';
-        default: return 'text-gray-700 font-semibold';
+        case 'Confirmed': return 'text-green-500 dark:text-green-400 font-semibold';
+        case 'Pending': return 'text-yellow-500 dark:text-yellow-400 font-semibold';
+        case 'Unavailable': return 'text-red-500 dark:text-red-400 font-semibold';
+        case 'Cancelled': return 'text-gray-500 dark:text-gray-400 font-semibold';
+        default: return 'text-gray-700 dark:text-gray-300 font-semibold';
     }
 };
 
@@ -52,18 +52,18 @@ const formatDate = (dateString) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-end justify-between border-b border-brand-primary/10 pb-4 mb-4">
+            <div class="flex items-end justify-between border-b border-brand-primary/10 dark:border-brand-dark-border pb-4 mb-4">
                 <div>
-                    <h2 class="text-3xl font-semibold text-brand-primary">
+                    <h2 class="text-3xl font-semibold text-brand-primary dark:text-brand-cream">
                         Bookings
                     </h2>
-                    <p class="text-brand-muted text-sm mt-1">
+                    <p class="text-brand-muted dark:text-brand-cream/70 text-sm mt-1">
                         Manage customer reservations and event requests.
                     </p>
                 </div>
                 <button
                     @click="isCreateModalOpen = true"
-                    class="rounded-full bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-ambient hover:bg-brand-primary/90 focus:outline-none transition-all duration-200"
+                    class="rounded-full bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-ambient dark:shadow-none hover:bg-brand-primary/90 focus:outline-none transition-all duration-200"
                 >
                     New Booking
                 </button>
@@ -74,24 +74,24 @@ const formatDate = (dateString) => {
             <div class="mx-auto max-w-7xl">
                 
                 <!-- Macro Container -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-ambient border border-brand-primary/10 relative">
+                <div class="bg-white dark:bg-brand-dark-surface rounded-3xl p-6 sm:p-8 shadow-ambient dark:shadow-none border border-brand-primary/10 dark:border-brand-dark-border relative">
                     <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-2xl font-semibold text-brand-primary">Manage Booking</h3>
+                        <h3 class="text-2xl font-semibold text-brand-primary dark:text-brand-cream">Manage Booking</h3>
                         
                         <!-- Search Bar -->
                         <div class="flex items-center gap-4">
                             <div class="relative w-72">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-brand-primary text-sm font-medium">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-brand-primary dark:text-brand-cream text-sm font-medium">
                                     Search Item Here:
                                 </span>
                                 <input 
                                     type="text" 
                                     v-model="search"
                                     placeholder='"BOOKING-123"' 
-                                    class="w-full pl-36 pr-4 py-2 border border-brand-primary/20 rounded-lg text-sm text-brand-primary focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-white placeholder-brand-muted/40 transition-colors"
+                                    class="w-full pl-36 pr-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary bg-white dark:bg-brand-dark-surface placeholder-brand-muted/40 transition-colors"
                                 >
                             </div>
-                            <button class="text-brand-primary hover:text-brand-primary/70 transition-colors">
+                            <button class="text-brand-primary dark:text-brand-cream hover:text-brand-primary dark:text-brand-cream/70 transition-colors">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                             </button>
                         </div>
@@ -99,9 +99,9 @@ const formatDate = (dateString) => {
 
                     <!-- Polished Table -->
                     <div class="overflow-x-auto pb-4">
-                        <table class="w-full text-left border-collapse border-b border-brand-primary/10">
+                        <table class="w-full text-left border-collapse border-b border-brand-primary/10 dark:border-brand-dark-border">
                             <thead>
-                                <tr class="text-brand-primary text-xs font-bold border-b border-brand-primary/30">
+                                <tr class="text-brand-primary dark:text-brand-cream text-xs font-bold border-b border-brand-primary/30">
                                     <th class="py-4 px-6">Booking ID</th>
                                     <th class="py-4 px-6">Name</th>
                                     <th class="py-4 px-6">Package</th>
@@ -116,20 +116,20 @@ const formatDate = (dateString) => {
                                     :key="booking.id"
                                     :class="[
                                         'transition-colors duration-150',
-                                        index % 2 === 0 ? 'bg-transparent' : 'bg-gray-100 rounded-xl'
+                                        index % 2 === 0 ? 'bg-transparent' : 'bg-gray-100 dark:bg-white/5 rounded-xl'
                                     ]"
                                     style="border-spacing: 0 4px;"
                                 >
-                                    <td class="py-5 px-6 font-medium text-brand-primary whitespace-nowrap" :class="{ 'rounded-l-xl': index % 2 !== 0 }">
+                                    <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream whitespace-nowrap" :class="{ 'rounded-l-xl': index % 2 !== 0 }">
                                         {{ booking.booking_reference }}
                                     </td>
-                                    <td class="py-5 px-6 font-medium text-brand-primary">
+                                    <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream">
                                         {{ booking.customer_name }}
                                     </td>
-                                    <td class="py-5 px-6 font-medium text-brand-primary">
+                                    <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream">
                                         {{ booking.pax ? booking.pax + ' PAX ' : '' }}{{ booking.package?.name }}
                                     </td>
-                                    <td class="py-5 px-6 font-medium text-brand-primary">
+                                    <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream">
                                         {{ formatDate(booking.event_date) }}
                                     </td>
                                     <td class="py-5 px-6">
@@ -157,7 +157,7 @@ const formatDate = (dateString) => {
                                 :href="link.url"
                                 v-html="link.label"
                                 class="px-3 py-1 rounded-md border text-sm"
-                                :class="link.active ? 'bg-brand-primary text-white border-brand-primary' : 'border-gray-200 text-gray-500 hover:bg-gray-50'"
+                                :class="link.active ? 'bg-brand-primary text-white border-brand-primary' : 'border-gray-200 dark:border-brand-dark-border text-gray-500 hover:bg-gray-50'"
                             />
                         </div>
                     </div>
