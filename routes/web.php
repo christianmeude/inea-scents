@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     // Admin Routes
     Route::resource('packages', \App\Http\Controllers\Admin\PackageController::class)->names('admin.packages');
     Route::resource('bookings', \App\Http\Controllers\Admin\BookingController::class)->names('admin.bookings');
+    Route::patch('bookings/{booking}/approve', [\App\Http\Controllers\Admin\BookingController::class, 'approve'])->name('admin.bookings.approve');
     
     Route::get('calendar', [\App\Http\Controllers\Admin\CalendarController::class, 'index'])->name('admin.calendar.index');
     Route::post('calendar/toggle-block', [\App\Http\Controllers\Admin\CalendarController::class, 'toggleBlock'])->name('admin.calendar.toggle-block');

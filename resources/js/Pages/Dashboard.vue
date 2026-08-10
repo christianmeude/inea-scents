@@ -55,11 +55,11 @@ const updateFilter = (value) => {
                     </div>
                     
                     <!-- Toggle Group Filter -->
-                    <div class="flex bg-white border border-brand-primary/20 rounded-lg p-1 shadow-sm overflow-x-auto">
+                    <div class="flex bg-white border border-brand-primary/20 rounded-full p-1 shadow-sm overflow-x-auto">
                         <button v-for="option in filterOptions" :key="option.value"
                                 @click="updateFilter(option.value)"
                                 :class="[
-                                    'px-4 py-1.5 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
+                                    'px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap',
                                     filter === option.value ? 'bg-brand-primary text-white shadow' : 'text-brand-primary hover:bg-brand-primary/10'
                                 ]">
                             {{ option.label }}
@@ -117,20 +117,31 @@ const updateFilter = (value) => {
                             </tr>
                         </thead>
                         <tbody class="text-brand-primary text-sm">
-                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="openViewModal(booking)">
+                            <tr v-for="booking in upcomingBookings" :key="booking.id" 
+                                class="hover:bg-brand-primary/5 focus-within:bg-brand-primary/5 focus-within:outline-none focus-within:ring-2 focus-within:ring-brand-primary/20 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" 
+                                tabindex="0"
+                                @click="openViewModal(booking)"
+                                @keyup.enter="openViewModal(booking)">
                                 <td class="py-4 px-4 font-medium">{{ booking.customer_name }}</td>
                                 <td class="py-4 px-4">{{ booking.package ? booking.package.name : 'N/A' }}</td>
                                 <td class="py-4 px-4">{{ new Date(booking.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}</td>
                                 <td class="py-4 px-4">
                                     <span :class="{
-                                        'text-yellow-500': booking.status === 'pending',
-                                        'text-green-500': booking.status === 'confirmed',
-                                        'text-gray-500': booking.status === 'completed',
-                                        'text-red-500': booking.status === 'cancelled'
-                                    }" class="text-xs font-bold uppercase tracking-wider">{{ booking.status }}</span>
+                                        'bg-yellow-100 text-yellow-800': booking.status.toLowerCase() === 'pending',
+                                        'bg-green-100 text-green-800': booking.status.toLowerCase() === 'confirmed',
+                                        'bg-gray-100 text-gray-800': booking.status.toLowerCase() === 'completed',
+                                        'bg-red-100 text-red-800': booking.status.toLowerCase() === 'cancelled'
+                                    }" class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">{{ booking.status }}</span>
                                 </td>
                                 <td class="py-4 px-4 text-right">
-                                    <span class="text-brand-primary opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium">View &rarr;</span>
+                                    <div class="flex items-center justify-end gap-3">
+                                        <button v-if="booking.status.toLowerCase() === 'pending'" 
+                                                @click.stop="router.patch(route('admin.bookings.approve', booking.id), {}, { preserveScroll: true })" 
+                                                class="text-green-700 hover:text-green-800 font-medium opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity bg-green-100 hover:bg-green-200 px-3 py-1 rounded-full text-xs">
+                                            Approve
+                                        </button>
+                                        <span class="text-brand-primary opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity text-sm font-medium">View &rarr;</span>
+                                    </div>
                                 </td>
                             </tr>
                             <tr v-if="!upcomingBookings || upcomingBookings.length === 0">
