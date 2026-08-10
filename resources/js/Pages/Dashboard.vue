@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import ViewBookingModal from './Admin/Bookings/Partials/ViewBookingModal.vue';
 
 const props = defineProps({
     filters: Object,
@@ -11,6 +12,14 @@ const props = defineProps({
 });
 
 const filter = ref(props.filters.filter || 'all-time');
+
+const isViewModalOpen = ref(false);
+const selectedBooking = ref(null);
+
+const openViewModal = (booking) => {
+    selectedBooking.value = booking;
+    isViewModalOpen.value = true;
+};
 
 const filterOptions = [
     { label: 'Daily', value: 'daily' },
@@ -108,10 +117,10 @@ const updateFilter = (value) => {
                             </tr>
                         </thead>
                         <tbody class="text-brand-primary text-sm">
-                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="router.visit(route('admin.bookings.index', { search: booking.customer }))">
-                                <td class="py-4 px-4 font-medium">{{ booking.customer }}</td>
-                                <td class="py-4 px-4">{{ booking.package }}</td>
-                                <td class="py-4 px-4">{{ booking.event_date }}</td>
+                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="openViewModal(booking)">
+                                <td class="py-4 px-4 font-medium">{{ booking.customer_name }}</td>
+                                <td class="py-4 px-4">{{ booking.package ? booking.package.name : 'N/A' }}</td>
+                                <td class="py-4 px-4">{{ new Date(booking.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}</td>
                                 <td class="py-4 px-4">
                                     <span :class="{
                                         'text-yellow-500': booking.status === 'pending',
@@ -135,5 +144,11 @@ const updateFilter = (value) => {
 
             </div>
         </div>
+
+        <ViewBookingModal 
+            :show="isViewModalOpen" 
+            :booking="selectedBooking" 
+            @close="isViewModalOpen = false" 
+        />
     </AuthenticatedLayout>
 </template>

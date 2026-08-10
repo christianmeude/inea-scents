@@ -61,16 +61,7 @@ class DashboardController extends Controller
             ->where('event_date', '>=', Carbon::today())
             ->orderBy('event_date', 'asc')
             ->take(5)
-            ->get()
-            ->map(function ($booking) {
-                return [
-                    'id' => $booking->id,
-                    'customer' => $booking->customer_name,
-                    'package' => $booking->package ? $booking->package->name : 'N/A',
-                    'event_date' => $booking->event_date->format('M j, Y'),
-                    'status' => $booking->status,
-                ];
-            });
+            ->get();
 
         return Inertia::render('Dashboard', [
             'filters' => ['filter' => $filter],
