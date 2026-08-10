@@ -108,7 +108,7 @@ const updateFilter = (value) => {
                             </tr>
                         </thead>
                         <tbody class="text-brand-primary text-sm">
-                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="router.visit(route('admin.bookings.show', booking.id))">
+                            <tr v-for="booking in upcomingBookings" :key="booking.id" class="hover:bg-brand-primary/5 transition-colors group cursor-pointer border-b border-brand-primary/5 last:border-0" @click="router.visit(route('admin.bookings.index', { search: booking.customer }))">
                                 <td class="py-4 px-4 font-medium">{{ booking.customer }}</td>
                                 <td class="py-4 px-4">{{ booking.package }}</td>
                                 <td class="py-4 px-4">{{ booking.event_date }}</td>
