@@ -88,6 +88,8 @@ class BookingController extends Controller
         $booking->update($validated);
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking updated successfully.');
+    }
+
     public function approve(Booking $booking)
     {
         // Capitalized because the validation rules in store/update use Title Case
