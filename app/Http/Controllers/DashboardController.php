@@ -19,10 +19,10 @@ class DashboardController extends Controller
 
         if ($filter !== 'all-time') {
             $startDate = match ($filter) {
-                'daily' => Carbon::now()->subDays(1),
-                'weekly' => Carbon::now()->subDays(7),
-                'monthly' => Carbon::now()->subDays(30),
-                'yearly' => Carbon::now()->subDays(365),
+                'daily' => Carbon::today(),
+                'weekly' => Carbon::now()->startOfWeek(),
+                'monthly' => Carbon::now()->startOfMonth(),
+                'yearly' => Carbon::now()->startOfYear(),
                 default => null,
             };
             if ($startDate) {
