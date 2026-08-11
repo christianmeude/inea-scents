@@ -18,3 +18,10 @@ _Avoid_: User, client
 A business owner or manager who operates the admin web dashboard to manage bookings, packages, and settings.
 _Avoid_: Super admin, owner
 
+**Admin Dashboard**:
+The Laravel-based web application exclusively used by Admins to manage the business. Hosted on its own domain/subdomain.
+_Avoid_: Backend, website
+
+**Landing Page**:
+The public-facing website for SEO, marketing, and general information about the perfume bar service. Distinct from the Admin Dashboard.
+_Avoid_: Homepage, main site
