@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OAT;
 
+#[OAT\Schema(
+    schema: "AuthResponse",
+    type: "object",
+    properties: [
+        new OAT\Property(
+            property: "user",
+            properties: [
+                new OAT\Property(property: "id", type: "integer", example: 1),
+                new OAT\Property(property: "name", type: "string", example: "John Doe"),
+                new OAT\Property(property: "email", type: "string", example: "john@example.com")
+            ],
+            type: "object"
+        ),
+        new OAT\Property(property: "access_token", type: "string", example: "1|abcdef..."),
+        new OAT\Property(property: "token_type", type: "string", example: "Bearer")
+    ]
+)]
 class AuthController extends Controller
 {
     #[OAT\Post(
@@ -30,20 +47,7 @@ class AuthController extends Controller
     #[OAT\Response(
         response: 200,
         description: "User registered successfully",
-        content: new OAT\JsonContent(
-            properties: [
-                new OAT\Property(
-                    property: "user",
-                    properties: [
-                        new OAT\Property(property: "id", type: "integer", example: 1),
-                        new OAT\Property(property: "name", type: "string", example: "John Doe"),
-                        new OAT\Property(property: "email", type: "string", example: "john@example.com")
-                    ],
-                    type: "object"
-                ),
-                new OAT\Property(property: "token", type: "string", example: "1|abcdef...")
-            ]
-        )
+        content: new OAT\JsonContent(ref: "#/components/schemas/AuthResponse")
     )]
     #[OAT\Response(response: 422, description: "Validation Error")]
     public function register(Request $request)
@@ -60,12 +64,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ]);
+        return $this->respondWithToken($user);
     }
 
     #[OAT\Post(
@@ -86,20 +85,7 @@ class AuthController extends Controller
     #[OAT\Response(
         response: 200,
         description: "User logged in successfully",
-        content: new OAT\JsonContent(
-            properties: [
-                new OAT\Property(
-                    property: "user",
-                    properties: [
-                        new OAT\Property(property: "id", type: "integer", example: 1),
-                        new OAT\Property(property: "name", type: "string", example: "John Doe"),
-                        new OAT\Property(property: "email", type: "string", example: "john@example.com")
-                    ],
-                    type: "object"
-                ),
-                new OAT\Property(property: "token", type: "string", example: "1|abcdef...")
-            ]
-        )
+        content: new OAT\JsonContent(ref: "#/components/schemas/AuthResponse")
     )]
     #[OAT\Response(response: 401, description: "Invalid credentials")]
     public function login(Request $request)
@@ -117,11 +103,20 @@ class AuthController extends Controller
             ]);
         }
 
+        return $this->respondWithToken($user);
+    }
+
+    /**
+     * Helper to format the authentication response.
+     */
+    private function respondWithToken(User $user)
+    {
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'user' => $user,
-            'token' => $token,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
         ]);
     }
 }
