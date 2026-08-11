@@ -50,16 +50,16 @@ const updateFilter = (value) => {
                 <!-- Welcome & Filter Row -->
                 <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                     <div>
-                        <h1 class="text-3xl font-medium text-brand-primary dark:text-brand-cream mb-1">Welcome Inea Scents!</h1>
+                        <h1 class="text-3xl font-medium text-brand-primary dark:text-brand-cream mb-1">Welcome {{ $page.props.auth.user.name }}!</h1>
                         <p class="text-brand-muted dark:text-brand-cream/70 text-lg">Here's what's happening with your perfume bar.</p>
                     </div>
                     
                     <!-- Toggle Group Filter -->
-                    <div class="flex bg-white dark:bg-brand-dark-surface border border-brand-primary/20 dark:border-brand-dark-border rounded-full p-1 shadow-sm overflow-x-auto">
+                    <div class="flex flex-wrap gap-1 bg-white dark:bg-brand-dark-surface border border-brand-primary/20 dark:border-brand-dark-border rounded-2xl md:rounded-full p-1 shadow-sm">
                         <button v-for="option in filterOptions" :key="option.value"
                                 @click="updateFilter(option.value)"
                                 :class="[
-                                    'px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap',
+                                    'px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap flex-1 sm:flex-none text-center',
                                     filter === option.value ? 'bg-brand-primary text-white shadow' : 'text-brand-primary dark:text-brand-cream hover:bg-brand-primary/10'
                                 ]">
                             {{ option.label }}
@@ -137,10 +137,10 @@ const updateFilter = (value) => {
                                     <div class="flex items-center justify-end gap-3">
                                         <button v-if="booking.status.toLowerCase() === 'pending'" 
                                                 @click.stop="router.patch(route('admin.bookings.approve', booking.id), {}, { preserveScroll: true })" 
-                                                class="text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity bg-green-100 dark:bg-green-500/10 hover:bg-green-200 dark:hover:bg-green-500/20 border border-transparent dark:border-green-500/20 px-3 py-1 rounded-full text-xs">
+                                                class="text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium opacity-40 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity bg-green-100 dark:bg-green-500/10 hover:bg-green-200 dark:hover:bg-green-500/20 border border-transparent dark:border-green-500/20 px-3 py-1 rounded-full text-xs">
                                             Approve
                                         </button>
-                                        <span class="text-brand-primary dark:text-brand-cream opacity-0 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity text-sm font-medium">View &rarr;</span>
+                                        <span class="text-brand-primary dark:text-brand-cream opacity-40 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity text-sm font-medium">View &rarr;</span>
                                     </div>
                                 </td>
                             </tr>

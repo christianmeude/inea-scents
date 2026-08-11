@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     show: Boolean,
@@ -34,13 +35,8 @@ const formattedPrice = computed(() => {
 </script>
 
 <template>
-    <!-- Background overlay -->
-    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" @click="emit('close')"></div>
-
-        <!-- Modal Panel (VIP Dossier) -->
-        <div class="relative bg-brand-cream dark:bg-brand-dark-surface rounded-[2rem] shadow-2xl w-full max-w-2xl mx-auto overflow-hidden transform transition-all border border-brand-primary/10 dark:border-brand-dark-border flex flex-col max-h-full">
-            
+    <Modal :show="show" @close="emit('close')" maxWidth="2xl">
+        <div class="bg-brand-cream dark:bg-brand-dark-surface flex flex-col max-h-full">
             <!-- Dossier Header -->
             <div class="px-8 pt-8 pb-6 bg-white dark:bg-brand-dark-base border-b border-brand-primary/10 dark:border-brand-dark-border flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div>
@@ -101,7 +97,6 @@ const formattedPrice = computed(() => {
                     </div>
                 </dl>
             </div>
-            
         </div>
-    </div>
+    </Modal>
 </template>

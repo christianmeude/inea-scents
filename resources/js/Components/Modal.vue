@@ -70,6 +70,7 @@ const maxWidthClass = computed(() => {
         lg: 'sm:max-w-lg',
         xl: 'sm:max-w-xl',
         '2xl': 'sm:max-w-2xl',
+        '3xl': 'sm:max-w-3xl',
     }[props.maxWidth];
 });
 </script>
@@ -80,7 +81,7 @@ const maxWidthClass = computed(() => {
         ref="dialog"
     >
         <div
-            class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto px-4 py-6 sm:px-0 min-h-screen"
             scroll-region
         >
             <Transition
@@ -93,13 +94,9 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="fixed inset-0 transform transition-all"
+                    class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
                     @click="close"
-                >
-                    <div
-                        class="absolute inset-0 bg-gray-500 opacity-75"
-                    />
-                </div>
+                ></div>
             </Transition>
 
             <Transition
@@ -112,7 +109,7 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="mb-6 transform overflow-hidden rounded-lg bg-white dark:bg-brand-dark-surface shadow-xl transition-all sm:mx-auto sm:w-full"
+                    class="transform overflow-hidden rounded-[2rem] bg-white dark:bg-brand-dark-surface shadow-2xl transition-all sm:mx-auto sm:w-full border border-brand-primary/10 dark:border-brand-dark-border"
                     :class="maxWidthClass"
                 >
                     <slot v-if="showSlot" />

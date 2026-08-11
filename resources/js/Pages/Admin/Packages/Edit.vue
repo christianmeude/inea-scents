@@ -4,7 +4,6 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { ref, computed } from 'vue';
 
 const props = defineProps({
@@ -22,7 +21,11 @@ const form = useForm({
     inclusions: props.package.inclusions && props.package.inclusions.length ? props.package.inclusions : [''],
     pax_options: props.package.pax_options && props.package.pax_options.length ? props.package.pax_options : [''],
     freebies: props.package.freebies && props.package.freebies.length ? props.package.freebies : [''],
-    images: props.package.images && props.package.images.length ? props.package.images : [], // Will hold a mix of strings (urls) and files
+    images: [
+        (props.package.images && props.package.images[0]) ? props.package.images[0] : '',
+        (props.package.images && props.package.images[1]) ? props.package.images[1] : '',
+        (props.package.images && props.package.images[2]) ? props.package.images[2] : '',
+    ], // Will hold a mix of strings (urls) and files
 });
 
 // Convert the existing image paths to full URLs if needed, but for preview we can just show them
@@ -46,6 +49,11 @@ const handleImageUpload = (index, event) => {
         form.images[index] = file;
         imagePreviews.value[index] = URL.createObjectURL(file);
     }
+};
+
+const removeImage = (index) => {
+    form.images[index] = '';
+    imagePreviews.value[index] = '';
 };
 
 const addField = (field) => {
@@ -95,10 +103,17 @@ const submit = () => {
                             <div>
                                 <InputLabel value="Add Image" class="text-brand-primary dark:text-brand-cream" />
                                 <div class="flex gap-4 mt-2">
-                                    <div v-for="(preview, index) in imagePreviews" :key="index" class="relative w-32 h-24 bg-[#fdf4f5] border border-[#c4acac] rounded-lg overflow-hidden flex items-center justify-center">
-                                        <input type="file" @change="e => handleImageUpload(index, e)" accept="image/*" class="bg-white dark:bg-brand-dark-base absolute inset-0 opacity-0 cursor-pointer" />
+                                    <div v-for="(preview, index) in imagePreviews" :key="index" class="relative w-32 h-24 bg-[#fdf4f5] dark:bg-brand-dark-base border border-[#c4acac] dark:border-brand-dark-border rounded-lg overflow-hidden flex items-center justify-center transition-colors group">
+                                        <input type="file" @change="e => handleImageUpload(index, e)" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10" />
                                         <img alt="Image" v-if="preview" :src="preview" class="w-full h-full object-cover" />
-                                        <div v-else class="text-[#c4acac] text-2xl">+</div>
+                                        <div v-else class="text-[#c4acac] dark:text-brand-cream/50 text-2xl transition-colors">+</div>
+                                        
+                                        <!-- Remove button -->
+                                        <button v-if="preview" type="button" @click.stop.prevent="removeImage(index)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-20 hover:bg-red-600 shadow-sm" title="Remove Image">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -106,10 +121,10 @@ const submit = () => {
                             <!-- Name -->
                             <div>
                                 <InputLabel for="name" value="Package Name:" class="text-brand-primary dark:text-brand-cream" />
-                                <TextInput
+                                <input
                                     id="name"
                                     type="text"
-                                    class="mt-1 block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
+                                    class="bg-white dark:bg-brand-dark-base mt-1 block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                     v-model="form.name"
                                     required
                                 />
@@ -121,7 +136,7 @@ const submit = () => {
                                 <InputLabel for="description" value="Package Description:" class="text-brand-primary dark:text-brand-cream" />
                                 <textarea
                                     id="description"
-                                    class="bg-white dark:bg-brand-dark-base mt-1 block w-full border-brand-primary focus:border-brand-primary focus:ring-brand-primary rounded-lg shadow-sm text-brand-primary dark:text-brand-cream"
+                                    class="bg-white dark:bg-brand-dark-base mt-1 block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                     v-model="form.description"
                                     rows="3"
                                     maxlength="200"
@@ -133,13 +148,17 @@ const submit = () => {
                             <!-- Inclusions -->
                             <div>
                                 <InputLabel value="Add Inclusion/s:" class="text-brand-primary dark:text-brand-cream" />
-                                <div v-for="(inclusion, index) in form.inclusions" :key="`inc-${index}`" class="flex gap-2 mt-1">
-                                    <TextInput
+                                <div v-for="(inclusion, index) in form.inclusions" :key="`inc-${index}`" class="flex gap-2 mt-1 items-center">
+                                    <input
                                         type="text"
-                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
+                                        class="bg-white dark:bg-brand-dark-base block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                         v-model="form.inclusions[index]"
                                     />
-                                    <button type="button" @click="removeField('inclusions', index)" v-if="form.inclusions.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
+                                    <button type="button" @click="removeField('inclusions', index)" v-if="form.inclusions.length > 1" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors" title="Remove Inclusion">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </div>
                                 <div class="text-right mt-1">
                                     <button type="button" @click="addField('inclusions')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
@@ -150,13 +169,17 @@ const submit = () => {
                             <!-- Pax -->
                             <div>
                                 <InputLabel value="Add Pax:" class="text-brand-primary dark:text-brand-cream" />
-                                <div v-for="(pax, index) in form.pax_options" :key="`pax-${index}`" class="flex gap-2 mt-1">
-                                    <TextInput
+                                <div v-for="(pax, index) in form.pax_options" :key="`pax-${index}`" class="flex gap-2 mt-1 items-center">
+                                    <input
                                         type="text"
-                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
+                                        class="bg-white dark:bg-brand-dark-base block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                         v-model="form.pax_options[index]"
                                     />
-                                    <button type="button" @click="removeField('pax_options', index)" v-if="form.pax_options.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
+                                    <button type="button" @click="removeField('pax_options', index)" v-if="form.pax_options.length > 1" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors" title="Remove Pax">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </div>
                                 <div class="text-right mt-1">
                                     <button type="button" @click="addField('pax_options')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
@@ -167,13 +190,17 @@ const submit = () => {
                             <!-- Freebies -->
                             <div>
                                 <InputLabel value="Freebie/s:" class="text-brand-primary dark:text-brand-cream" />
-                                <div v-for="(freebie, index) in form.freebies" :key="`freebie-${index}`" class="flex gap-2 mt-1">
-                                    <TextInput
+                                <div v-for="(freebie, index) in form.freebies" :key="`freebie-${index}`" class="flex gap-2 mt-1 items-center">
+                                    <input
                                         type="text"
-                                        class="block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
+                                        class="bg-white dark:bg-brand-dark-base block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                         v-model="form.freebies[index]"
                                     />
-                                    <button type="button" @click="removeField('freebies', index)" v-if="form.freebies.length > 1" class="text-red-500 hover:text-red-700 font-bold">&times;</button>
+                                    <button type="button" @click="removeField('freebies', index)" v-if="form.freebies.length > 1" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors" title="Remove Freebie">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
                                 </div>
                                 <div class="text-right mt-1">
                                     <button type="button" @click="addField('freebies')" class="text-sm text-brand-primary dark:text-brand-cream hover:underline">Add More +</button>
@@ -184,11 +211,11 @@ const submit = () => {
                             <!-- Price -->
                             <div>
                                 <InputLabel for="price" value="Price" class="text-brand-primary dark:text-brand-cream" />
-                                <TextInput
+                                <input
                                     id="price"
                                     type="number"
                                     step="0.01"
-                                    class="mt-1 block w-full border-brand-primary rounded-lg text-brand-primary dark:text-brand-cream"
+                                    class="bg-white dark:bg-brand-dark-base mt-1 block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                     v-model="form.price"
                                     required
                                 />
@@ -204,10 +231,10 @@ const submit = () => {
                     </div>
 
                     <!-- Right Column: Mobile App Preview -->
-                    <div class="hidden lg:block w-80 relative flex-shrink-0">
+                    <div class="hidden md:flex lg:block flex-col items-center w-full lg:w-80 relative flex-shrink-0 mt-10 lg:mt-0">
                         <h3 class="text-sm font-medium text-brand-primary dark:text-brand-cream mb-4 text-center">Preview on Mobile App</h3>
                         
-                        <div class="relative w-full h-[600px] bg-black rounded-[40px] p-2 shadow-xl border-4 border-gray-800 flex flex-col overflow-hidden">
+                        <div class="relative w-80 h-[600px] bg-black rounded-[40px] p-2 shadow-xl border-4 border-gray-800 flex flex-col overflow-hidden">
                             <!-- Dynamic Island notch -->
                             <div class="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
                                 <div class="w-24 h-5 bg-black rounded-b-xl"></div>
