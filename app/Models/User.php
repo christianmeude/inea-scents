@@ -30,4 +30,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function wishlistPackages()
+    {
+        return $this->belongsToMany(Package::class, 'package_user_wishlist')->withTimestamps();
+    }
 }
