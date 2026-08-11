@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
 const props = defineProps({
     show: {
         type: Boolean,
@@ -109,10 +109,16 @@ const maxWidthClass = computed(() => {
             >
                 <div
                     v-show="show"
-                    class="transform overflow-hidden rounded-[2rem] bg-white dark:bg-brand-dark-surface shadow-2xl transition-all sm:mx-auto sm:w-full border border-brand-primary/10 dark:border-brand-dark-border"
+                    class="transform bg-white dark:bg-brand-dark-surface shadow-2xl transition-all sm:mx-auto sm:w-full border border-brand-primary/10 dark:border-brand-dark-border relative z-10 max-h-[100dvh] sm:max-h-[90dvh] rounded-[2rem] flex flex-col overflow-hidden"
                     :class="maxWidthClass"
                 >
-                    <slot v-if="showSlot" />
+                    <OverlayScrollbarsComponent 
+                        defer 
+                        :options="{ scrollbars: { theme: 'os-theme-custom', autoHide: 'scroll' } }" 
+                        class="h-full"
+                    >
+                        <slot v-if="showSlot" />
+                    </OverlayScrollbarsComponent>
                 </div>
             </Transition>
         </div>

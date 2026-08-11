@@ -1,4 +1,5 @@
 import '../css/app.css';
+import 'overlayscrollbars/styles/overlayscrollbars.css';
 import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/vue3';

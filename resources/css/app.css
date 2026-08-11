@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* OverlayScrollbars Sleek Custom Theme */
+.os-theme-custom {
+    box-sizing: border-box;
+    --os-size: 6px;
+    --os-padding-perpendicular: 0;
+    --os-padding-axis: 0;
+    --os-track-border-radius: 10px;
+    --os-handle-border-radius: 10px;
+    --os-handle-bg: rgba(106, 64, 83, 0.25);
+    --os-handle-bg-hover: rgba(106, 64, 83, 0.5);
+    --os-handle-bg-active: rgba(106, 64, 83, 0.7);
+    --os-handle-interactive-area-offset: 4px;
+}
+
+.dark .os-theme-custom {
+    --os-handle-bg: rgba(253, 244, 245, 0.25);
+    --os-handle-bg-hover: rgba(253, 244, 245, 0.5);
+    --os-handle-bg-active: rgba(253, 244, 245, 0.7);
+}
+
+/* Hide native scrollbars strictly when using overlay */
+.os-host-native-scrollbars-invisible {
+    scrollbar-width: none;
+}
+.os-host-native-scrollbars-invisible::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}

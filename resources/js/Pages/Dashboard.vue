@@ -76,7 +76,7 @@ const updateFilter = (value) => {
                     
                     <div class="bg-white dark:bg-brand-dark-surface rounded-2xl p-6 shadow-ambient dark:shadow-none">
                         <h3 class="text-brand-primary dark:text-brand-cream font-medium text-base mb-3">Total Revenue</h3>
-                        <p class="text-4xl text-brand-primary dark:text-brand-cream font-semibold">Php. {{ metrics?.totalRevenue || '0' }}</p>
+                        <p class="text-4xl text-brand-primary dark:text-brand-cream font-semibold">Php {{ metrics?.totalRevenue || '0' }}</p>
                     </div>
                     
                     <div class="bg-white dark:bg-brand-dark-surface rounded-2xl p-6 shadow-ambient dark:shadow-none">

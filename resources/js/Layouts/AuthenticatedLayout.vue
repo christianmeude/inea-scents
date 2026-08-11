@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 import { Link } from '@inertiajs/vue3';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -33,31 +34,32 @@ const navigation = [
             </div>
 
             <!-- Navigation Links -->
-            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-3 mt-2">
-                <component
-                    :is="item.disabled ? 'span' : Link"
-                    v-for="item in navigation"
-                    :key="item.name"
-                    :href="item.disabled ? undefined : item.href"
-                    :class="[
-                        item.active 
-                            ? 'bg-brand-primary dark:bg-brand-dark-accent text-white border-transparent' 
-                            : 'bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream border-gray-200 dark:border-brand-dark-border',
-                        item.disabled 
-                            ? 'opacity-60 cursor-not-allowed' 
-                            : 'hover:border-brand-primary/50 dark:hover:border-brand-dark-border hover:bg-brand-primary/5 dark:hover:bg-brand-dark-accent',
-                        'group flex justify-between items-center px-5 py-2.5 text-sm font-medium rounded-full border transition-all duration-200'
-                    ]"
-                >
-                    <span>{{ item.name }}</span>
-                    
-                    <span v-if="item.disabled" 
-                          class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-brand-primary dark:bg-brand-dark-surface text-white dark:text-brand-cream text-[10px] px-2 py-1 rounded-md shadow-sm border border-brand-primary/20 dark:border-brand-dark-border whitespace-nowrap relative flex items-center">
-                        <span class="absolute right-full top-1/2 -translate-y-1/2 border-[4px] border-transparent border-r-brand-primary dark:border-r-brand-dark-surface"></span>
-                        Coming soon!
-                    </span>
-                </component>
-            </nav>
+            <OverlayScrollbarsComponent defer :options="{ scrollbars: { theme: 'os-theme-custom', autoHide: 'scroll' } }" class="flex-1 mt-2">
+                <nav class="py-6 px-4 space-y-3">
+                    <component
+                        :is="item.disabled ? 'span' : Link"
+                        v-for="item in navigation"
+                        :key="item.name"
+                        :href="item.disabled ? undefined : item.href"
+                        :class="[
+                            'group flex justify-between items-center px-5 py-2.5 text-sm font-medium rounded-full',
+                            item.disabled 
+                                ? 'opacity-60 cursor-not-allowed text-brand-primary dark:text-brand-cream bg-transparent transition-none'
+                                : (item.active
+                                    ? 'bg-brand-primary dark:bg-brand-dark-accent text-white hover:bg-brand-primary/90 dark:hover:bg-brand-dark-accent/90 shadow-sm transition-all duration-200 active:scale-[0.98]'
+                                    : 'bg-transparent text-brand-primary dark:text-brand-cream hover:bg-brand-primary/5 dark:hover:bg-brand-dark-accent hover:translate-x-1 transition-all duration-200 active:scale-[0.98]')
+                        ]"
+                    >
+                        <span>{{ item.name }}</span>
+                        
+                        <span v-if="item.disabled" 
+                              class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-brand-primary dark:bg-brand-dark-surface text-white dark:text-brand-cream text-[10px] px-2 py-1 rounded-md shadow-sm border border-brand-primary/20 dark:border-brand-dark-border whitespace-nowrap relative flex items-center">
+                            <span class="absolute right-full top-1/2 -translate-y-1/2 border-[4px] border-transparent border-r-brand-primary dark:border-r-brand-dark-surface"></span>
+                            Coming soon!
+                        </span>
+                    </component>
+                </nav>
+            </OverlayScrollbarsComponent>
 
             <!-- Theme Toggle -->
             <div class="px-4 mb-2">
@@ -161,11 +163,13 @@ const navigation = [
             </header>
 
             <!-- Main Scrollable Content -->
-            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                <div class="max-w-7xl mx-auto">
-                    <slot />
-                </div>
-            </main>
+            <OverlayScrollbarsComponent defer :options="{ scrollbars: { theme: 'os-theme-custom', autoHide: 'scroll' } }" class="flex-1 h-full">
+                <main class="p-4 sm:p-6 lg:p-8">
+                    <div class="max-w-7xl mx-auto">
+                        <slot />
+                    </div>
+                </main>
+            </OverlayScrollbarsComponent>
         </div>
     </div>
 </template>
