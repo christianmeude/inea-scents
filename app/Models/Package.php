@@ -14,6 +14,9 @@ class Package extends Model
         'freebies',
         'price',
         'images',
+        'rating',
+        'reviews_count',
+        'gallery_images',
     ];
 
     protected $casts = [
@@ -22,6 +25,9 @@ class Package extends Model
         'freebies' => 'array',
         'images' => 'array',
         'price' => 'decimal:2',
+        'rating' => 'decimal:2',
+        'reviews_count' => 'integer',
+        'gallery_images' => 'array',
     ];
 
     public function bookings()
