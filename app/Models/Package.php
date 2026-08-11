@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     schema="Package",
  *     title="Package",
  *     description="Package model",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Romantic Getaway"),
  *     @OA\Property(property="description", type="string", example="A nice package for couples."),

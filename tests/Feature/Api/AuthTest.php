@@ -22,11 +22,11 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/register', $payload);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([
-                     'user' => ['id', 'name', 'email'],
-                     'access_token',
-                     'token_type',
-                 ]);
+            ->assertJsonStructure([
+                'user' => ['id', 'name', 'email'],
+                'access_token',
+                'token_type',
+            ]);
 
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
@@ -44,7 +44,7 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/register', $payload);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['email', 'password']);
+            ->assertJsonValidationErrors(['email', 'password']);
     }
 
     public function test_user_can_login()
@@ -62,11 +62,11 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/login', $payload);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([
-                     'user' => ['id', 'name', 'email'],
-                     'access_token',
-                     'token_type',
-                 ]);
+            ->assertJsonStructure([
+                'user' => ['id', 'name', 'email'],
+                'access_token',
+                'token_type',
+            ]);
     }
 
     public function test_user_cannot_login_with_invalid_credentials()
@@ -84,6 +84,6 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/login', $payload);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['email']);
+            ->assertJsonValidationErrors(['email']);
     }
 }

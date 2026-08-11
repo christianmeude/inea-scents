@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
 use App\Models\Package;
+use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
@@ -15,11 +14,14 @@ class WishlistController extends Controller
      *     summary="Get user's wishlist",
      *     tags={"Wishlist"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of wishlist packages",
+     *
      *         @OA\JsonContent(
      *             type="array",
+     *
      *             @OA\Items(ref="#/components/schemas/Package")
      *         )
      *     )
@@ -36,21 +38,28 @@ class WishlistController extends Controller
      *     summary="Toggle package in wishlist",
      *     tags={"Wishlist"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"package_id"},
+     *
      *             @OA\Property(property="package_id", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Toggle status",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="attached", type="boolean"),
      *             @OA\Property(property="message", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated"

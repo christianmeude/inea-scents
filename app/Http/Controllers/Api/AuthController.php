@@ -10,46 +10,46 @@ use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
-    schema: "AuthResponse",
-    type: "object",
+    schema: 'AuthResponse',
+    type: 'object',
     properties: [
         new OAT\Property(
-            property: "user",
+            property: 'user',
             properties: [
-                new OAT\Property(property: "id", type: "integer", example: 1),
-                new OAT\Property(property: "name", type: "string", example: "John Doe"),
-                new OAT\Property(property: "email", type: "string", example: "john@example.com")
+                new OAT\Property(property: 'id', type: 'integer', example: 1),
+                new OAT\Property(property: 'name', type: 'string', example: 'John Doe'),
+                new OAT\Property(property: 'email', type: 'string', example: 'john@example.com'),
             ],
-            type: "object"
+            type: 'object'
         ),
-        new OAT\Property(property: "access_token", type: "string", example: "1|abcdef..."),
-        new OAT\Property(property: "token_type", type: "string", example: "Bearer")
+        new OAT\Property(property: 'access_token', type: 'string', example: '1|abcdef...'),
+        new OAT\Property(property: 'token_type', type: 'string', example: 'Bearer'),
     ]
 )]
 class AuthController extends Controller
 {
     #[OAT\Post(
-        path: "/register",
-        summary: "Register a new user",
-        tags: ["Auth"]
+        path: '/register',
+        summary: 'Register a new user',
+        tags: ['Auth']
     )]
     #[OAT\RequestBody(
         required: true,
         content: new OAT\JsonContent(
-            required: ["name", "email", "password"],
+            required: ['name', 'email', 'password'],
             properties: [
-                new OAT\Property(property: "name", type: "string", example: "John Doe"),
-                new OAT\Property(property: "email", type: "string", format: "email", example: "john@example.com"),
-                new OAT\Property(property: "password", type: "string", format: "password", example: "secret")
+                new OAT\Property(property: 'name', type: 'string', example: 'John Doe'),
+                new OAT\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+                new OAT\Property(property: 'password', type: 'string', format: 'password', example: 'secret'),
             ]
         )
     )]
     #[OAT\Response(
         response: 200,
-        description: "User registered successfully",
-        content: new OAT\JsonContent(ref: "#/components/schemas/AuthResponse")
+        description: 'User registered successfully',
+        content: new OAT\JsonContent(ref: '#/components/schemas/AuthResponse')
     )]
-    #[OAT\Response(response: 422, description: "Validation Error")]
+    #[OAT\Response(response: 422, description: 'Validation Error')]
     public function register(Request $request)
     {
         $request->validate([
@@ -68,26 +68,26 @@ class AuthController extends Controller
     }
 
     #[OAT\Post(
-        path: "/login",
-        summary: "Login user and return token",
-        tags: ["Auth"]
+        path: '/login',
+        summary: 'Login user and return token',
+        tags: ['Auth']
     )]
     #[OAT\RequestBody(
         required: true,
         content: new OAT\JsonContent(
-            required: ["email", "password"],
+            required: ['email', 'password'],
             properties: [
-                new OAT\Property(property: "email", type: "string", format: "email", example: "john@example.com"),
-                new OAT\Property(property: "password", type: "string", format: "password", example: "secret")
+                new OAT\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+                new OAT\Property(property: 'password', type: 'string', format: 'password', example: 'secret'),
             ]
         )
     )]
     #[OAT\Response(
         response: 200,
-        description: "User logged in successfully",
-        content: new OAT\JsonContent(ref: "#/components/schemas/AuthResponse")
+        description: 'User logged in successfully',
+        content: new OAT\JsonContent(ref: '#/components/schemas/AuthResponse')
     )]
-    #[OAT\Response(response: 401, description: "Invalid credentials")]
+    #[OAT\Response(response: 401, description: 'Invalid credentials')]
     public function login(Request $request)
     {
         $request->validate([

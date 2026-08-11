@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\Package;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -35,27 +35,27 @@ class DashboardController extends Controller
         $confirmedEvents = (clone $query)->where('status', 'confirmed')->count();
 
         // Popular Packages (Top 4) based on the filter timeframe
-        $popularPackages = Package::withCount(['bookings' => function($q) use ($startDate) {
-             if ($startDate) {
-                 $q->where('created_at', '>=', $startDate);
-             }
+        $popularPackages = Package::withCount(['bookings' => function ($q) use ($startDate) {
+            if ($startDate) {
+                $q->where('created_at', '>=', $startDate);
+            }
         }])
-        ->orderByDesc('bookings_count')
-        ->take(4)
-        ->get()
-        ->map(function ($package) {
-            return [
-                'id' => $package->id,
-                'name' => $package->name,
-                'bookings_count' => $package->bookings_count,
-                'new_today' => Booking::where('package_id', $package->id)
-                                      ->whereDate('created_at', Carbon::today())
-                                      ->count()
-            ];
-        });
+            ->orderByDesc('bookings_count')
+            ->take(4)
+            ->get()
+            ->map(function ($package) {
+                return [
+                    'id' => $package->id,
+                    'name' => $package->name,
+                    'bookings_count' => $package->bookings_count,
+                    'new_today' => Booking::where('package_id', $package->id)
+                        ->whereDate('created_at', Carbon::today())
+                        ->count(),
+                ];
+            });
 
-        // Upcoming Bookings: next 5 bookings by event_date (independent of created_at filter, 
-        // usually upcoming means future events, regardless of when they were booked, 
+        // Upcoming Bookings: next 5 bookings by event_date (independent of created_at filter,
+        // usually upcoming means future events, regardless of when they were booked,
         // though we could filter them but usually upcoming is just future).
         $upcomingBookings = Booking::with('package')
             ->where('event_date', '>=', Carbon::today())

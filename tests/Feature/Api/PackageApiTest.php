@@ -35,11 +35,11 @@ class PackageApiTest extends TestCase
                     'images',
                     'gallery_images',
                     'description',
-                ]
+                ],
             ])
             ->assertJsonFragment([
                 'id' => $package->id,
-                'rating' => "4.50",
+                'rating' => '4.50',
             ]);
     }
 
@@ -62,7 +62,7 @@ class PackageApiTest extends TestCase
 
         $package->scents()->attach($scent->id);
 
-        $response = $this->getJson('/api/packages/' . $package->id);
+        $response = $this->getJson('/api/packages/'.$package->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -86,8 +86,8 @@ class PackageApiTest extends TestCase
                         'description',
                         'image_url',
                         'is_available',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->assertJsonFragment([
                 'id' => $package->id,

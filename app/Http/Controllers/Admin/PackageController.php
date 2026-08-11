@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Package;
 use Illuminate\Http\Request;
-
 use Inertia\Inertia;
 
 class PackageController extends Controller
@@ -16,8 +15,9 @@ class PackageController extends Controller
     public function index()
     {
         $packages = Package::all();
+
         return Inertia::render('Admin/Packages/Index', [
-            'packages' => $packages
+            'packages' => $packages,
         ]);
     }
 
@@ -75,7 +75,7 @@ class PackageController extends Controller
     public function edit(Package $package)
     {
         return Inertia::render('Admin/Packages/Edit', [
-            'package' => $package
+            'package' => $package,
         ]);
     }
 

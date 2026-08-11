@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     schema="Scent",
  *     title="Scent",
  *     description="Scent model",
+ *
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Lavender"),
  *     @OA\Property(property="description", type="string", example="A calming floral scent."),

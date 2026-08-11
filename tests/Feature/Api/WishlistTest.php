@@ -33,7 +33,7 @@ class WishlistTest extends TestCase
             'reviews_count' => 120,
             'gallery_images' => ['image1.jpg', 'image2.jpg'],
         ]);
-        
+
         $user->wishlistPackages()->attach($package->id);
 
         Sanctum::actingAs($user);

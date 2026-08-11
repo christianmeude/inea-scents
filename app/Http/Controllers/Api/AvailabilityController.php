@@ -25,27 +25,35 @@ class AvailabilityController extends Controller
      *      tags={"Availability"},
      *      summary="Get availability calendar for a given month and year",
      *      description="Returns a list of dates for the requested month marked as 'Booked' or 'Available'.",
+     *
      *      @OA\Parameter(
      *          name="month",
      *          in="query",
      *          required=false,
+     *
      *          @OA\Schema(type="integer", minimum=1, maximum=12),
      *          description="Month number (1-12). Defaults to current month."
      *      ),
+     *
      *      @OA\Parameter(
      *          name="year",
      *          in="query",
      *          required=false,
+     *
      *          @OA\Schema(type="integer"),
      *          description="Year (e.g. 2024). Defaults to current year."
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
+     *
      *          @OA\JsonContent(
      *              type="array",
+     *
      *              @OA\Items(
      *                  type="object",
+     *
      *                  @OA\Property(property="date", type="string", format="date", example="2024-08-01"),
      *                  @OA\Property(property="status", type="string", example="Available")
      *              )
@@ -68,7 +76,7 @@ class AvailabilityController extends Controller
 
         $blockedDates = BlockedDate::whereBetween('date', [$startDate, $endDate])
             ->pluck('date')
-            ->map(fn($date) => $date->format('Y-m-d'))
+            ->map(fn ($date) => $date->format('Y-m-d'))
             ->toArray();
 
         // Assume bookings that are not cancelled block the date
@@ -76,7 +84,7 @@ class AvailabilityController extends Controller
         $bookedDates = Booking::whereBetween('event_date', [$startDate, $endDate])
             ->where('status', '!=', BookingStatus::Cancelled)
             ->pluck('event_date')
-            ->map(fn($date) => $date->format('Y-m-d'))
+            ->map(fn ($date) => $date->format('Y-m-d'))
             ->toArray();
 
         $allBlocked = array_unique(array_merge($blockedDates, $bookedDates));

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
 use App\Models\BlockedDate;
+use App\Models\Booking;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
@@ -52,9 +52,11 @@ class CalendarController extends Controller
 
         if ($blocked) {
             $blocked->delete();
+
             return redirect()->back()->with('success', 'Date unblocked successfully.');
         } else {
             BlockedDate::create(['date' => $dateStr]);
+
             return redirect()->back()->with('success', 'Date blocked successfully.');
         }
     }
