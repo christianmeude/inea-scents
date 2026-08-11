@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\Package;
+use App\Models\Scent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -54,6 +55,13 @@ class PackageApiTest extends TestCase
             'inclusions' => ['Food', 'Guide'],
         ]);
 
+        $scent = Scent::create([
+            'name' => 'Lavender',
+            'description' => 'A relaxing scent.',
+        ]);
+
+        $package->scents()->attach($scent->id);
+
         $response = $this->getJson('/api/packages/' . $package->id);
 
         $response->assertStatus(200)
@@ -71,10 +79,22 @@ class PackageApiTest extends TestCase
                 'gallery_images',
                 'created_at',
                 'updated_at',
+                'scents' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'description',
+                        'image_url',
+                        'is_available',
+                    ]
+                ]
             ])
             ->assertJsonFragment([
                 'id' => $package->id,
                 'name' => 'Adventure Trip',
+            ])
+            ->assertJsonFragment([
+                'name' => 'Lavender',
             ]);
     }
 

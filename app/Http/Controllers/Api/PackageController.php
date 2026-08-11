@@ -65,6 +65,7 @@ class PackageController extends Controller
      */
     public function show(Package $package)
     {
+        $package->load('scents');
         return response()->json($package);
     }
 }

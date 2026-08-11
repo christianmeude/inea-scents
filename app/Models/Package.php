@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @OA\Schema(
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="reviews_count", type="integer", example=120),
  *     @OA\Property(property="images", type="array", @OA\Items(type="string")),
  *     @OA\Property(property="gallery_images", type="array", @OA\Items(type="string")),
+ *     @OA\Property(property="scents", type="array", @OA\Items(ref="#/components/schemas/Scent")),
  *     @OA\Property(property="created_at", type="string", format="date-time"),
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
@@ -53,5 +55,10 @@ class Package extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function scents(): BelongsToMany
+    {
+        return $this->belongsToMany(Scent::class);
     }
 }
