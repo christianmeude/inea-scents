@@ -35,7 +35,11 @@ const submit = () => {
     <GuestLayout>
         <Head title="Reset Password" />
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" class="flex flex-col gap-6">
+            <div class="mb-8 mt-4 flex justify-center sm:mb-12">
+                <ApplicationLogo />
+            </div>
+
             <div>
                 <InputLabel for="email" value="Email" />
 
@@ -49,10 +53,10 @@ const submit = () => {
                     autocomplete="username"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2 text-center" :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
+            <div>
                 <InputLabel for="password" value="Password" />
 
                 <TextInput
@@ -64,10 +68,10 @@ const submit = () => {
                     autocomplete="new-password"
                 />
 
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError class="mt-2 text-center" :message="form.errors.password" />
             </div>
 
-            <div class="mt-4">
+            <div>
                 <InputLabel
                     for="password_confirmation"
                     value="Confirm Password"
@@ -83,15 +87,15 @@ const submit = () => {
                 />
 
                 <InputError
-                    class="mt-2"
+                    class="mt-2 text-center"
                     :message="form.errors.password_confirmation"
                 />
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="flex flex-col mt-2">
                 <PrimaryButton
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+                    class="w-full text-center flex justify-center"
+                    :loading="form.processing"
                 >
                     Reset Password
                 </PrimaryButton>

@@ -4,38 +4,10 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import ThemeToggle from '@/Components/ThemeToggle.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
-
-const currentTheme = ref('system');
-
-onMounted(() => {
-    if (!('theme' in localStorage)) {
-        currentTheme.value = 'system';
-    } else {
-        currentTheme.value = localStorage.theme;
-    }
-});
-
-const setTheme = (theme) => {
-    currentTheme.value = theme;
-    if (theme === 'system') {
-        localStorage.removeItem('theme');
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    } else {
-        localStorage.theme = theme;
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }
-};
 
 const navigation = [
     { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
@@ -79,11 +51,7 @@ const navigation = [
 
             <!-- Theme Toggle -->
             <div class="px-4 mb-2">
-                <div class="flex items-center justify-between bg-brand-cream dark:bg-brand-dark-base rounded-full p-1 border border-brand-primary/10 dark:border-brand-dark-border">
-                    <button @click="setTheme('light')" :class="currentTheme === 'light' ? 'bg-white dark:bg-brand-dark-surface shadow-sm text-brand-primary dark:text-brand-cream' : 'text-brand-primary dark:text-brand-cream/60 dark:text-brand-cream/60 hover:text-brand-primary dark:text-brand-cream dark:hover:text-brand-cream'" class="flex-1 py-1.5 text-xs font-medium rounded-full transition-all">Light</button>
-                    <button @click="setTheme('dark')" :class="currentTheme === 'dark' ? 'bg-white dark:bg-brand-dark-surface shadow-sm text-brand-primary dark:text-brand-cream' : 'text-brand-primary dark:text-brand-cream/60 dark:text-brand-cream/60 hover:text-brand-primary dark:text-brand-cream dark:hover:text-brand-cream'" class="flex-1 py-1.5 text-xs font-medium rounded-full transition-all">Dark</button>
-                    <button @click="setTheme('system')" :class="currentTheme === 'system' ? 'bg-white dark:bg-brand-dark-surface shadow-sm text-brand-primary dark:text-brand-cream' : 'text-brand-primary dark:text-brand-cream/60 dark:text-brand-cream/60 hover:text-brand-primary dark:text-brand-cream dark:hover:text-brand-cream'" class="flex-1 py-1.5 text-xs font-medium rounded-full transition-all">System</button>
-                </div>
+                <ThemeToggle variant="full" />
             </div>
 
             <!-- User / Sign out area -->

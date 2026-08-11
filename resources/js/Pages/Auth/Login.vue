@@ -1,8 +1,12 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import Checkbox from '@/Components/Checkbox.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 defineProps({
     canResetPassword: {
@@ -34,20 +38,19 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit" class="flex flex-col gap-4">
-            <div class="mb-12 mt-4 flex justify-center sm:mb-16">
+        <form @submit.prevent="submit" class="flex flex-col gap-6">
+            <div class="mb-8 mt-4 flex justify-center sm:mb-12">
                 <!-- Translate left to visually balance the 'Scents' overhang -->
                 <ApplicationLogo />
             </div>
 
-            <div class="relative">
-                <input
+            <div>
+                <InputLabel for="email" value="Email" />
+                <TextInput
                     id="email"
                     type="email"
-                    class="block w-full rounded-full border-none bg-brand-muted px-6 py-4 text-white placeholder-white/80 shadow-sm transition-all duration-300 ease-in-out hover:bg-brand-muted/90 focus:bg-brand-muted/95 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:ring-offset-2 focus:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
-                    :class="{ 'opacity-50': form.processing }"
+                    class="mt-1 block w-full"
                     v-model="form.email"
-                    placeholder="Email:"
                     required
                     autofocus
                     autocomplete="username"
@@ -56,14 +59,22 @@ const submit = () => {
                 <InputError class="mt-2 text-center" :message="form.errors.email" />
             </div>
 
-            <div class="relative">
-                <input
+            <div>
+                <div class="flex items-center justify-between">
+                    <InputLabel for="password" value="Password" />
+                    <Link
+                        v-if="canResetPassword"
+                        :href="route('password.request')"
+                        class="rounded-md text-sm text-brand-primary dark:text-brand-cream/80 hover:text-brand-primary/80 dark:hover:text-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 dark:focus:ring-offset-brand-dark-base transition-colors"
+                    >
+                        Forgot password?
+                    </Link>
+                </div>
+                <TextInput
                     id="password"
                     type="password"
-                    class="block w-full rounded-full border-none bg-brand-muted px-6 py-4 text-white placeholder-white/80 shadow-sm transition-all duration-300 ease-in-out hover:bg-brand-muted/90 focus:bg-brand-muted/95 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:ring-offset-2 focus:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50"
-                    :class="{ 'opacity-50': form.processing }"
+                    class="mt-1 block w-full"
                     v-model="form.password"
-                    placeholder="Password:"
                     required
                     autocomplete="current-password"
                     :disabled="form.processing"
@@ -71,13 +82,31 @@ const submit = () => {
                 <InputError class="mt-2 text-center" :message="form.errors.password" />
             </div>
 
-            <button 
-                type="submit" 
-                class="sr-only"
-                :disabled="form.processing"
-            >
-                Log In
-            </button>
+            <div class="mt-2">
+                <label class="inline-flex items-center cursor-pointer group">
+                    <Checkbox name="remember" v-model:checked="form.remember" class="transition-colors group-hover:border-brand-primary" />
+                    <span class="ml-2 text-sm text-brand-primary dark:text-brand-cream/80 group-hover:text-brand-primary dark:group-hover:text-brand-cream transition-colors">Remember me</span>
+                </label>
+            </div>
+
+            <div class="flex flex-col gap-4 mt-2">
+                <PrimaryButton
+                    class="w-full text-center flex justify-center"
+                    :loading="form.processing"
+                >
+                    Log In
+                </PrimaryButton>
+                
+                <div class="text-center text-sm text-brand-primary dark:text-brand-cream/80">
+                    Don't have an account? 
+                    <Link
+                        :href="route('register')"
+                        class="font-semibold underline hover:text-brand-primary/80 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 dark:focus:ring-offset-brand-dark-base"
+                    >
+                        Register
+                    </Link>
+                </div>
+            </div>
         </form>
     </GuestLayout>
 </template>
