@@ -4,9 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\AvailabilityController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/availability', [AvailabilityController::class, 'index']);
 
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
