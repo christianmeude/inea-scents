@@ -9,7 +9,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/packages', [PackageController::class, 'index']);
-Route::get('/packages/{id}', [PackageController::class, 'show']);
+Route::get('/packages/{package}', [PackageController::class, 'show']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

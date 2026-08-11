@@ -25,36 +25,28 @@ class PackageController extends Controller
      *         description="Successful operation",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="Romantic Getaway"),
-     *                 @OA\Property(property="description", type="string", example="A nice package for couples."),
-     *                 @OA\Property(property="price", type="number", format="float", example=199.99),
-     *                 @OA\Property(property="rating", type="number", format="float", example=4.5),
-     *                 @OA\Property(property="reviews_count", type="integer", example=120),
-     *                 @OA\Property(property="images", type="array", @OA\Items(type="string")),
-     *                 @OA\Property(property="gallery_images", type="array", @OA\Items(type="string")),
-     *                 @OA\Property(property="created_at", type="string", format="date-time"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time")
-     *             )
+     *             @OA\Items(ref="#/components/schemas/Package")
      *         )
      *     )
      * )
      */
     public function index()
     {
-        return response()->json(Package::all());
+        $packages = Package::select([
+            'id', 'name', 'price', 'rating', 'reviews_count', 'images', 'gallery_images', 'description'
+        ])->get();
+        
+        return response()->json($packages);
     }
 
     /**
      * @OA\Get(
-     *     path="/api/packages/{id}",
+     *     path="/api/packages/{package}",
      *     tags={"Packages"},
      *     summary="Get package details",
      *     description="Returns full package details for a specific ID.",
      *     @OA\Parameter(
-     *         name="id",
+     *         name="package",
      *         in="path",
      *         description="ID of package to return",
      *         required=true,
@@ -63,22 +55,7 @@ class PackageController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="name", type="string", example="Romantic Getaway"),
-     *             @OA\Property(property="description", type="string", example="A nice package for couples."),
-     *             @OA\Property(property="inclusions", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="pax_options", type="array", @OA\Items(type="integer")),
-     *             @OA\Property(property="freebies", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="price", type="number", format="float", example=199.99),
-     *             @OA\Property(property="rating", type="number", format="float", example=4.5),
-     *             @OA\Property(property="reviews_count", type="integer", example=120),
-     *             @OA\Property(property="images", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="gallery_images", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="created_at", type="string", format="date-time"),
-     *             @OA\Property(property="updated_at", type="string", format="date-time")
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/Package")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -86,9 +63,8 @@ class PackageController extends Controller
      *     )
      * )
      */
-    public function show(string $id)
+    public function show(Package $package)
     {
-        $package = Package::findOrFail($id);
         return response()->json($package);
     }
 }

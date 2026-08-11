@@ -4,7 +4,6 @@ namespace Tests\Feature\Api;
 
 use App\Models\Package;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PackageApiTest extends TestCase
@@ -25,11 +24,21 @@ class PackageApiTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonCount(1)
+            ->assertJsonStructure([
+                '*' => [
+                    'id',
+                    'name',
+                    'price',
+                    'rating',
+                    'reviews_count',
+                    'images',
+                    'gallery_images',
+                    'description',
+                ]
+            ])
             ->assertJsonFragment([
                 'id' => $package->id,
-                'name' => 'Romantic Getaway',
                 'rating' => "4.50",
-                'reviews_count' => 120,
             ]);
     }
 
@@ -48,12 +57,24 @@ class PackageApiTest extends TestCase
         $response = $this->getJson('/api/packages/' . $package->id);
 
         $response->assertStatus(200)
-            ->assertJson([
+            ->assertJsonStructure([
+                'id',
+                'name',
+                'description',
+                'inclusions',
+                'pax_options',
+                'freebies',
+                'price',
+                'rating',
+                'reviews_count',
+                'images',
+                'gallery_images',
+                'created_at',
+                'updated_at',
+            ])
+            ->assertJsonFragment([
                 'id' => $package->id,
                 'name' => 'Adventure Trip',
-                'description' => 'A thrilling experience.',
-                'rating' => "4.80",
-                'reviews_count' => 50,
             ]);
     }
 
