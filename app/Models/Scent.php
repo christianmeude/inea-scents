@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use OpenApi\Attributes as OAT;
 
-/**
- * @OA\Schema(
- *     schema="Scent",
- *     title="Scent",
- *     description="Scent model",
- *
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Lavender"),
- *     @OA\Property(property="description", type="string", example="A calming floral scent."),
- *     @OA\Property(property="image_url", type="string", example="https://example.com/lavender.jpg"),
- *     @OA\Property(property="is_available", type="boolean", example=true),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time")
- * )
- */
+#[OAT\Schema(
+    schema: 'Scent',
+    title: 'Scent',
+    description: 'Scent model',
+    properties: [
+        new OAT\Property(property: 'id', type: 'integer', example: 1),
+        new OAT\Property(property: 'name', type: 'string', example: 'Lavender'),
+        new OAT\Property(property: 'description', type: 'string', example: 'A calming floral scent.'),
+        new OAT\Property(property: 'image_url', type: 'string', example: 'https://example.com/lavender.jpg'),
+        new OAT\Property(property: 'is_available', type: 'boolean', example: true),
+        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ]
+)]
 class Scent extends Model
 {
     protected $fillable = [

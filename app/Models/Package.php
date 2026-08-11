@@ -4,29 +4,29 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use OpenApi\Attributes as OAT;
 
-/**
- * @OA\Schema(
- *     schema="Package",
- *     title="Package",
- *     description="Package model",
- *
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="name", type="string", example="Romantic Getaway"),
- *     @OA\Property(property="description", type="string", example="A nice package for couples."),
- *     @OA\Property(property="inclusions", type="array", @OA\Items(type="string")),
- *     @OA\Property(property="pax_options", type="array", @OA\Items(type="integer")),
- *     @OA\Property(property="freebies", type="array", @OA\Items(type="string")),
- *     @OA\Property(property="price", type="number", format="float", example=199.99),
- *     @OA\Property(property="rating", type="number", format="float", example=4.5),
- *     @OA\Property(property="reviews_count", type="integer", example=120),
- *     @OA\Property(property="images", type="array", @OA\Items(type="string")),
- *     @OA\Property(property="gallery_images", type="array", @OA\Items(type="string")),
- *     @OA\Property(property="scents", type="array", @OA\Items(ref="#/components/schemas/Scent")),
- *     @OA\Property(property="created_at", type="string", format="date-time"),
- *     @OA\Property(property="updated_at", type="string", format="date-time")
- * )
- */
+#[OAT\Schema(
+    schema: 'Package',
+    title: 'Package',
+    description: 'Package model',
+    properties: [
+        new OAT\Property(property: 'id', type: 'integer', example: 1),
+        new OAT\Property(property: 'name', type: 'string', example: 'Romantic Getaway'),
+        new OAT\Property(property: 'description', type: 'string', example: 'A nice package for couples.'),
+        new OAT\Property(property: 'inclusions', type: 'array', items: new OAT\Items(type: 'string')),
+        new OAT\Property(property: 'pax_options', type: 'array', items: new OAT\Items(type: 'integer')),
+        new OAT\Property(property: 'freebies', type: 'array', items: new OAT\Items(type: 'string')),
+        new OAT\Property(property: 'price', type: 'number', format: 'float', example: 199.99),
+        new OAT\Property(property: 'rating', type: 'number', format: 'float', example: 4.5),
+        new OAT\Property(property: 'reviews_count', type: 'integer', example: 120),
+        new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: 'string')),
+        new OAT\Property(property: 'gallery_images', type: 'array', items: new OAT\Items(type: 'string')),
+        new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
+        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ]
+)]
 class Package extends Model
 {
     protected $fillable = [
