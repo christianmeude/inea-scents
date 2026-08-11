@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PaymentMethod;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 /**
  * @OA\Tag(
@@ -38,7 +40,9 @@ class BookingController extends Controller
      *                 @OA\Property(property="customer_name", type="string"),
      *                 @OA\Property(property="status", type="string"),
      *                 @OA\Property(property="event_date", type="string", format="date"),
-     *                 @OA\Property(property="payment_method", type="string")
+     *                 @OA\Property(property="payment_method", type="string"),
+     *                 @OA\Property(property="package", ref="#/components/schemas/Package"),
+     *                 @OA\Property(property="scents", type="array", @OA\Items(ref="#/components/schemas/Scent"))
      *             )
      *         )
      *     )
@@ -46,7 +50,8 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        $bookings = $request->user()->bookings()->with(['package', 'scents'])->get();
+        $user = $request->user();
+        $bookings = $user->bookings()->with(['package', 'scents'])->get();
 
         return response()->json($bookings);
     }
@@ -63,7 +68,7 @@ class BookingController extends Controller
      *         required=true,
      *
      *         @OA\JsonContent(
-     *             required={"package_id", "customer_name", "event_date", "venue_address"},
+     *             required={"package_id", "customer_name", "event_date", "venue_address", "payment_method"},
      *
      *             @OA\Property(property="package_id", type="integer"),
      *             @OA\Property(property="customer_name", type="string"),
@@ -80,7 +85,21 @@ class BookingController extends Controller
      *
      *     @OA\Response(
      *         response=201,
-     *         description="Booking created successfully"
+     *         description="Booking created successfully",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="booking_reference", type="string"),
+     *             @OA\Property(property="user_id", type="integer"),
+     *             @OA\Property(property="customer_name", type="string"),
+     *             @OA\Property(property="status", type="string"),
+     *             @OA\Property(property="event_date", type="string", format="date"),
+     *             @OA\Property(property="payment_method", type="string"),
+     *             @OA\Property(property="package", ref="#/components/schemas/Package"),
+     *             @OA\Property(property="scents", type="array", @OA\Items(ref="#/components/schemas/Scent"))
+     *         )
      *     )
      * )
      */
@@ -95,12 +114,13 @@ class BookingController extends Controller
             'event_date' => 'required|date',
             'event_time' => 'nullable|date_format:H:i:s',
             'venue_address' => 'required|string|max:255',
-            'payment_method' => 'nullable|string|max:255',
+            'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
             'scent_ids' => 'nullable|array',
             'scent_ids.*' => 'exists:scents,id',
         ]);
 
-        $booking = $request->user()->bookings()->create($validated);
+        $user = $request->user();
+        $booking = $user->bookings()->create($validated);
 
         if (! empty($validated['scent_ids'])) {
             $booking->scents()->attach($validated['scent_ids']);

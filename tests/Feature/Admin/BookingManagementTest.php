@@ -6,8 +6,8 @@ use App\Models\Booking;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\TestCase;
 
 class BookingManagementTest extends TestCase
 {
@@ -31,7 +31,8 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
-            'status' => 'Confirmed'
+            'status' => 'Confirmed',
+            'payment_method' => 'credit_card',
         ]);
 
         $response = $this->actingAs($this->user)->get(route('admin.bookings.index'));
@@ -56,12 +57,14 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
+            'payment_method' => 'credit_card',
         ]);
         Booking::create([
             'customer_name' => 'Jane Smith',
             'package_id' => $package->id,
             'event_date' => '2026-11-24',
             'venue_address' => '456 Another St',
+            'payment_method' => 'cash',
         ]);
 
         $response = $this->actingAs($this->user)->get(route('admin.bookings.index', ['search' => 'Jane']));
@@ -91,7 +94,8 @@ class BookingManagementTest extends TestCase
             'event_time' => '14:00',
             'venue_address' => '789 Party Ave',
             'total_price' => 1500.00,
-            'status' => 'Confirmed'
+            'status' => 'Confirmed',
+            'payment_method' => 'credit_card',
         ]);
 
         $response->assertRedirect(route('admin.bookings.index'));
@@ -99,9 +103,9 @@ class BookingManagementTest extends TestCase
             'customer_name' => 'New Customer',
             'customer_email' => 'new@example.com',
             'pax' => 100,
-            'status' => 'Confirmed'
+            'status' => 'Confirmed',
         ]);
-        
+
         $booking = Booking::first();
         $this->assertNotNull($booking->booking_reference);
         $this->assertStringStartsWith('BOOKING-', $booking->booking_reference);
@@ -119,7 +123,8 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
-            'status' => 'Pending'
+            'status' => 'Pending',
+            'payment_method' => 'credit_card',
         ]);
 
         $response = $this->actingAs($this->user)->put(route('admin.bookings.update', $booking), [
@@ -128,12 +133,13 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
+            'payment_method' => 'credit_card',
         ]);
 
         $response->assertRedirect(route('admin.bookings.index'));
         $this->assertDatabaseHas('bookings', [
             'id' => $booking->id,
-            'status' => 'Confirmed'
+            'status' => 'Confirmed',
         ]);
     }
 }

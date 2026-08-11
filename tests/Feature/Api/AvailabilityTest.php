@@ -5,9 +5,9 @@ namespace Tests\Feature\Api;
 use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\Package;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class AvailabilityTest extends TestCase
 {
@@ -24,7 +24,7 @@ class AvailabilityTest extends TestCase
         // Target month: August 2024
         // Blocked via BlockedDate
         BlockedDate::create(['date' => '2024-08-05']);
-        
+
         // Blocked via Booking
         Booking::create([
             'customer_name' => 'John Doe',
@@ -37,6 +37,7 @@ class AvailabilityTest extends TestCase
             'venue_address' => '123 Test St',
             'status' => 'Confirmed',
             'total_price' => 500.00,
+            'payment_method' => 'credit_card',
         ]);
 
         $response = $this->getJson('/api/availability?month=8&year=2024');

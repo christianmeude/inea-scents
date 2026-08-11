@@ -30,6 +30,7 @@ class BookingTest extends TestCase
             'customer_name' => 'John Doe',
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
+            'payment_method' => 'credit_card',
         ]);
 
         $booking2 = Booking::create([
@@ -38,6 +39,7 @@ class BookingTest extends TestCase
             'customer_name' => 'Jane Doe',
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
+            'payment_method' => 'cash',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')->getJson('/api/bookings');

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -28,6 +29,7 @@ class Booking extends Model
         'event_date' => 'date',
         'total_price' => 'decimal:2',
         'status' => BookingStatus::class,
+        'payment_method' => PaymentMethod::class,
     ];
 
     protected static function booted(): void

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\Package;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,7 +19,7 @@ class BookingController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('booking_reference', 'like', "%{$search}%");
+                ->orWhere('booking_reference', 'like', "%{$search}%");
         }
 
         $bookings = $query->paginate(10)->withQueryString();
@@ -26,7 +28,7 @@ class BookingController extends Controller
         return Inertia::render('Admin/Bookings/Index', [
             'bookings' => $bookings,
             'packages' => $packages,
-            'filters' => $request->only('search')
+            'filters' => $request->only('search'),
         ]);
     }
 
@@ -42,14 +44,15 @@ class BookingController extends Controller
                 'required',
                 'date',
                 function ($attribute, $value, $fail) {
-                    $dateStr = \Carbon\Carbon::parse($value)->toDateString();
-                    if (\App\Models\BlockedDate::whereDate('date', $dateStr)->exists()) {
+                    $dateStr = Carbon::parse($value)->toDateString();
+                    if (BlockedDate::whereDate('date', $dateStr)->exists()) {
                         $fail('The selected date is marked as unavailable.');
                     }
                 },
             ],
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
+            'payment_method' => ['required', \Illuminate\Validation\Rule::enum(\App\Enums\PaymentMethod::class)],
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
@@ -72,14 +75,15 @@ class BookingController extends Controller
                 'required',
                 'date',
                 function ($attribute, $value, $fail) {
-                    $dateStr = \Carbon\Carbon::parse($value)->toDateString();
-                    if (\App\Models\BlockedDate::whereDate('date', $dateStr)->exists()) {
+                    $dateStr = Carbon::parse($value)->toDateString();
+                    if (BlockedDate::whereDate('date', $dateStr)->exists()) {
                         $fail('The selected date is marked as unavailable.');
                     }
                 },
             ],
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
+            'payment_method' => ['required', \Illuminate\Validation\Rule::enum(\App\Enums\PaymentMethod::class)],
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
@@ -94,6 +98,7 @@ class BookingController extends Controller
     {
         // Capitalized because the validation rules in store/update use Title Case
         $booking->update(['status' => 'Confirmed']);
+
         return back()->with('success', 'Booking approved successfully.');
     }
 }
