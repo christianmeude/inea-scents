@@ -24,6 +24,7 @@ class Booking extends Model
     protected $casts = [
         'event_date' => 'date',
         'total_price' => 'decimal:2',
+        'status' => \App\Enums\BookingStatus::class,
     ];
 
     protected static function booted(): void

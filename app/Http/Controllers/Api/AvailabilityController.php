@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\AvailabilityStatus;
+use App\Enums\BookingStatus;
 use App\Http\Controllers\Controller;
 use App\Models\BlockedDate;
 use App\Models\Booking;
@@ -53,8 +55,13 @@ class AvailabilityController extends Controller
      */
     public function index(Request $request)
     {
-        $month = $request->query('month', Carbon::now()->month);
-        $year = $request->query('year', Carbon::now()->year);
+        $validated = $request->validate([
+            'month' => 'nullable|integer|min:1|max:12',
+            'year' => 'nullable|integer|min:2000',
+        ]);
+
+        $month = $validated['month'] ?? Carbon::now()->month;
+        $year = $validated['year'] ?? Carbon::now()->year;
 
         $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
@@ -67,7 +74,7 @@ class AvailabilityController extends Controller
         // Assume bookings that are not cancelled block the date
         // As per the test, 'Confirmed' is a status.
         $bookedDates = Booking::whereBetween('event_date', [$startDate, $endDate])
-            ->where('status', '!=', 'Cancelled')
+            ->where('status', '!=', BookingStatus::Cancelled)
             ->pluck('event_date')
             ->map(fn($date) => $date->format('Y-m-d'))
             ->toArray();
@@ -79,7 +86,7 @@ class AvailabilityController extends Controller
             $dateString = $date->format('Y-m-d');
             $availability[] = [
                 'date' => $dateString,
-                'status' => in_array($dateString, $allBlocked) ? 'Booked' : 'Available',
+                'status' => in_array($dateString, $allBlocked) ? AvailabilityStatus::Booked->value : AvailabilityStatus::Available->value,
             ];
         }
 
