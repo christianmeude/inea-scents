@@ -27,21 +27,27 @@ class BookingController extends Controller
         response: 200,
         description: 'Successful operation',
         content: new OAT\JsonContent(
-            type: 'array',
-            items: new OAT\Items(
-                properties: [
-                    new OAT\Property(property: 'id', type: 'integer'),
-                    new OAT\Property(property: 'booking_reference', type: 'string'),
-                    new OAT\Property(property: 'user_id', type: 'integer'),
-                    new OAT\Property(property: 'customer_name', type: 'string'),
-                    new OAT\Property(property: 'status', type: 'string'),
-                    new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
-                    new OAT\Property(property: 'payment_method', type: 'string'),
-                    new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
-                    new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
-                ],
-                type: 'object'
-            )
+            properties: [
+                new OAT\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OAT\Items(
+                        properties: [
+                            new OAT\Property(property: 'id', type: 'integer'),
+                            new OAT\Property(property: 'booking_reference', type: 'string'),
+                            new OAT\Property(property: 'user_id', type: 'integer'),
+                            new OAT\Property(property: 'customer_name', type: 'string'),
+                            new OAT\Property(property: 'status', type: 'string'),
+                            new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
+                            new OAT\Property(property: 'payment_method', type: 'string'),
+                            new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
+                            new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
+                        ],
+                        type: 'object'
+                    )
+                )
+            ],
+            type: 'object'
         )
     )]
     public function index(Request $request)
@@ -49,7 +55,7 @@ class BookingController extends Controller
         $user = $request->user();
         $bookings = $user->bookings()->with(['package', 'scents'])->get();
 
-        return response()->json($bookings);
+        return \App\Http\Resources\BookingResource::collection($bookings);
     }
 
     #[OAT\Post(
@@ -82,20 +88,26 @@ class BookingController extends Controller
         description: 'Booking created successfully',
         content: new OAT\JsonContent(
             properties: [
-                new OAT\Property(property: 'id', type: 'integer'),
-                new OAT\Property(property: 'booking_reference', type: 'string'),
-                new OAT\Property(property: 'user_id', type: 'integer'),
-                new OAT\Property(property: 'customer_name', type: 'string'),
-                new OAT\Property(property: 'status', type: 'string'),
-                new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
-                new OAT\Property(property: 'payment_method', type: 'string'),
-                new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
-                new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
+                new OAT\Property(
+                    property: 'data',
+                    properties: [
+                        new OAT\Property(property: 'id', type: 'integer'),
+                        new OAT\Property(property: 'booking_reference', type: 'string'),
+                        new OAT\Property(property: 'user_id', type: 'integer'),
+                        new OAT\Property(property: 'customer_name', type: 'string'),
+                        new OAT\Property(property: 'status', type: 'string'),
+                        new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
+                        new OAT\Property(property: 'payment_method', type: 'string'),
+                        new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
+                        new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
+                    ],
+                    type: 'object'
+                )
             ],
             type: 'object'
         )
     )]
-    public function store(Request $request)
+    public function store(Request $request, \App\Actions\CreateBooking $createBooking)
     {
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
@@ -111,13 +123,8 @@ class BookingController extends Controller
             'scent_ids.*' => 'exists:scents,id',
         ]);
 
-        $user = $request->user();
-        $booking = $user->bookings()->create($validated);
+        $booking = $createBooking->execute($validated, $request->user());
 
-        if (! empty($validated['scent_ids'])) {
-            $booking->scents()->attach($validated['scent_ids']);
-        }
-
-        return response()->json($booking->load(['package', 'scents']), 201);
+        return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
     }
 }

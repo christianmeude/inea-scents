@@ -22,8 +22,14 @@ class PackageController extends Controller
         response: 200,
         description: 'Successful operation',
         content: new OAT\JsonContent(
-            type: 'array',
-            items: new OAT\Items(ref: '#/components/schemas/Package')
+            properties: [
+                new OAT\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OAT\Items(ref: '#/components/schemas/Package')
+                )
+            ],
+            type: 'object'
         )
     )]
     public function index()
@@ -32,7 +38,7 @@ class PackageController extends Controller
             'id', 'name', 'price', 'rating', 'reviews_count', 'images', 'gallery_images', 'description',
         ])->get();
 
-        return response()->json($packages);
+        return \App\Http\Resources\PackageResource::collection($packages);
     }
 
     #[OAT\Get(
@@ -51,13 +57,18 @@ class PackageController extends Controller
     #[OAT\Response(
         response: 200,
         description: 'Successful operation',
-        content: new OAT\JsonContent(ref: '#/components/schemas/Package')
+        content: new OAT\JsonContent(
+            properties: [
+                new OAT\Property(property: 'data', ref: '#/components/schemas/Package')
+            ],
+            type: 'object'
+        )
     )]
     #[OAT\Response(response: 404, description: 'Package not found')]
     public function show(Package $package)
     {
         $package->load('scents');
 
-        return response()->json($package);
+        return new \App\Http\Resources\PackageResource($package);
     }
 }

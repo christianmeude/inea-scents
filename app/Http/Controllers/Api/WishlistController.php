@@ -18,13 +18,19 @@ class WishlistController extends Controller
         response: 200,
         description: 'List of wishlist packages',
         content: new OAT\JsonContent(
-            type: 'array',
-            items: new OAT\Items(ref: '#/components/schemas/Package')
+            properties: [
+                new OAT\Property(
+                    property: 'data',
+                    type: 'array',
+                    items: new OAT\Items(ref: '#/components/schemas/Package')
+                )
+            ],
+            type: 'object'
         )
     )]
     public function index(Request $request)
     {
-        return response()->json($request->user()->wishlistPackages);
+        return \App\Http\Resources\PackageResource::collection($request->user()->wishlistPackages);
     }
 
     #[OAT\Post(

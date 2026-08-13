@@ -32,7 +32,7 @@ class PackageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, \App\Services\ImageUploader $imageUploader)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -45,15 +45,7 @@ class PackageController extends Controller
         ]);
 
         if (isset($validated['images'])) {
-            $imagePaths = [];
-            foreach ($request->images as $image) {
-                if (is_file($image)) {
-                    $imagePaths[] = $image->store('packages', 'public');
-                } elseif (is_string($image)) {
-                    $imagePaths[] = $image;
-                }
-            }
-            $validated['images'] = $imagePaths;
+            $validated['images'] = $imageUploader->uploadMultiple($request->images);
         }
 
         Package::create($validated);
@@ -82,7 +74,7 @@ class PackageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Package $package)
+    public function update(Request $request, Package $package, \App\Services\ImageUploader $imageUploader)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -95,15 +87,7 @@ class PackageController extends Controller
         ]);
 
         if (isset($validated['images'])) {
-            $imagePaths = [];
-            foreach ($request->images as $image) {
-                if (is_file($image)) {
-                    $imagePaths[] = $image->store('packages', 'public');
-                } elseif (is_string($image)) {
-                    $imagePaths[] = $image;
-                }
-            }
-            $validated['images'] = $imagePaths;
+            $validated['images'] = $imageUploader->uploadMultiple($request->images);
         } else {
             $validated['images'] = [];
         }
