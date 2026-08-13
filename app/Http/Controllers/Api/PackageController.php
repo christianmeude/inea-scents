@@ -34,9 +34,7 @@ class PackageController extends Controller
     )]
     public function index()
     {
-        $packages = Package::select([
-            'id', 'name', 'price', 'rating', 'reviews_count', 'images', 'gallery_images', 'description',
-        ])->get();
+        $packages = Package::with('scents')->get();
 
         return \App\Http\Resources\PackageResource::collection($packages);
     }

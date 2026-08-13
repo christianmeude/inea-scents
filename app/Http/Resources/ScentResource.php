@@ -13,10 +13,10 @@ class ScentResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'image_url' => $this->image_url,
-            'is_available' => (bool) $this->is_available,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'image_url' => (string) ($this->image_url ?? ''),
+            'is_available' => (bool) ($this->is_available ?? true),
+            'created_at' => (string) ($this->created_at ?? ''),
+            'updated_at' => (string) ($this->updated_at ?? ''),
         ];
     }
 }

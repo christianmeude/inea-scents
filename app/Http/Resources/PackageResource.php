@@ -21,9 +21,9 @@ class PackageResource extends JsonResource
             'reviews_count' => (int) $this->reviews_count,
             'images' => $this->images ?? [],
             'gallery_images' => $this->gallery_images ?? [],
-            'scents' => ScentResource::collection($this->whenLoaded('scents')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'scents' => ScentResource::collection($this->whenLoaded('scents') ?? []),
+            'created_at' => (string) ($this->created_at ?? ''),
+            'updated_at' => (string) ($this->updated_at ?? ''),
         ];
     }
 }
