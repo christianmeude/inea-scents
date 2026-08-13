@@ -14,7 +14,7 @@ class PackageResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'inclusions' => $this->inclusions ?? [],
-            'pax_options' => $this->pax_options ?? [],
+            'pax_options' => array_map('intval', $this->pax_options ?? []),
             'freebies' => $this->freebies ?? [],
             'price' => (float) $this->price,
             'rating' => (float) $this->rating,
