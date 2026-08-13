@@ -14,6 +14,9 @@ class ScentResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'image_url' => $this->image_url,
+            'is_available' => (bool) $this->is_available,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
