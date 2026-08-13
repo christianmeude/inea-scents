@@ -26,7 +26,7 @@ const nextMonth = () => {
         nextM = 1;
         nextY += 1;
     }
-    router.get(route('admin.calendar.index', { month: nextM, year: nextY }), {}, { preserveScroll: true, preserveState: true });
+    router.get(route('calendar.index', { month: nextM, year: nextY }), {}, { preserveScroll: true, preserveState: true });
 };
 
 const prevMonth = () => {
@@ -36,14 +36,14 @@ const prevMonth = () => {
         prevM = 12;
         prevY -= 1;
     }
-    router.get(route('admin.calendar.index', { month: prevM, year: prevY }), {}, { preserveScroll: true, preserveState: true });
+    router.get(route('calendar.index', { month: prevM, year: prevY }), {}, { preserveScroll: true, preserveState: true });
 };
 
 const toggleBlockDate = (dateString) => {
     // Make sure we don't block days that have bookings
     if (getBookingsForDate(dateString).length > 0) return;
 
-    router.post(route('admin.calendar.toggle-block'), { date: dateString }, {
+    router.post(route('calendar.toggle-block'), { date: dateString }, {
         preserveScroll: true,
         preserveState: true,
     });

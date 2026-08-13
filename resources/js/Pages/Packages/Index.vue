@@ -22,7 +22,7 @@ const confirmPackageDeletion = (pkg) => {
 };
 
 const deletePackage = () => {
-    router.delete(route('admin.packages.destroy', packageToDelete.value.id), {
+    router.delete(route('packages.destroy', packageToDelete.value.id), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
     });
@@ -51,7 +51,7 @@ const closeModal = () => {
                     </p>
                 </div>
                 <Link
-                    :href="route('admin.packages.create')"
+                    :href="route('packages.create')"
                     class="inline-flex items-center gap-2 rounded-full bg-brand-primary px-6 py-2.5 text-sm font-medium text-white shadow-ambient dark:shadow-none hover:bg-brand-primary/90 focus:outline-none transition-all duration-200"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,7 +107,7 @@ const closeModal = () => {
                                         Php. {{ parseFloat(pkg.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
                                     </span>
                                     <Link 
-                                        :href="route('admin.packages.edit', pkg.id)" 
+                                        :href="route('packages.edit', pkg.id)" 
                                         class="bg-brand-primary text-white text-xs font-medium px-6 py-2 rounded-full hover:opacity-90 transition-opacity"
                                     >
                                         Modify

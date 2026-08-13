@@ -40,7 +40,7 @@ const removeField = (field, index) => {
 };
 
 const submit = () => {
-    form.post(route('admin.packages.store'), {
+    form.post(route('packages.store'), {
         forceFormData: true,
     });
 };
@@ -56,7 +56,7 @@ const submit = () => {
                     Packages
                 </h2>
                 <Link
-                    :href="route('admin.packages.index')"
+                    :href="route('packages.index')"
                     class="text-sm font-medium text-brand-muted dark:text-brand-cream/70 hover:text-brand-primary dark:text-brand-cream"
                 >
                     Back to Packages

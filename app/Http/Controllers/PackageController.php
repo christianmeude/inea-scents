@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Package;
@@ -16,7 +16,7 @@ class PackageController extends Controller
     {
         $packages = Package::all();
 
-        return Inertia::render('Admin/Packages/Index', [
+        return Inertia::render('Packages/Index', [
             'packages' => $packages,
         ]);
     }
@@ -26,7 +26,7 @@ class PackageController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Packages/Create');
+        return Inertia::render('Packages/Create');
     }
 
     /**
@@ -58,7 +58,7 @@ class PackageController extends Controller
 
         Package::create($validated);
 
-        return redirect()->route('admin.packages.index')->with('success', 'Package created successfully.');
+        return redirect()->route('packages.index')->with('success', 'Package created successfully.');
     }
 
     /**
@@ -74,7 +74,7 @@ class PackageController extends Controller
      */
     public function edit(Package $package)
     {
-        return Inertia::render('Admin/Packages/Edit', [
+        return Inertia::render('Packages/Edit', [
             'package' => $package,
         ]);
     }
@@ -110,7 +110,7 @@ class PackageController extends Controller
 
         $package->update($validated);
 
-        return redirect()->route('admin.packages.index')->with('success', 'Package updated successfully.');
+        return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
     }
 
     /**
@@ -120,6 +120,6 @@ class PackageController extends Controller
     {
         $package->delete();
 
-        return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully.');
+        return redirect()->route('packages.index')->with('success', 'Package deleted successfully.');
     }
 }

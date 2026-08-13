@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlockedDate;
@@ -25,7 +25,7 @@ class BookingController extends Controller
         $bookings = $query->paginate(10)->withQueryString();
         $packages = Package::all(['id', 'name']);
 
-        return Inertia::render('Admin/Bookings/Index', [
+        return Inertia::render('Bookings/Index', [
             'bookings' => $bookings,
             'packages' => $packages,
             'filters' => $request->only('search'),
@@ -60,7 +60,7 @@ class BookingController extends Controller
 
         Booking::create($validated);
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Booking created successfully.');
+        return redirect()->route('bookings.index')->with('success', 'Booking created successfully.');
     }
 
     public function update(Request $request, Booking $booking)
@@ -91,7 +91,7 @@ class BookingController extends Controller
 
         $booking->update($validated);
 
-        return redirect()->route('admin.bookings.index')->with('success', 'Booking updated successfully.');
+        return redirect()->route('bookings.index')->with('success', 'Booking updated successfully.');
     }
 
     public function approve(Booking $booking)

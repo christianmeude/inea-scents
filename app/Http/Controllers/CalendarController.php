@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlockedDate;
@@ -28,7 +28,7 @@ class CalendarController extends Controller
             ->pluck('date')
             ->map(fn ($date) => $date->toDateString());
 
-        return Inertia::render('Admin/Calendar/Index', [
+        return Inertia::render('Calendar/Index', [
             'bookings' => $bookings,
             'blockedDates' => $blockedDates,
             'currentMonth' => (int) $month,

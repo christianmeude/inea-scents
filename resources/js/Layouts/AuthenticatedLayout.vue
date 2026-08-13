@@ -12,9 +12,9 @@ const showingNavigationDropdown = ref(false);
 
 const navigation = [
     { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
-    { name: 'Bookings', href: route('admin.bookings.index'), active: route().current('admin.bookings.*') },
-    { name: 'Calendar', href: route('admin.calendar.index'), active: route().current('admin.calendar.*') },
-    { name: 'Packages', href: route('admin.packages.index'), active: route().current('admin.packages.*') },
+    { name: 'Bookings', href: route('bookings.index'), active: route().current('bookings.*') },
+    { name: 'Calendar', href: route('calendar.index'), active: route().current('calendar.*') },
+    { name: 'Packages', href: route('packages.index'), active: route().current('packages.*') },
     { name: 'Customers', href: '#', active: false, disabled: true },
     { name: 'Payments', href: '#', active: false, disabled: true },
     { name: 'Settings', href: '#', active: false, disabled: true },
