@@ -31,20 +31,7 @@ class BookingController extends Controller
                 new OAT\Property(
                     property: 'data',
                     type: 'array',
-                    items: new OAT\Items(
-                        properties: [
-                            new OAT\Property(property: 'id', type: 'integer'),
-                            new OAT\Property(property: 'booking_reference', type: 'string'),
-                            new OAT\Property(property: 'user_id', type: 'integer'),
-                            new OAT\Property(property: 'customer_name', type: 'string'),
-                            new OAT\Property(property: 'status', type: 'string'),
-                            new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
-                            new OAT\Property(property: 'payment_method', type: 'string'),
-                            new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
-                            new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
-                        ],
-                        type: 'object'
-                    )
+                    items: new OAT\Items(ref: '#/components/schemas/Booking')
                 )
             ],
             type: 'object'
@@ -90,18 +77,7 @@ class BookingController extends Controller
             properties: [
                 new OAT\Property(
                     property: 'data',
-                    properties: [
-                        new OAT\Property(property: 'id', type: 'integer'),
-                        new OAT\Property(property: 'booking_reference', type: 'string'),
-                        new OAT\Property(property: 'user_id', type: 'integer'),
-                        new OAT\Property(property: 'customer_name', type: 'string'),
-                        new OAT\Property(property: 'status', type: 'string'),
-                        new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
-                        new OAT\Property(property: 'payment_method', type: 'string'),
-                        new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
-                        new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
-                    ],
-                    type: 'object'
+                    ref: '#/components/schemas/Booking'
                 )
             ],
             type: 'object'

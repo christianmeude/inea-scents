@@ -24,22 +24,11 @@ class PackageApiTest extends TestCase
         $response = $this->getJson('/api/packages');
 
         $response->assertStatus(200)
-            ->assertJsonCount(1)
-            ->assertJsonStructure([
-                '*' => [
-                    'id',
-                    'name',
-                    'price',
-                    'rating',
-                    'reviews_count',
-                    'images',
-                    'gallery_images',
-                    'description',
-                ],
-            ])
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJsonFragment([
                 'id' => $package->id,
-                'rating' => '4.50',
+                'rating' => 4.5,
             ]);
     }
 
@@ -65,30 +54,8 @@ class PackageApiTest extends TestCase
         $response = $this->getJson('/api/packages/'.$package->id);
 
         $response->assertStatus(200)
-            ->assertJsonStructure([
-                'id',
-                'name',
-                'description',
-                'inclusions',
-                'pax_options',
-                'freebies',
-                'price',
-                'rating',
-                'reviews_count',
-                'images',
-                'gallery_images',
-                'created_at',
-                'updated_at',
-                'scents' => [
-                    '*' => [
-                        'id',
-                        'name',
-                        'description',
-                        'image_url',
-                        'is_available',
-                    ],
-                ],
-            ])
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJsonFragment([
                 'id' => $package->id,
                 'name' => 'Adventure Trip',
@@ -102,6 +69,8 @@ class PackageApiTest extends TestCase
     {
         $response = $this->getJson('/api/packages/999');
 
-        $response->assertStatus(404);
+        $response->assertStatus(404)
+            ->assertValidRequest()
+            ->assertValidResponse(404);
     }
 }

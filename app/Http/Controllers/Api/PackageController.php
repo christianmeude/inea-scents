@@ -62,7 +62,16 @@ class PackageController extends Controller
             type: 'object'
         )
     )]
-    #[OAT\Response(response: 404, description: 'Package not found')]
+    #[OAT\Response(
+        response: 404, 
+        description: 'Package not found',
+        content: new OAT\JsonContent(
+            properties: [
+                new OAT\Property(property: 'message', type: 'string')
+            ],
+            type: 'object'
+        )
+    )]
     public function show(Package $package)
     {
         $package->load('scents');

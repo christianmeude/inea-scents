@@ -42,7 +42,9 @@ class AvailabilityTest extends TestCase
 
         $response = $this->getJson('/api/availability?month=8&year=2024');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200);
 
         // It should return an array of all days in the month
         // 31 days in August
@@ -68,7 +70,9 @@ class AvailabilityTest extends TestCase
     {
         $response = $this->getJson('/api/availability');
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200);
         $currentMonthDays = Carbon::now()->daysInMonth;
         $response->assertJsonCount($currentMonthDays);
     }

@@ -13,11 +13,11 @@ use OpenApi\Attributes as OAT;
     properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'name', type: 'string', example: 'Lavender'),
-        new OAT\Property(property: 'description', type: 'string', example: 'A calming floral scent.'),
-        new OAT\Property(property: 'image_url', type: 'string', example: 'https://example.com/lavender.jpg'),
+        new OAT\Property(property: 'description', type: 'string', example: 'A calming floral scent.', nullable: true),
+        new OAT\Property(property: 'image_url', type: 'string', example: 'https://example.com/lavender.jpg', nullable: true),
         new OAT\Property(property: 'is_available', type: 'boolean', example: true),
-        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
-        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', nullable: true),
+        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
     ]
 )]
 class Scent extends Model

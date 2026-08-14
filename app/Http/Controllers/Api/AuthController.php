@@ -29,7 +29,7 @@ use OpenApi\Attributes as OAT;
 class AuthController extends Controller
 {
     #[OAT\Post(
-        path: '/register',
+        path: '/api/register',
         summary: 'Register a new user',
         tags: ['Auth']
     )]
@@ -68,7 +68,7 @@ class AuthController extends Controller
     }
 
     #[OAT\Post(
-        path: '/login',
+        path: '/api/login',
         summary: 'Login user and return token',
         tags: ['Auth']
     )]
@@ -87,7 +87,7 @@ class AuthController extends Controller
         description: 'User logged in successfully',
         content: new OAT\JsonContent(ref: '#/components/schemas/AuthResponse')
     )]
-    #[OAT\Response(response: 401, description: 'Invalid credentials')]
+    #[OAT\Response(response: 422, description: 'Invalid credentials or Validation Error')]
     public function login(Request $request)
     {
         $request->validate([

@@ -13,7 +13,7 @@ use OpenApi\Attributes as OAT;
     properties: [
         new OAT\Property(property: 'id', type: 'integer', example: 1),
         new OAT\Property(property: 'name', type: 'string', example: 'Romantic Getaway'),
-        new OAT\Property(property: 'description', type: 'string', example: 'A nice package for couples.'),
+        new OAT\Property(property: 'description', type: 'string', example: 'A nice package for couples.', nullable: true),
         new OAT\Property(property: 'inclusions', type: 'array', items: new OAT\Items(type: 'string')),
         new OAT\Property(property: 'pax_options', type: 'array', items: new OAT\Items(type: 'integer')),
         new OAT\Property(property: 'freebies', type: 'array', items: new OAT\Items(type: 'string')),
@@ -23,8 +23,8 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'images', type: 'array', items: new OAT\Items(type: 'string')),
         new OAT\Property(property: 'gallery_images', type: 'array', items: new OAT\Items(type: 'string')),
         new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
-        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time'),
-        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new OAT\Property(property: 'created_at', type: 'string', format: 'date-time', nullable: true),
+        new OAT\Property(property: 'updated_at', type: 'string', format: 'date-time', nullable: true),
     ]
 )]
 class Package extends Model

@@ -22,6 +22,8 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/register', $payload);
 
         $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJsonStructure([
                 'user' => ['id', 'name', 'email'],
                 'access_token',
@@ -62,6 +64,8 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/login', $payload);
 
         $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJsonStructure([
                 'user' => ['id', 'name', 'email'],
                 'access_token',

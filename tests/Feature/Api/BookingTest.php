@@ -45,8 +45,10 @@ class BookingTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')->getJson('/api/bookings');
 
         $response->assertStatus(200)
-            ->assertJson(fn (AssertableJson $json) => $json->has(1)
-                ->has('0', fn (AssertableJson $json) => $json->where('id', $booking1->id)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
+            ->assertJson(fn (AssertableJson $json) => $json->has('data', 1)
+                ->has('data.0', fn (AssertableJson $json) => $json->where('id', $booking1->id)
                     ->where('user_id', $user->id)
                     ->has('scents')
                     ->has('package')
@@ -58,7 +60,8 @@ class BookingTest extends TestCase
     public function test_unauthenticated_user_cannot_get_bookings(): void
     {
         $response = $this->getJson('/api/bookings');
-        $response->assertStatus(401);
+        $response->assertStatus(401)
+            ->assertValidRequest();
     }
 
     public function test_authenticated_user_can_create_booking_with_scents(): void
@@ -88,10 +91,12 @@ class BookingTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')->postJson('/api/bookings', $bookingData);
 
         $response->assertStatus(201)
-            ->assertJson(fn (AssertableJson $json) => $json->where('user_id', $user->id)
-                ->where('customer_name', 'John Doe')
-                ->where('payment_method', 'credit_card')
-                ->has('scents', 2)
+            ->assertValidRequest()
+            ->assertValidResponse(201)
+            ->assertJson(fn (AssertableJson $json) => $json->where('data.user_id', $user->id)
+                ->where('data.customer_name', 'John Doe')
+                ->where('data.payment_method', 'credit_card')
+                ->has('data.scents', 2)
                 ->etc()
             );
 

@@ -15,12 +15,14 @@ class WishlistTest extends TestCase
     public function test_unauthenticated_user_cannot_access_wishlist(): void
     {
         $response = $this->getJson('/api/wishlist');
-        $response->assertStatus(401);
+        $response->assertStatus(401)
+            ->assertValidRequest();
 
         $response = $this->postJson('/api/wishlist/toggle', [
             'package_id' => 1,
         ]);
-        $response->assertStatus(401);
+        $response->assertStatus(401)
+            ->assertValidRequest();
     }
 
     public function test_user_can_get_wishlist(): void
@@ -41,6 +43,8 @@ class WishlistTest extends TestCase
         $response = $this->getJson('/api/wishlist');
 
         $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJsonCount(1)
             ->assertJsonFragment([
                 'id' => $package->id,
@@ -66,6 +70,8 @@ class WishlistTest extends TestCase
         ]);
 
         $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJson([
                 'attached' => true,
                 'message' => 'Package added to wishlist.',
@@ -82,6 +88,8 @@ class WishlistTest extends TestCase
         ]);
 
         $response->assertStatus(200)
+            ->assertValidRequest()
+            ->assertValidResponse(200)
             ->assertJson([
                 'attached' => false,
                 'message' => 'Package removed from wishlist.',
@@ -103,6 +111,7 @@ class WishlistTest extends TestCase
         ]);
 
         $response->assertStatus(422)
+            ->assertValidRequest()
             ->assertJsonValidationErrors(['package_id']);
     }
 }
