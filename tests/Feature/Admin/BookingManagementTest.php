@@ -28,6 +28,8 @@ class BookingManagementTest extends TestCase
         ]);
         Booking::create([
             'customer_name' => 'John Doe',
+            'customer_email' => 'test@example.com',
+            'pax' => 10,
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
@@ -54,6 +56,8 @@ class BookingManagementTest extends TestCase
         ]);
         Booking::create([
             'customer_name' => 'John Doe',
+            'customer_email' => 'john@example.com',
+            'pax' => 5,
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
@@ -61,6 +65,8 @@ class BookingManagementTest extends TestCase
         ]);
         Booking::create([
             'customer_name' => 'Jane Smith',
+            'customer_email' => 'jane@example.com',
+            'pax' => 2,
             'package_id' => $package->id,
             'event_date' => '2026-11-24',
             'venue_address' => '456 Another St',
@@ -120,6 +126,8 @@ class BookingManagementTest extends TestCase
         ]);
         $booking = Booking::create([
             'customer_name' => 'John Doe',
+            'customer_email' => 'test@example.com',
+            'pax' => 1,
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
@@ -130,6 +138,8 @@ class BookingManagementTest extends TestCase
         $response = $this->actingAs($this->user)->put(route('admin.bookings.update', $booking), [
             'status' => 'Confirmed',
             'customer_name' => 'John Doe',
+            'customer_email' => 'test@example.com',
+            'pax' => 1,
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',

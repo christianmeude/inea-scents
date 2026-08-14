@@ -88,9 +88,9 @@ class BookingController extends Controller
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'customer_name' => 'required|string|max:255',
-            'customer_email' => 'nullable|email|max:255',
+            'customer_email' => 'required|email|max:255',
             'customer_phone' => 'nullable|string|max:255',
-            'pax' => 'nullable|integer|min:1',
+            'pax' => 'required|integer|min:1',
             'event_date' => 'required|date',
             'event_time' => 'nullable|date_format:H:i:s',
             'venue_address' => 'required|string|max:255',

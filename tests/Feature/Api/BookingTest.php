@@ -25,20 +25,26 @@ class BookingTest extends TestCase
         ]);
 
         $booking1 = Booking::create([
+            'booking_reference' => 'BOOKING-11111',
             'user_id' => $user->id,
             'package_id' => $package->id,
             'customer_name' => 'John Doe',
+            'customer_email' => 'john@example.com',
+            'pax' => 2,
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
             'payment_method' => 'credit_card',
         ]);
 
         $booking2 = Booking::create([
+            'booking_reference' => 'BOOKING-22222',
             'user_id' => $otherUser->id,
             'package_id' => $package->id,
-            'customer_name' => 'Jane Doe',
-            'event_date' => '2026-10-10',
-            'venue_address' => '123 Test',
+            'customer_name' => 'John Doe',
+            'customer_email' => 'john@example.com',
+            'pax' => 2,
+            'event_date' => '2026-11-10',
+            'venue_address' => '456 Test',
             'payment_method' => 'cash',
         ]);
 
@@ -77,14 +83,13 @@ class BookingTest extends TestCase
 
         $bookingData = [
             'package_id' => $package->id,
-            'customer_name' => 'John Doe',
-            'customer_email' => 'john@example.com',
-            'customer_phone' => '1234567890',
-            'pax' => 50,
-            'event_date' => '2026-12-01',
-            'event_time' => '18:00:00',
-            'venue_address' => '123 Main St',
-            'payment_method' => 'credit_card',
+            'customer_name' => 'Jane Doe',
+            'customer_email' => 'jane@example.com',
+            'pax' => 4,
+            'event_date' => '2026-12-15',
+            'event_time' => '10:00:00',
+            'venue_address' => '789 Event Place',
+            'payment_method' => 'cash',
             'scent_ids' => [$scent1->id, $scent2->id],
         ];
 
@@ -94,16 +99,16 @@ class BookingTest extends TestCase
             ->assertValidRequest()
             ->assertValidResponse(201)
             ->assertJson(fn (AssertableJson $json) => $json->where('data.user_id', $user->id)
-                ->where('data.customer_name', 'John Doe')
-                ->where('data.payment_method', 'credit_card')
+                ->where('data.customer_name', 'Jane Doe')
+                ->where('data.payment_method', 'cash')
                 ->has('data.scents', 2)
                 ->etc()
             );
 
         $this->assertDatabaseHas('bookings', [
             'user_id' => $user->id,
-            'customer_name' => 'John Doe',
-            'payment_method' => 'credit_card',
+            'customer_name' => 'Jane Doe',
+            'payment_method' => 'cash',
         ]);
 
         $booking = Booking::first();

@@ -513,22 +513,21 @@
                         "type": "string"
                     },
                     "user_id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "customer_name": {
                         "type": "string"
                     },
                     "customer_email": {
-                        "type": "string",
-                        "nullable": true
+                        "type": "string"
                     },
                     "customer_phone": {
                         "type": "string",
                         "nullable": true
                     },
                     "pax": {
-                        "type": "integer",
-                        "nullable": true
+                        "type": "integer"
                     },
                     "event_date": {
                         "type": "string",
