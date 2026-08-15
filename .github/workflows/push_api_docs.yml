@@ -31,7 +31,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MOBILE_REPO_PAT }}
         run: |
           # 1. Clone the mobile repository
-          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/christianmeude/inea-scents-client.git
+          git clone https://${GITHUB_TOKEN}@github.com/christianmeude/inea-scents-client.git
           cd inea-scents-client
           
           # 2. Create a unique branch for this update
