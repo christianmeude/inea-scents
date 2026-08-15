@@ -16,7 +16,7 @@ use OpenApi\Attributes as OAT;
 )]
 class BookingController extends Controller
 {
-    // Trigger CI 4
+    // Trigger CI 5
     #[OAT\Get(
         path: '/api/bookings',
         summary: "Get user's bookings",
