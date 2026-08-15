@@ -55,7 +55,7 @@ class BookingController extends Controller
     #[OAT\RequestBody(
         required: true,
         content: new OAT\JsonContent(
-            required: ['package_id', 'customer_name', 'event_date', 'venue_address', 'payment_method'],
+            required: ['package_id', 'customer_name', 'customer_email', 'pax', 'event_date', 'venue_address', 'payment_method'],
             properties: [
                 new OAT\Property(property: 'package_id', type: 'integer'),
                 new OAT\Property(property: 'customer_name', type: 'string'),
@@ -65,7 +65,7 @@ class BookingController extends Controller
                 new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
                 new OAT\Property(property: 'event_time', type: 'string', format: 'time'),
                 new OAT\Property(property: 'venue_address', type: 'string'),
-                new OAT\Property(property: 'payment_method', type: 'string'),
+                new OAT\Property(property: 'payment_method', type: 'string', enum: ['credit_card', 'cash', 'bank_transfer']),
                 new OAT\Property(property: 'scent_ids', type: 'array', items: new OAT\Items(type: 'integer')),
             ]
         )

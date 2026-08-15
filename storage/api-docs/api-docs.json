@@ -224,6 +224,8 @@
                                 "required": [
                                     "package_id",
                                     "customer_name",
+                                    "customer_email",
+                                    "pax",
                                     "event_date",
                                     "venue_address",
                                     "payment_method"
@@ -256,7 +258,12 @@
                                         "type": "string"
                                     },
                                     "payment_method": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "enum": [
+                                            "credit_card",
+                                            "cash",
+                                            "bank_transfer"
+                                        ]
                                     },
                                     "scent_ids": {
                                         "type": "array",
