@@ -25,3 +25,11 @@ _Avoid_: Backend, website
 **Landing Page**:
 The public-facing website for SEO, marketing, and general information about the perfume bar service. Distinct from the Admin Dashboard.
 _Avoid_: Homepage, main site
+
+**Mobile App**:
+The Flutter-based application used by the Customer to book the perfume bar service. Connects to the Backend API.
+_Avoid_: Client, frontend
+
+**Backend API**:
+The Laravel-based API serving the Mobile App, utilizing OpenAPI specification for strictly-typed contract synchronization.
+_Avoid_: Server, backend
