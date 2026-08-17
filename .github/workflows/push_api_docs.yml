@@ -43,8 +43,8 @@ jobs:
           cp ../storage/api-docs/api-docs.json ./api-docs.json
           
           # 4. Commit and push
-          git config user.name "Backend Sync Bot"
-          git config user.email "bot@backend.local"
+          git config user.name "Christian Meude"
+          git config user.email "christianmeude17@gmail.com"
           git add api-docs.json
           git commit -m "chore: update OpenAPI schema from backend"
           git push origin $BRANCH_NAME
