@@ -1,6 +1,7 @@
 name: Push API Schema to Mobile
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
