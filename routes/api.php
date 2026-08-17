@@ -12,7 +12,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/availability', [AvailabilityController::class, 'index']);
-Route::get('/ping', [AvailabilityController::class, 'ping']);
 
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);

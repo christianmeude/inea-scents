@@ -67,26 +67,4 @@ class AvailabilityController extends Controller
 
         return response()->json($availability);
     }
-
-    #[OAT\Get(
-        path: '/api/ping',
-        operationId: 'pingApi',
-        summary: 'Ping the API',
-        description: 'Returns a simple pong response for health checking.',
-        tags: ['Availability']
-    )]
-    #[OAT\Response(
-        response: 200,
-        description: 'Successful ping',
-        content: new OAT\JsonContent(
-            properties: [
-                new OAT\Property(property: 'message', type: 'string', example: 'pong'),
-            ],
-            type: 'object'
-        )
-    )]
-    public function ping()
-    {
-        return response()->json(['message' => 'pong']);
-    }
 }
