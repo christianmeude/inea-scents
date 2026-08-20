@@ -27,3 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
 });
+
+Route::get('/ping', fn() => 'pong');

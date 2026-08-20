@@ -20,7 +20,7 @@ class BookingController extends Controller
     #[OAT\Get(
         path: '/api/bookings',
         summary: "Get user's bookings",
-        description: 'Returns a list of all bookings for the authenticated user',
+        description: 'Returns a list of all bookings for the authenticated user.',
         security: [['sanctum' => []]],
         tags: ['Bookings']
     )]
