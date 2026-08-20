@@ -28,4 +28,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bookings', [BookingController::class, 'store']);
 });
 
+// Ping endpoint for health checks
 Route::get('/ping', fn() => 'pong');
