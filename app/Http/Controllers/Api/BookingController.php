@@ -24,12 +24,6 @@ class BookingController extends Controller
         security: [['sanctum' => []]],
         tags: ['Bookings']
     )]
-    #[OAT\QueryParameter(
-        name: 'status',
-        description: 'Filter bookings by status',
-        required: false,
-        schema: new OAT\Schema(type: 'string')
-    )]
     #[OAT\Response(
         response: 200,
         description: 'Successful operation',
