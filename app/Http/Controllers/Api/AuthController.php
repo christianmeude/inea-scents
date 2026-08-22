@@ -10,19 +10,20 @@ use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Schema(
+    schema: 'User',
+    type: 'object',
+    properties: [
+        new OAT\Property(property: 'id', type: 'integer', example: 1),
+        new OAT\Property(property: 'name', type: 'string', example: 'John Doe'),
+        new OAT\Property(property: 'email', type: 'string', example: 'john@example.com'),
+        new OAT\Property(property: 'is_admin', type: 'boolean', example: false),
+    ]
+)]
+#[OAT\Schema(
     schema: 'AuthResponse',
     type: 'object',
     properties: [
-        new OAT\Property(
-            property: 'user',
-            properties: [
-                new OAT\Property(property: 'id', type: 'integer', example: 1),
-                new OAT\Property(property: 'name', type: 'string', example: 'John Doe'),
-                new OAT\Property(property: 'email', type: 'string', example: 'john@example.com'),
-                new OAT\Property(property: 'is_admin', type: 'boolean', example: false),
-            ],
-            type: 'object'
-        ),
+        new OAT\Property(property: 'user', ref: '#/components/schemas/User'),
         new OAT\Property(property: 'access_token', type: 'string', example: '1|abcdef...'),
         new OAT\Property(property: 'token_type', type: 'string', example: 'Bearer'),
     ]
@@ -116,14 +117,7 @@ class AuthController extends Controller
     #[OAT\Response(
         response: 200,
         description: 'User details',
-        content: new OAT\JsonContent(
-            properties: [
-                new OAT\Property(property: 'id', type: 'integer'),
-                new OAT\Property(property: 'name', type: 'string'),
-                new OAT\Property(property: 'email', type: 'string'),
-                new OAT\Property(property: 'is_admin', type: 'boolean'),
-            ]
-        )
+        content: new OAT\JsonContent(ref: '#/components/schemas/User')
     )]
     #[OAT\Response(response: 401, description: 'Unauthenticated')]
     public function user(Request $request)
