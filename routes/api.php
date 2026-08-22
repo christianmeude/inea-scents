@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    Route::post('/admin/magic-url', [\App\Http\Controllers\Api\AdminHandoffController::class, 'generateMagicLink']);
+
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 

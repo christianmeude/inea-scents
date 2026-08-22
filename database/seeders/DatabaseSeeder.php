@@ -15,11 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create a Test Admin User
-        $user = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-        ]);
+        // 1. Create a Super Admin User
+        $user = User::firstOrCreate(
+            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
+            [
+                'name' => env('ADMIN_NAME', 'Super Admin'),
+                'password' => bcrypt(env('ADMIN_PASSWORD', 'password')),
+                'is_admin' => true,
+            ]
+        );
 
         // 2. Create Scents
         $scentsData = [

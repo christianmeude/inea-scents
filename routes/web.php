@@ -3,16 +3,20 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
-
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\MagicLoginController;
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+// The magic login route must be outside the 'auth' middleware group but still inside web.
+Route::get('/admin/magic-login', [MagicLoginController::class, 'login'])
+    ->middleware('signed')
+    ->name('admin.magic.login');
 
-Route::middleware('auth')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['verified'])->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -26,3 +30,12 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Fallback route for Flutter Web App (Catch-all)
+Route::fallback(function () {
+    $path = public_path('index.html');
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+    abort(404, 'Flutter Web build not found in public directory.');
+});
