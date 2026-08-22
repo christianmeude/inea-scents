@@ -17,9 +17,7 @@ Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    Route::get('/user', [AuthController::class, 'user']);
 
     Route::post('/admin/magic-url', [\App\Http\Controllers\Api\AdminHandoffController::class, 'generateMagicLink']);
 
