@@ -23,11 +23,14 @@ return new class extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->json('inclusions')->nullable(false)->default('[]')->change();
             $table->json('pax_options')->nullable(false)->default('[]')->change();
-            $table->json('freebies')->nullable(false)->default('[]')->change();
             $table->json('images')->nullable(false)->default('[]')->change();
             $table->json('gallery_images')->nullable(false)->default('[]')->change();
             $table->decimal('rating', 3, 2)->nullable(false)->default(0.00)->change();
         });
+
+        DB::statement('ALTER TABLE packages ALTER COLUMN freebies TYPE json USING freebies::json');
+        DB::statement('ALTER TABLE packages ALTER COLUMN freebies SET NOT NULL');
+        DB::statement("ALTER TABLE packages ALTER COLUMN freebies SET DEFAULT '[]'");
 
         Schema::table('bookings', function (Blueprint $table) {
             $table->string('customer_email')->nullable(false)->change();
@@ -41,11 +44,14 @@ return new class extends Migration
         Schema::table('packages', function (Blueprint $table) {
             $table->json('inclusions')->nullable()->change();
             $table->json('pax_options')->nullable()->change();
-            $table->text('freebies')->nullable()->change();
             $table->json('images')->nullable()->change();
             $table->json('gallery_images')->nullable()->change();
             $table->decimal('rating', 3, 2)->nullable()->change();
         });
+
+        DB::statement('ALTER TABLE packages ALTER COLUMN freebies DROP DEFAULT');
+        DB::statement('ALTER TABLE packages ALTER COLUMN freebies DROP NOT NULL');
+        DB::statement('ALTER TABLE packages ALTER COLUMN freebies TYPE text USING freebies::text');
 
         Schema::table('bookings', function (Blueprint $table) {
             $table->string('customer_email')->nullable()->change();
