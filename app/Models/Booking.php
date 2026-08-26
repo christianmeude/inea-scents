@@ -23,6 +23,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'venue_address', type: 'string'),
         new OAT\Property(property: 'payment_method', type: 'string'),
         new OAT\Property(property: 'status', type: 'string'),
+        new OAT\Property(property: 'checkout_url', type: 'string', nullable: true),
         new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
         new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
     ]
@@ -45,6 +46,7 @@ class Booking extends Model
         'total_price',
         'notes',
         'payment_method',
+        'checkout_url',
     ];
 
     protected $casts = [

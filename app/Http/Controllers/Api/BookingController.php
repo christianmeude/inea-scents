@@ -102,6 +102,24 @@ class BookingController extends Controller
 
         $booking = $createBooking->execute($validated, $request->user());
 
+        if ($booking->payment_method === PaymentMethod::CREDIT_CARD) {
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth(config('services.paymongo.secret_key'), '')
+                ->post('https://api.paymongo.com/v1/links', [
+                    'data' => [
+                        'attributes' => [
+                            'amount' => (int) ($booking->total_price * 100),
+                            'description' => 'Inea Scents Booking - ' . $booking->booking_reference,
+                            'remarks' => $booking->booking_reference,
+                        ]
+                    ]
+                ]);
+
+            if ($response->successful()) {
+                $checkoutUrl = $response->json('data.attributes.checkout_url');
+                $booking->update(['checkout_url' => $checkoutUrl]);
+            }
+        }
+
         return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
     }
 }
