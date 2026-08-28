@@ -31,11 +31,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Fallback route for Flutter Web App (Catch-all)
-Route::fallback(function () {
-    $path = public_path('index.html');
-    if (file_exists($path)) {
-        return response()->file($path);
-    }
-    abort(404, 'Flutter Web build not found in public directory.');
+// Redirect the base URL to the Vercel Frontend
+Route::get('/', function () {
+    return redirect(env('FRONTEND_URL', 'https://inea-scents-client.vercel.app'));
 });
