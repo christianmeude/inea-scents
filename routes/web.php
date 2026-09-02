@@ -14,7 +14,7 @@ Route::get('/admin/magic-login', [MagicLoginController::class, 'login'])
     ->middleware('signed')
     ->name('admin.magic.login');
 
-Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['verified'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,7 +31,31 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Redirect the base URL to the Vercel Frontend
+// Root: health hint locally; redirect to FRONTEND_URL when configured.
+// 12-Factor: FRONTEND_URL via config (not direct env() under cache).
 Route::get('/', function () {
-    return redirect(env('FRONTEND_URL', 'https://inea-scents-client.vercel.app'));
+    $frontend = config('app.frontend_url');
+
+    if (app()->environment('local') && empty($frontend)) {
+        return response()->json([
+            'app' => config('app.name'),
+            'env' => app()->environment(),
+            'message' => 'Backend is running. Set FRONTEND_URL to enable redirect, or use /api/ping for health.',
+            'health' => url('/api/ping'),
+            'admin' => url('/admin/dashboard'),
+        ]);
+    }
+
+    if (empty($frontend)) {
+        abort(404, 'FRONTEND_URL not configured for this environment.');
+    }
+
+    $target = trim(explode(',', $frontend)[0]);
+    if ($target === '') {
+        abort(404, 'FRONTEND_URL is empty.');
+    }
+
+    return redirect($target);
 });
+
+Route::get('/health', fn () => response()->json(['status' => 'ok']));

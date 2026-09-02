@@ -51,7 +51,7 @@ class BookingController extends Controller
 
         $createBooking->execute($validated);
 
-        return redirect()->route('bookings.index')->with('success', 'Booking created successfully.');
+        return redirect()->route('admin.bookings.index')->with('success', 'Booking created successfully.');
     }
 
     public function update(Request $request, Booking $booking, \App\Actions\UpdateBooking $updateBooking)
@@ -73,7 +73,7 @@ class BookingController extends Controller
 
         $updateBooking->execute($booking, $validated);
 
-        return redirect()->route('bookings.index')->with('success', 'Booking updated successfully.');
+        return redirect()->route('admin.bookings.index')->with('success', 'Booking updated successfully.');
     }
 
     public function approve(Booking $booking)

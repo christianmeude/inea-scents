@@ -33,3 +33,7 @@ _Avoid_: Client, frontend
 **Backend API**:
 The Laravel-based API serving the Mobile App, utilizing OpenAPI specification for strictly-typed contract synchronization.
 _Avoid_: Server, backend
+
+**Environment**:
+A deployment target with isolated config and backing services: `local` (developer machine + Supabase CLI + Studio 54323 + DB 54322), `staging` (Render `inea-scents-staging` + Supabase `inea-scents-staging` + Vercel Preview), `production` (Render `inea-scents` + Supabase `inea-scents-db` + Vercel Production). No state, keys, or cookies cross envs. 12-Factor III. Shadow DB 54320 for diff.
+_Avoid_: env toggle in code (dart enum/dart-define is build-time, not runtime)

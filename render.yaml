@@ -1,0 +1,71 @@
+# 12-Factor: one service per env, config in environment. No code fallback to another env's URL/DB.
+# Dashboard holds real values; this file only declares shape. Secrets never committed.
+services:
+  - type: web
+    name: inea-scents-staging
+    env: php
+    region: singapore
+    plan: starter
+    branch: main
+    buildCommand: composer install --no-dev --optimize-autoloader --no-interaction && npm ci && npm run build && php artisan migrate --force
+    startCommand: vendor/bin/heroku-php-apache2 public/
+    envVars:
+      - key: APP_ENV
+        value: staging
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://inea-scents-staging.onrender.com
+      - key: FRONTEND_URL
+        # 12-Factor: isolated per env — Preview Vercel URL for staging
+        value: https://inea-scents-client-staging.vercel.app
+      - key: CORS_SUPPORTS_CREDENTIALS
+        value: false
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: inea-scents-client-staging.vercel.app
+      - key: SESSION_DOMAIN
+        value: "" # host-only (no Domain attribute) — .vercel.app is public suffix blocked
+      - key: SESSION_SECURE_COOKIE
+        value: true
+      - key: PAYMONGO_WEBHOOK_SECRET
+        sync: false
+      - key: CRON_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false # Supabase project `inea-scents-staging` (christianmeude org)
+    previews:
+      enabled: true
+      previewsExpireAfterDays: 7
+
+  - type: web
+    name: inea-scents
+    env: php
+    region: singapore
+    plan: starter
+    branch: main
+    buildCommand: composer install --no-dev --optimize-autoloader --no-interaction && npm ci && npm run build && php artisan migrate --force
+    startCommand: vendor/bin/heroku-php-apache2 public/
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://inea-scents.onrender.com
+      - key: FRONTEND_URL
+        value: https://inea-scents-client.vercel.app
+      - key: CORS_SUPPORTS_CREDENTIALS
+        value: false
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: inea-scents-client.vercel.app
+      - key: SESSION_DOMAIN
+        value: "" # host-only
+      - key: SESSION_SECURE_COOKIE
+        value: true
+      - key: PAYMONGO_WEBHOOK_SECRET
+        sync: false
+      - key: CRON_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false # Supabase project `inea-scents-db` (christianmeude org)
+databases: []

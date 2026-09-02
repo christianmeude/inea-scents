@@ -16,7 +16,7 @@ class BookingManagementTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['is_admin' => true]);
     }
 
     public function test_admin_can_view_bookings_index()
@@ -41,7 +41,7 @@ class BookingManagementTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page
-            ->component('Admin/Bookings/Index')
+            ->component('Bookings/Index')
             ->has('bookings.data', 1)
             ->has('packages')
         );
@@ -77,7 +77,7 @@ class BookingManagementTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page
-            ->component('Admin/Bookings/Index')
+            ->component('Bookings/Index')
             ->has('bookings.data', 1)
             ->where('bookings.data.0.customer_name', 'Jane Smith')
         );
