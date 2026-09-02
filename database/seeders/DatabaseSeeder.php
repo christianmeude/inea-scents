@@ -89,7 +89,6 @@ class DatabaseSeeder extends Seeder
         // 5. Create some Bookings
         $booking1 = \App\Models\Booking::create([
             'booking_reference' => 'BOOKING-TEST01',
-            'user_id' => $user->id,
             'package_id' => $package1->id,
             'customer_name' => 'Alice Wonderland',
             'customer_email' => 'alice@example.com',

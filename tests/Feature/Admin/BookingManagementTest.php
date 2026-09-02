@@ -101,7 +101,7 @@ class BookingManagementTest extends TestCase
             'venue_address' => '789 Party Ave',
             'total_price' => 1500.00,
             'status' => 'Confirmed',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'cash',
         ]);
 
         $response->assertRedirect(route('admin.bookings.index'));
@@ -115,6 +115,84 @@ class BookingManagementTest extends TestCase
         $booking = Booking::first();
         $this->assertNotNull($booking->booking_reference);
         $this->assertStringStartsWith('BOOKING-', $booking->booking_reference);
+    }
+
+    public function test_admin_creating_booking_links_existing_customer_by_email()
+    {
+        $package = Package::create([
+            'name' => 'Signature',
+            'description' => 'Test',
+            'price' => 1000,
+        ]);
+        $customer = User::factory()->create([
+            'email' => 'customer@example.com',
+        ]);
+
+        $this->actingAs($this->user)->post(route('admin.bookings.store'), [
+            'customer_name' => 'Returning Customer',
+            'customer_email' => 'customer@example.com',
+            'package_id' => $package->id,
+            'pax' => 2,
+            'event_date' => '2026-12-02',
+            'venue_address' => '789 Party Ave',
+            'status' => 'Pending',
+            'payment_method' => 'cash',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'customer_email' => 'customer@example.com',
+            'user_id' => $customer->id,
+        ]);
+    }
+
+    public function test_admin_creating_booking_for_unknown_email_leaves_user_unlinked()
+    {
+        $package = Package::create([
+            'name' => 'Signature',
+            'description' => 'Test',
+            'price' => 1000,
+        ]);
+
+        $this->actingAs($this->user)->post(route('admin.bookings.store'), [
+            'customer_name' => 'Walk-in Guest',
+            'customer_email' => 'walkin@example.com',
+            'package_id' => $package->id,
+            'pax' => 1,
+            'event_date' => '2026-12-03',
+            'venue_address' => '789 Party Ave',
+            'status' => 'Pending',
+            'payment_method' => 'bank_transfer',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'customer_email' => 'walkin@example.com',
+            'user_id' => null,
+        ]);
+    }
+
+    public function test_admin_cannot_create_booking_with_online_payment()
+    {
+        $package = Package::create([
+            'name' => 'Signature',
+            'description' => 'Test',
+            'price' => 1000,
+        ]);
+
+        $response = $this->actingAs($this->user)->post(route('admin.bookings.store'), [
+            'customer_name' => 'PayMongo Customer',
+            'customer_email' => 'online@example.com',
+            'package_id' => $package->id,
+            'pax' => 1,
+            'event_date' => '2026-12-04',
+            'venue_address' => '789 Party Ave',
+            'status' => 'Pending',
+            'payment_method' => 'credit_card',
+        ]);
+
+        $response->assertSessionHasErrors('payment_method');
+        $this->assertDatabaseMissing('bookings', [
+            'customer_email' => 'online@example.com',
+        ]);
     }
 
     public function test_admin_can_update_a_booking_status()
@@ -143,7 +221,7 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'cash',
         ]);
 
         $response->assertRedirect(route('admin.bookings.index'));

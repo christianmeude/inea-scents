@@ -7,12 +7,6 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\MagicLoginController;
-
-// The magic login route must be outside the 'auth' middleware group but still inside web.
-Route::get('/admin/magic-login', [MagicLoginController::class, 'login'])
-    ->middleware('signed')
-    ->name('admin.magic.login');
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['verified'])->name('dashboard');

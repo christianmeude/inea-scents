@@ -19,8 +19,6 @@ Route::get('/packages/{package}', [PackageController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
-    Route::post('/admin/magic-url', [\App\Http\Controllers\Api\AdminHandoffController::class, 'generateMagicLink']);
-
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 

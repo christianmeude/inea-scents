@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\Package;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class BookingController extends Controller
@@ -43,11 +45,24 @@ class BookingController extends Controller
             'event_date' => 'required|date',
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
-            'payment_method' => ['required', \Illuminate\Validation\Rule::enum(\App\Enums\PaymentMethod::class)],
+            'payment_method' => ['required', Rule::in([
+                \App\Enums\PaymentMethod::CASH->value,
+                \App\Enums\PaymentMethod::BANK_TRANSFER->value,
+            ])],
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
+
+        if (! empty($validated['customer_email'])) {
+            $customer = User::where('email', $validated['customer_email'])
+                ->where('is_admin', false)
+                ->first();
+
+            if ($customer) {
+                $validated['user_id'] = $customer->id;
+            }
+        }
 
         $createBooking->execute($validated);
 
@@ -65,7 +80,10 @@ class BookingController extends Controller
             'event_date' => 'required|date',
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',
-            'payment_method' => ['required', \Illuminate\Validation\Rule::enum(\App\Enums\PaymentMethod::class)],
+            'payment_method' => ['required', Rule::in([
+                \App\Enums\PaymentMethod::CASH->value,
+                \App\Enums\PaymentMethod::BANK_TRANSFER->value,
+            ])],
             'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',

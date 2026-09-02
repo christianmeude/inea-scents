@@ -90,4 +90,24 @@ class AuthTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
     }
+
+    public function test_admin_cannot_login_through_customer_api()
+    {
+        User::factory()->create([
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password123'),
+            'is_admin' => true,
+        ]);
+
+        $payload = [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/login', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['email'])
+            ->assertJsonMissingPath('access_token');
+    }
 }
