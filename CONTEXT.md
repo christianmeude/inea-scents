@@ -11,15 +11,19 @@ A predefined service offering that a customer selects when making a booking. Def
 _Avoid_: Tier, option
 
 **Customer**:
-A user who books the perfume bar service via the mobile app.
-_Avoid_: User, client
+The contact (name, email, phone) a specific Booking is made under. Prefilled from a User profile but editable per Booking. A Customer is not necessarily an authenticated account.
+_Avoid_: client, guest
+
+**User** (App User):
+An authenticated customer account in the Mobile App (created via `POST /api/register`, `is_admin` always false). Not a Customer until their contact details are attached to a Booking.
+_Avoid_: account, member
 
 **Admin**:
-A business owner or manager who operates the admin web dashboard to manage bookings, packages, and settings.
+The business principal operating the Admin Dashboard. A single seeded account with no self-registration; authenticates only at `/admin/login` and never through the customer API (`POST /api/login` rejects admin credentials). May create Bookings on a Customer's behalf using offline payment methods (`cash`, `bank_transfer`).
 _Avoid_: Super admin, owner
 
 **Admin Dashboard**:
-The Laravel-based web application exclusively used by Admins to manage the business. Hosted on its own domain/subdomain.
+The Laravel-based web application exclusively used by Admins (portal principal) to manage the business. Session auth at `/admin/login`; no admin surfaces in the Mobile App. Hosted on its own domain/subdomain.
 _Avoid_: Backend, website
 
 **Landing Page**:
