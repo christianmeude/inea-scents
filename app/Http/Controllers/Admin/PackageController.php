@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Package;
@@ -50,7 +50,7 @@ class PackageController extends Controller
 
         Package::create($validated);
 
-        return redirect()->route('packages.index')->with('success', 'Package created successfully.');
+        return redirect()->route('admin.packages.index')->with('success', 'Package created successfully.');
     }
 
     /**
@@ -94,7 +94,7 @@ class PackageController extends Controller
 
         $package->update($validated);
 
-        return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
+        return redirect()->route('admin.packages.index')->with('success', 'Package updated successfully.');
     }
 
     /**
@@ -104,6 +104,6 @@ class PackageController extends Controller
     {
         $package->delete();
 
-        return redirect()->route('packages.index')->with('success', 'Package deleted successfully.');
+        return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully.');
     }
 }

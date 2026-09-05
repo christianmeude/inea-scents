@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\CalendarController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PackageController;
+use App\Http\Controllers\Admin\ProfileController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\PackageController;
-use App\Http\Controllers\DashboardController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['verified'])->name('dashboard');
