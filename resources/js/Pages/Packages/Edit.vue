@@ -66,7 +66,7 @@ const removeField = (field, index) => {
 
 const submit = () => {
     // We post to the update route because we have files and PUT requests don't handle files well in PHP
-    form.post(route('packages.update', props.package.id), {
+    form.post(route('admin.packages.update', props.package.id), {
         forceFormData: true,
     });
 };
@@ -82,7 +82,7 @@ const submit = () => {
                     Edit Package: {{ package.name }}
                 </h2>
                 <Link
-                    :href="route('packages.index')"
+                    :href="route('admin.packages.index')"
                     class="text-sm font-medium text-brand-muted dark:text-brand-cream/70 hover:text-brand-primary dark:text-brand-cream"
                 >
                     Back to Packages

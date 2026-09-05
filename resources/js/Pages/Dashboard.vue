@@ -31,7 +31,7 @@ const filterOptions = [
 
 const updateFilter = (value) => {
     filter.value = value;
-    router.get(route('dashboard'), { filter: value }, {
+    router.get(route('admin.dashboard'), { filter: value }, {
         preserveState: true,
         replace: true,
     });
@@ -136,7 +136,7 @@ const updateFilter = (value) => {
                                 <td class="py-4 px-4 text-right">
                                     <div class="flex items-center justify-end gap-3">
                                         <button v-if="booking.status.toLowerCase() === 'pending'" 
-                                                @click.stop="router.patch(route('bookings.approve', booking.id), {}, { preserveScroll: true })" 
+                                                @click.stop="router.patch(route('admin.bookings.approve', booking.id), {}, { preserveScroll: true })" 
                                                 class="text-green-700 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 font-medium opacity-40 group-focus-within:opacity-100 group-hover:opacity-100 transition-opacity bg-green-100 dark:bg-green-500/10 hover:bg-green-200 dark:hover:bg-green-500/20 border border-transparent dark:border-green-500/20 px-3 py-1 rounded-full text-xs">
                                             Approve
                                         </button>

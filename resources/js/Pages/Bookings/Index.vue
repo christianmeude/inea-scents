@@ -15,7 +15,7 @@ const search = ref(props.filters.search || '');
 
 watch(search, (value) => {
     router.get(
-        route('bookings.index'),
+        route('admin.bookings.index'),
         { search: value },
         { preserveState: true, preserveScroll: true, replace: true }
     );

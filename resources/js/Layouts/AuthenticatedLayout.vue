@@ -11,10 +11,10 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
 const showingNavigationDropdown = ref(false);
 
 const navigation = [
-    { name: 'Dashboard', href: route('dashboard'), active: route().current('dashboard') },
-    { name: 'Bookings', href: route('bookings.index'), active: route().current('bookings.*') },
-    { name: 'Calendar', href: route('calendar.index'), active: route().current('calendar.*') },
-    { name: 'Packages', href: route('packages.index'), active: route().current('packages.*') },
+    { name: 'Dashboard', href: route('admin.dashboard'), active: route().current('admin.dashboard') },
+    { name: 'Bookings', href: route('admin.bookings.index'), active: route().current('admin.bookings.*') },
+    { name: 'Calendar', href: route('admin.calendar.index'), active: route().current('admin.calendar.*') },
+    { name: 'Packages', href: route('admin.packages.index'), active: route().current('admin.packages.*') },
     { name: 'Customers', href: '#', active: false, disabled: true },
     { name: 'Payments', href: '#', active: false, disabled: true },
     { name: 'Settings', href: '#', active: false, disabled: true },
@@ -27,7 +27,7 @@ const navigation = [
         <aside class="w-64 flex-shrink-0 bg-white dark:bg-brand-dark-surface border-r border-brand-primary/20 dark:border-brand-dark-border hidden md:flex md:flex-col shadow-sm z-10 relative transition-colors duration-200">
             <!-- Logo area -->
             <div class="flex h-20 items-center px-6 justify-center">
-                <Link :href="route('dashboard')" class="flex items-center gap-2 text-brand-primary dark:text-brand-cream">
+                <Link :href="route('admin.dashboard')" class="flex items-center gap-2 text-brand-primary dark:text-brand-cream">
                     <span class="text-2xl tracking-widest uppercase font-logo-sans font-bold">INEA</span>
                     <span class="text-3xl capitalize font-normal font-logo-script -ml-1.5 mt-1">Scents</span>
                 </Link>
@@ -115,7 +115,7 @@ const navigation = [
                             </template>
 
                             <template #content>
-                                <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                <DropdownLink :href="route('admin.profile.edit')"> Profile </DropdownLink>
                                 <DropdownLink :href="route('logout')" method="post" as="button"> Log Out </DropdownLink>
                             </template>
                         </Dropdown>
@@ -149,7 +149,7 @@ const navigation = [
                         <div class="text-sm font-medium text-brand-muted dark:text-brand-cream/70">{{ $page.props.auth.user.email }}</div>
                     </div>
                     <div class="mt-3 space-y-1">
-                        <ResponsiveNavLink :href="route('profile.edit')">Profile</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('admin.profile.edit')">Profile</ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('logout')" method="post" as="button">Log Out</ResponsiveNavLink>
                     </div>
                 </div>

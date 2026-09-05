@@ -26,7 +26,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('bookings.store'), {
+    form.post(route('admin.bookings.store'), {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
