@@ -1,50 +1,16 @@
 # 12-Factor: one service per env, config in environment. No code fallback to another env's URL/DB.
-# Dashboard holds real values; this file only declares shape. Secrets never committed.
+# Only PROD lives in the cloud; dev is the local machine (Supabase CLI + php artisan serve). See docs/adr/0009.
+# Real values (secrets, DB, PayMongo) live in Render dashboard Env Groups — never committed.
+# Runtime: Docker (./Dockerfile, php:8.4-apache).
 services:
   - type: web
-    name: inea-scents-staging
-    env: php
-    region: singapore
-    plan: starter
-    branch: main
-    buildCommand: composer install --no-dev --optimize-autoloader --no-interaction && npm ci && npm run build && php artisan migrate --force
-    startCommand: vendor/bin/heroku-php-apache2 public/
-    envVars:
-      - key: APP_ENV
-        value: staging
-      - key: APP_DEBUG
-        value: false
-      - key: APP_URL
-        value: https://inea-scents-staging.onrender.com
-      - key: FRONTEND_URL
-        # 12-Factor: isolated per env — Preview Vercel URL for staging
-        value: https://inea-scents-client-staging.vercel.app
-      - key: CORS_SUPPORTS_CREDENTIALS
-        value: false
-      - key: SANCTUM_STATEFUL_DOMAINS
-        value: inea-scents-client-staging.vercel.app
-      - key: SESSION_DOMAIN
-        value: "" # host-only (no Domain attribute) — .vercel.app is public suffix blocked
-      - key: SESSION_SECURE_COOKIE
-        value: true
-      - key: PAYMONGO_WEBHOOK_SECRET
-        sync: false
-      - key: CRON_TOKEN
-        generateValue: true
-      - key: DATABASE_URL
-        sync: false # Supabase project `inea-scents-staging` (christianmeude org)
-    previews:
-      enabled: true
-      previewsExpireAfterDays: 7
-
-  - type: web
     name: inea-scents
-    env: php
-    region: singapore
-    plan: starter
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
     branch: main
-    buildCommand: composer install --no-dev --optimize-autoloader --no-interaction && npm ci && npm run build && php artisan migrate --force
-    startCommand: vendor/bin/heroku-php-apache2 public/
+    autoDeploy: true
     envVars:
       - key: APP_ENV
         value: production
@@ -53,6 +19,7 @@ services:
       - key: APP_URL
         value: https://inea-scents.onrender.com
       - key: FRONTEND_URL
+        # 12-Factor: isolated per env — Production Vercel URL for client
         value: https://inea-scents-client.vercel.app
       - key: CORS_SUPPORTS_CREDENTIALS
         value: false
@@ -62,10 +29,15 @@ services:
         value: "" # host-only
       - key: SESSION_SECURE_COOKIE
         value: true
-      - key: PAYMONGO_WEBHOOK_SECRET
-        sync: false
+      - key: SESSION_DRIVER
+        value: database
+      - key: LOG_CHANNEL
+        value: stack
       - key: CRON_TOKEN
         generateValue: true
+      - key: PAYMONGO_WEBHOOK_SECRET
+        sync: false
       - key: DATABASE_URL
         sync: false # Supabase project `inea-scents-db` (christianmeude org)
+        # Real values (PayMongo sk/pk live) set via Env Group in dashboard.
 databases: []
