@@ -22,6 +22,7 @@ class BookingResource extends JsonResource
             'venue_address' => $this->venue_address,
             'payment_method' => $this->payment_method,
             'status' => $this->status,
+            'checkout_url' => $this->checkout_url,
             'package' => new PackageResource($this->whenLoaded('package')),
             'scents' => ScentResource::collection($this->whenLoaded('scents')),
         ];
