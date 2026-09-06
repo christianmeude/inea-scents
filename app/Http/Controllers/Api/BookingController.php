@@ -41,6 +41,7 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        \App\Models\Booking::expireStalePending();
         $bookings = $user->bookings()->with(['package', 'scents'])->get();
 
         return \App\Http\Resources\BookingResource::collection($bookings);
@@ -103,20 +104,37 @@ class BookingController extends Controller
         $booking = $createBooking->execute($validated, $request->user());
 
         if ($booking->payment_method === PaymentMethod::CREDIT_CARD) {
-            $response = \Illuminate\Support\Facades\Http::withBasicAuth(config('services.paymongo.secret_key'), '')
-                ->post('https://api.paymongo.com/v1/links', [
-                    'data' => [
-                        'attributes' => [
-                            'amount' => (int) ($booking->total_price * 100),
-                            'description' => 'Inea Scents Booking - ' . $booking->booking_reference,
-                            'remarks' => $booking->booking_reference,
+            try {
+                $response = \Illuminate\Support\Facades\Http::withBasicAuth(config('services.paymongo.secret_key'), '')
+                    ->post('https://api.paymongo.com/v1/links', [
+                        'data' => [
+                            'attributes' => [
+                                'amount' => (int) ($booking->total_price * 100),
+                                'description' => 'Inea Scents Booking - ' . $booking->booking_reference,
+                                'remarks' => $booking->booking_reference,
+                            ]
                         ]
-                    ]
-                ]);
+                    ]);
 
-            if ($response->successful()) {
+                if (! $response->successful()) {
+                    throw new \RuntimeException('PayMongo link request failed with status ' . $response->status());
+                }
+
                 $checkoutUrl = $response->json('data.attributes.checkout_url');
                 $booking->update(['checkout_url' => $checkoutUrl]);
+            } catch (\Throwable $e) {
+                // Atomicity: a booking without a payment link is an orphan
+                // that would squat the date. Roll it back so the customer can
+                // retry cleanly. Never leak provider internals to the client.
+                \Illuminate\Support\Facades\Log::warning('PayMongo link creation failed; booking rolled back.', [
+                    'booking_reference' => $booking->booking_reference,
+                ]);
+                $booking->scents()->detach();
+                $booking->delete();
+
+                return response()->json([
+                    'message' => 'Payment service is unreachable. No booking was made. Please try again.',
+                ], 502);
             }
         }
 

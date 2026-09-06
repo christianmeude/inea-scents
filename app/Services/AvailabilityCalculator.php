@@ -19,6 +19,9 @@ class AvailabilityCalculator
      */
     public function getMonthlyAvailability(int $month, int $year): array
     {
+        // Sweep-first: the calendar must never display a squatted date.
+        Booking::expireStalePending();
+
         $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
 

@@ -36,9 +36,7 @@ Route::post('/bookings/expire', function (Request $request) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $expired = \App\Models\Booking::where('status', \App\Enums\BookingStatus::Pending)
-        ->where('created_at', '<', now()->subMinutes(15))
-        ->update(['status' => \App\Enums\BookingStatus::Cancelled]);
+    $expired = \App\Models\Booking::expireStalePending();
 
     return response()->json(['message' => "Expired {$expired} bookings."]);
 });

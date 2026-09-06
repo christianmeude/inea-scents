@@ -31,6 +31,24 @@ use OpenApi\Attributes as OAT;
 
 class Booking extends Model
 {
+    /**
+     * Minutes an unpaid/offline-unconfirmed booking may squat its date.
+     * Single source of truth for the hold window (route + lazy sweeps).
+     */
+    public const PENDING_HOLD_MINUTES = 15;
+
+    /**
+     * Cancel stale Pending bookings. Called sweep-first by every
+     * blocked-date read (availability, booking guard, bookings list) so the
+     * calendar can never display a squatted date — no cron required.
+     */
+    public static function expireStalePending(): int
+    {
+        return static::where('status', BookingStatus::Pending->value)
+            ->where('created_at', '<', now()->subMinutes(self::PENDING_HOLD_MINUTES))
+            ->update(['status' => BookingStatus::Cancelled->value]);
+    }
+
     protected $fillable = [
         'booking_reference',
         'user_id',
