@@ -1,0 +1,104 @@
+# Environment Setup — Operations Runbook (local + production)
+
+Purpose: 12-Factor isolation with only **two** environments — `local` (developer machine) and
+`production` (the sole cloud env). Backing config: `render.yaml` (Render), Vercel project vars,
+Supabase project `inea-scents-db`, local `.env` (gitignored). Runtime on Render is **Docker**
+(`./Dockerfile`, `php:8.4-apache`). See `docs/adr/0009-two-environments.md`.
+
+> Status note: items in **"Applied"** were done in-session via the opencode Render/Vercel MCP
+> servers. Items in **"Manual (dashboard/CLI)"** could not be reached by the installed MCP tool
+> subset (no Vercel env-var tool, no Render env-group tool, no Docker service creation) and must
+> be done by hand.
+
+---
+
+## Environment matrix
+
+| Env | Backend (Render) | URL | Supabase | Client (Vercel) | API_URL |
+|-----|------------------|-----|----------|-----------------|---------|
+| local | — (dev machine) | http://127.0.0.1:8000 | Supabase CLI (DB 54322) | `flutter run` | http://127.0.0.1:8000 |
+| production | `inea-scents` | https://inea-scents.onrender.com | `inea-scents-db` | Production + Preview | https://inea-scents.onrender.com |
+
+No env references another env's URL/DB. `core_providers.dart` requires `API_URL` in release;
+there is no code fallback to another env. Vercel Preview has no dedicated backend and passes the
+prod `API_URL` (accepted limitation, see ADR-0009).
+
+---
+
+## Render
+
+### Applied: production service
+`inea-scents` (`srv-d9t811ijobas73c9h50g`, workspace `tea-d9t7ggajobas73c885mg`, Docker,
+free, oregon) is live. Applied vars: `APP_ENV=production`, `APP_DEBUG=false`,
+`APP_URL=https://inea-scents.onrender.com`, `FRONTEND_URL=https://inea-scents-client.vercel.app`,
+`CORS_SUPPORTS_CREDENTIALS=false`, `SANCTUM_STATEFUL_DOMAINS=inea-scents-client.vercel.app`,
+`SESSION_DOMAIN=""`, `SESSION_SECURE_COOKIE=true`, `SESSION_DRIVER=database`, `LOG_CHANNEL=stack`,
+`APP_LOCALE=en`, `APP_FALLBACK_LOCALE=en`, `BCRYPT_ROUNDS=12`.
+
+### Manual (dashboard): environment group
+Render **Environment Groups** are dashboard-managed; the MCP server has no env-group tool. Keep
+secrets out of `render.yaml` (`sync: false`) and manage in dashboard:
+- **`inea-scents-prod`** env group → attached to `inea-scents`: PayMongo **live** keys
+  (`PAYMONGO_PUBLIC_KEY`, `PAYMONGO_SECRET_KEY`), `PAYMONGO_WEBHOOK_SECRET`, `CRON_TOKEN`,
+  `DATABASE_URL` → Supabase `inea-scents-db`, `APP_KEY`.
+- `APP_KEY` must be unique to prod and never shared with local.
+
+---
+
+## Vercel
+
+### Manual (dashboard): client project env vars + build
+The installed Vercel MCP has **no set-env-var tool**, so do this in the Vercel dashboard or CLI.
+Project `inea-scents` is linked to `christianmeude/inea-scents-client`.
+- Set project env var **`API_URL`** for both Production and Preview →
+  `https://inea-scents.onrender.com` (only cloud backend; see ADR-0009).
+- Set **Build Command** to `bash vercel_build.sh` (the client build requires `API_URL` at build
+  time; see `vercel_build.sh`). Framework "Other". Output dir = Flutter web `build/web`.
+
+### Manual (dashboard): landing project + git link
+`create_git_project` for `christianmeude/inea-scents-landing` failed with `repo_not_found` —
+Vercel's GitHub app cannot see the (private) repo. To fix:
+1. In Vercel Dashboard → your GitHub installation settings, grant the Vercel GitHub app access
+   to `christianmeude/inea-scents-landing` (Settings → Install GitHub App, or Vercel → Add New →
+   Project → Import and authorize the repo).
+2. Create project linked to `christianmeude/inea-scents-landing @ main`. Framework auto-detects
+   Vite/React (landing is React+Vite). Production = main.
+3. Landing needs no `API_URL` (static); if it later posts Inquiries, add the prod backend URL.
+
+---
+
+## Supabase
+
+### Manual (dashboard): cloud production project
+- Production DB: project `inea-scents-db` → copy **Connection string** into the prod env group
+  on Render as `DATABASE_URL` (or DB_HOST/PORT/USER/PASS).
+- Local: Supabase CLI (`supabase start`) — DB 54322, Studio 54323, MCP 54321. Never share cloud
+  creds with local.
+
+### Security note (from Supabase advisor)
+All tables have **RLS disabled** (this is the local SQLite/PG dev DB currently exposed to the
+anon key). Do not auto-apply RLS without policies — that would block all access. If this becomes
+a shared/remote DB, add RLS + policies deliberately. Remediation SQL pattern:
+```
+ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
+```
+
+---
+
+## Local dev
+
+- Backend: `php artisan serve` (or `composer dev`), `php artisan queue:listen`, `npm run dev`.
+- Tests: `php artisan test` runs against the dedicated `postgres_test` DB; `tests/TestCase.php`
+  refuses any other target so dev data in `postgres` is never wiped.
+- PayMongo: local uses **test** keys (`pk_test_*` / `sk_test_*`); webhooks must reach
+  `POST /api/webhooks/paymongo` through a public tunnel (e.g. ngrok) since there is no remote
+  dev backend.
+
+---
+
+## Verification checklist
+1. `curl https://inea-scents.onrender.com/api/availability` returns 200 (prod backend up).
+2. Prod `FRONTEND_URL` = `https://inea-scents-client.vercel.app`.
+3. Vercel Production and Preview builds both use `API_URL=https://inea-scents.onrender.com`.
+4. `php artisan migrate` against prod only after local verification (no remote checkpoint).
+5. No `FRONTEND_URL`/`DATABASE_URL`/PayMongo value appears in more than one env.
