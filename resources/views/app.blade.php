@@ -19,12 +19,30 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         
-        <!-- Dark Mode Setup -->
+        <!-- Dark Mode Setup (landing-standard: key `inea-theme`, OS only on first load) -->
         <script>
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
+            try {
+                var storedTheme = localStorage.getItem('inea-theme');
+                if (storedTheme !== 'dark' && storedTheme !== 'light') {
+                    var legacyTheme = localStorage.getItem('theme');
+                    if (legacyTheme === 'dark' || legacyTheme === 'light') {
+                        storedTheme = legacyTheme;
+                    } else if (legacyTheme === 'system') {
+                        storedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else if (!('inea-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        storedTheme = 'dark';
+                    } else {
+                        storedTheme = 'light';
+                    }
+                    localStorage.setItem('inea-theme', storedTheme);
+                    localStorage.removeItem('theme');
+                }
+                document.documentElement.classList.toggle('dark', storedTheme === 'dark');
+            } catch (e) {
+                // Private mode: fall back to OS preference without persisting.
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.documentElement.classList.add('dark');
+                }
             }
         </script>
         @inertiaHead

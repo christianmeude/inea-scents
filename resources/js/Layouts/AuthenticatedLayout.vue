@@ -61,11 +61,6 @@ const navigation = [
                 </nav>
             </OverlayScrollbarsComponent>
 
-            <!-- Theme Toggle -->
-            <div class="px-4 mb-2">
-                <ThemeToggle variant="full" />
-            </div>
-
             <!-- User / Sign out area -->
             <div class="p-4 mb-4 px-4">
                 <Link :href="route('logout')" method="post" as="button" class="flex w-full items-center justify-center px-5 py-2.5 text-sm font-medium text-brand-primary dark:text-brand-cream border border-gray-200 dark:border-brand-dark-border rounded-full hover:border-brand-primary/50 dark:hover:border-brand-dark-border hover:bg-brand-primary/5 dark:hover:bg-brand-dark-accent transition-all duration-200">
@@ -95,8 +90,9 @@ const navigation = [
                     </span>
                 </div>
 
-                <!-- Right side (User menu on Desktop) -->
-                <div class="hidden md:flex items-center ml-auto">
+                <!-- Right side (Theme + User menu on Desktop) -->
+                <div class="hidden md:flex items-center ml-auto gap-2">
+                    <ThemeToggle />
                     <div class="relative ms-3">
                         <Dropdown align="right" width="48">
                             <template #trigger>
@@ -125,6 +121,9 @@ const navigation = [
 
             <!-- Mobile Navigation Menu -->
             <div :class="{'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown}" class="md:hidden bg-white dark:bg-brand-dark-surface border-b border-brand-primary/20 dark:border-brand-dark-border absolute w-full z-20">
+                <div class="flex justify-end px-4 pt-3">
+                    <ThemeToggle />
+                </div>
                 <div class="space-y-1 pb-3 pt-2">
                     <component 
                         :is="item.disabled ? 'div' : ResponsiveNavLink" 

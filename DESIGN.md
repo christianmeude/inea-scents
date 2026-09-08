@@ -146,3 +146,20 @@ Forms and actions have distinct, deliberate shapes.
 - **Don't** use sharp corners for any element.
 - **Don't** use pill shapes for standard text inputs or textareas; reserve pills for actions (buttons) and metadata (tags).
 - **Don't** use pure black or stark dark greys.
+
+## Dark theme (canonical: landing)
+
+Night base `#151012`, Night Surface `#1c1618` cards, Night Border `#36222c`
+lines, Dark Accent `#2c1c24`; mesh glow deepens toward Burgundy 900/950.
+Tailwind tokens: `brand-dark-base/surface/border/accent`. Cream text on
+night; plum-as-wallpaper is a regression.
+
+## Theme toggle (canonical: landing)
+
+Single circular 2-state Sun/Moon button (`h-10 w-10 rounded-full border`,
+18px stroke 1.8, `aria-label` switch theme). Storage key `inea-theme`,
+`.dark` class, OS preference only on first load (legacy `theme` key,
+including `system`, migrates once via `matchMedia`). Location rule:
+top-right of app chrome — Guest top-right, Authenticated header top-right
+next to the user menu (mobile menu top). No segmented control, no System
+option.
