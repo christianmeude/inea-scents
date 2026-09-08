@@ -88,6 +88,18 @@ ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ## Local dev
 
 - Backend: `php artisan serve` (or `composer dev`), `php artisan queue:listen`, `npm run dev`.
+
+### PHP CA bundle (Windows, machine-only state)
+Local PHP ships without a CA bundle, so TLS to PayMongo/Supabase fails
+(`cURL error 60`). One-time per machine:
+1. Download `cacert.pem` (curl.se CA extract) to `C:\php\cacert.pem`.
+2. In `C:\php\php.ini` set `curl.cainfo = "C:\php\cacert.pem"` and
+   `openssl.cafile = "C:\php\cacert.pem"`.
+3. Restart the serve process so the new `php.ini` loads
+   (`php --ini` must show `Loaded Configuration File: C:\php\php.ini`).
+4. Probe: `curl_init('https://api.paymongo.com')` must report `errno=0`
+   (HTTP 401 is fine — reachable, unauthenticated). Verified 2026-09-08 on
+   PHP 8.5.9: `errno=0 http=401`.
 - Tests: `php artisan test` runs against the dedicated `postgres_test` DB; `tests/TestCase.php`
   refuses any other target so dev data in `postgres` is never wiped.
 - PayMongo: local uses **test** keys (`pk_test_*` / `sk_test_*`); webhooks must reach
