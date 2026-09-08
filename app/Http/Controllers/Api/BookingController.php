@@ -85,7 +85,7 @@ class BookingController extends Controller
             type: 'object'
         )
     )]
-    public function store(Request $request, \App\Actions\CreateBooking $createBooking)
+    public function store(Request $request, \App\Actions\CreateBookingWithCheckout $checkout)
     {
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
@@ -101,41 +101,11 @@ class BookingController extends Controller
             'scent_ids.*' => 'exists:scents,id',
         ]);
 
-        $booking = $createBooking->execute($validated, $request->user());
-
-        if ($booking->payment_method === PaymentMethod::CREDIT_CARD) {
-            try {
-                $response = \Illuminate\Support\Facades\Http::withBasicAuth(config('services.paymongo.secret_key'), '')
-                    ->post('https://api.paymongo.com/v1/links', [
-                        'data' => [
-                            'attributes' => [
-                                'amount' => (int) ($booking->total_price * 100),
-                                'description' => 'Inea Scents Booking - ' . $booking->booking_reference,
-                                'remarks' => $booking->booking_reference,
-                            ]
-                        ]
-                    ]);
-
-                if (! $response->successful()) {
-                    throw new \RuntimeException('PayMongo link request failed with status ' . $response->status());
-                }
-
-                $checkoutUrl = $response->json('data.attributes.checkout_url');
-                $booking->update(['checkout_url' => $checkoutUrl]);
-            } catch (\Throwable $e) {
-                // Atomicity: a booking without a payment link is an orphan
-                // that would squat the date. Roll it back so the customer can
-                // retry cleanly. Never leak provider internals to the client.
-                \Illuminate\Support\Facades\Log::warning('PayMongo link creation failed; booking rolled back.', [
-                    'booking_reference' => $booking->booking_reference,
-                ]);
-                $booking->scents()->detach();
-                $booking->delete();
-
-                return response()->json([
-                    'message' => 'Payment service is unreachable. No booking was made. Please try again.',
-                ], 502);
-            }
+        try {
+            $booking = $checkout->execute($validated, $request->user());
+        } catch (\App\Exceptions\PaymentLinkFailedException $e) {
+            // Never leak provider internals to the client.
+            return response()->json(['message' => $e->getMessage()], 502);
         }
 
         return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));

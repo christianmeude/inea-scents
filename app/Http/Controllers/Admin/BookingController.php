@@ -34,7 +34,7 @@ class BookingController extends Controller
         ]);
     }
 
-    public function store(Request $request, \App\Actions\CreateBooking $createBooking)
+    public function store(Request $request, \App\Actions\CreateBookingWithCheckout $checkout)
     {
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
@@ -64,7 +64,11 @@ class BookingController extends Controller
             }
         }
 
-        $createBooking->execute($validated);
+        try {
+            $checkout->execute($validated);
+        } catch (\App\Exceptions\PaymentLinkFailedException $e) {
+            return back()->withErrors(['payment_method' => $e->getMessage()])->withInput();
+        }
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking created successfully.');
     }
