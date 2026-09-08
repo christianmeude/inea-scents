@@ -19,7 +19,14 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter(array_map('trim', explode(',', (string) env('FRONTEND_URL', 'http://localhost:5173,http://127.0.0.1:5173')))),
+    // Two origins, two env vars, local + production only (ADR-0009, no
+    // staging). FRONTEND_URL serves the mobile client web origins;
+    // LANDING_URL serves the landing page (Inquiry POSTs). Both stay
+    // comma-separated and per-env; mobile behavior unchanged.
+    'allowed_origins' => array_values(array_unique(array_filter(array_map('trim', array_merge(
+        explode(',', (string) env('FRONTEND_URL', 'http://localhost:5173,http://127.0.0.1:5173')),
+        explode(',', (string) env('LANDING_URL', 'http://localhost:5173')),
+    ))))),
 
     'allowed_origins_patterns' => array_filter(array_map('trim', explode(',', (string) env('CORS_ALLOWED_ORIGIN_PATTERNS', '')))),
 
