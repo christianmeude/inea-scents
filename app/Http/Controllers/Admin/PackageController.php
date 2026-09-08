@@ -47,9 +47,9 @@ class PackageController extends Controller
             'images' => 'nullable|array|max:3',
         ]);
 
-        $validated['inclusions'] = self::cleanStringList($validated['inclusions'] ?? null);
-        $validated['pax_options'] = self::cleanPaxOptions($validated['pax_options'] ?? null);
-        $validated['freebies'] = self::cleanStringList($validated['freebies'] ?? null);
+        $validated['inclusions'] = \App\Support\PackageSanitizer::strings($validated['inclusions'] ?? null);
+        $validated['pax_options'] = \App\Support\PackageSanitizer::paxOptions($validated['pax_options'] ?? null);
+        $validated['freebies'] = \App\Support\PackageSanitizer::strings($validated['freebies'] ?? null);
 
         if (isset($validated['images'])) {
             $validated['images'] = $imageUploader->uploadMultiple($request->images);
@@ -96,9 +96,9 @@ class PackageController extends Controller
             'images' => 'nullable|array|max:3',
         ]);
 
-        $validated['inclusions'] = self::cleanStringList($validated['inclusions'] ?? null);
-        $validated['pax_options'] = self::cleanPaxOptions($validated['pax_options'] ?? null);
-        $validated['freebies'] = self::cleanStringList($validated['freebies'] ?? null);
+        $validated['inclusions'] = \App\Support\PackageSanitizer::strings($validated['inclusions'] ?? null);
+        $validated['pax_options'] = \App\Support\PackageSanitizer::paxOptions($validated['pax_options'] ?? null);
+        $validated['freebies'] = \App\Support\PackageSanitizer::strings($validated['freebies'] ?? null);
 
         if (isset($validated['images'])) {
             $validated['images'] = $imageUploader->uploadMultiple($request->images);
@@ -121,45 +121,4 @@ class PackageController extends Controller
         return redirect()->route('admin.packages.index')->with('success', 'Package deleted successfully.');
     }
 
-    /**
-     * Strip null/empty/whitespace string elements (ConvertEmptyStringsToNull
-     * turns blank dynamic rows into null). Always returns a clean list.
-     */
-    private static function cleanStringList(mixed $value): array
-    {
-        if (! is_array($value)) {
-            return [];
-        }
-
-        return array_values(array_filter(array_map(
-            fn ($item) => is_string($item) ? trim($item) : null,
-            $value,
-        ), fn ($item) => is_string($item) && $item !== ''));
-    }
-
-    /**
-     * Coerce numeric strings ("12") to ints, drop null/invalid/<1 entries.
-     */
-    private static function cleanPaxOptions(mixed $value): array
-    {
-        if (! is_array($value)) {
-            return [];
-        }
-
-        $cleaned = [];
-        foreach ($value as $item) {
-            if (is_int($item) && $item >= 1) {
-                $cleaned[] = $item;
-                continue;
-            }
-            if (is_string($item) && trim($item) !== '' && filter_var(trim($item), FILTER_VALIDATE_INT) !== false) {
-                $int = (int) trim($item);
-                if ($int >= 1) {
-                    $cleaned[] = $int;
-                }
-            }
-        }
-
-        return array_values($cleaned);
-    }
 }
