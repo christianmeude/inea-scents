@@ -26,6 +26,7 @@ class DashboardController extends Controller
             ],
             'popularPackages' => $metrics['popularPackages'],
             'upcomingBookings' => $metrics['upcomingBookings'],
+            'webhookAlerts' => $metrics['webhookAlerts'],
         ]);
     }
 }

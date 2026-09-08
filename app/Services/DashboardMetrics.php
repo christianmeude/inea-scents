@@ -89,13 +89,14 @@ class DashboardMetrics
     public function getMetrics(string $filter): array
     {
         $startDate = $this->getStartDate($filter);
-        
+
         return [
             'totalBookings' => $this->getTotalBookings($startDate),
             'totalRevenue' => $this->getTotalRevenue($startDate),
             'confirmedEvents' => $this->getConfirmedEvents($startDate),
             'popularPackages' => $this->getPopularPackages($startDate),
             'upcomingBookings' => $this->getUpcomingBookings(),
+            'webhookAlerts' => app(WebhookAlertSummary::class)->summarize(),
         ];
     }
 }

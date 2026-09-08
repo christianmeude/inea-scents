@@ -9,6 +9,7 @@ const props = defineProps({
     metrics: Object,
     popularPackages: Array,
     upcomingBookings: Array,
+    webhookAlerts: Object,
 });
 
 const filter = ref(props.filters.filter || 'all-time');
@@ -65,6 +66,13 @@ const updateFilter = (value) => {
                             {{ option.label }}
                         </button>
                     </div>
+                </div>
+
+                <!-- Webhook alert: rejected signatures may mean secret rotation or probing -->
+                <div v-if="webhookAlerts && webhookAlerts.rejectedCount > 0"
+                     class="mb-6 rounded-2xl border border-red-300 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 p-4 text-sm text-red-800 dark:text-red-300">
+                    {{ webhookAlerts.rejectedCount }} rejected payment-webhook attempt{{ webhookAlerts.rejectedCount === 1 ? '' : 's' }} in the last 7 days<span v-if="webhookAlerts.latestRejectedAt"> (latest {{ webhookAlerts.latestRejectedAt }})</span>.
+                    Check the PayMongo webhook secret and rotation, then review storage/logs/webhook.log.
                 </div>
 
                 <!-- Metrics Cards -->
