@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\InquiryStatus;
+use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OAT;
+
+#[OAT\Schema(
+    schema: 'Inquiry',
+    title: 'Inquiry',
+    properties: [
+        new OAT\Property(property: 'id', type: 'integer'),
+        new OAT\Property(property: 'name', type: 'string'),
+        new OAT\Property(property: 'email', type: 'string'),
+        new OAT\Property(property: 'phone', type: 'string'),
+        new OAT\Property(property: 'event_date', type: 'string', format: 'date', nullable: true),
+        new OAT\Property(property: 'message', type: 'string'),
+        new OAT\Property(property: 'status', type: 'string'),
+        new OAT\Property(property: 'archived', type: 'boolean'),
+    ]
+)]
+class Inquiry extends Model
+{
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'event_date',
+        'message',
+        'status',
+        'archived',
+    ];
+
+    protected $attributes = [
+        'status' => 'new',
+        'archived' => false,
+    ];
+
+    protected $casts = [
+        'event_date' => 'date',
+        'status' => InquiryStatus::class,
+        'archived' => 'boolean',
+    ];
+}

@@ -16,6 +16,8 @@ Route::get('/availability', [AvailabilityController::class, 'index']);
 Route::get('/packages', [PackageController::class, 'index']);
 Route::get('/packages/{package}', [PackageController::class, 'show']);
 
+Route::post('/inquiries', [\App\Http\Controllers\Api\InquiryController::class, 'store'])->middleware('throttle:10,1');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
