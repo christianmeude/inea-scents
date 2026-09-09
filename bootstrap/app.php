@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
 
+        // Authenticated users hitting guest routes (e.g. /admin/login with a
+        // live session) land on the dashboard, never the `/` frontend bounce.
+        $middleware->redirectUsersTo('/admin/dashboard');
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
