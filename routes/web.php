@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PackageController;
@@ -16,6 +17,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::resource('packages', PackageController::class);
     Route::resource('bookings', BookingController::class);
+    Route::resource('inquiries', InquiryController::class)->only(['index', 'show', 'update']);
     Route::patch('bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
