@@ -81,7 +81,7 @@ const formatDate = (dateString) => {
                             <dd class="mt-1 text-brand-primary dark:text-brand-cream capitalize">{{ inquiry.status }}</dd>
                         </div>
                         <div class="sm:col-span-2">
-                            <dt class="font-bold text-brand-primary dark:text-brand-cream text-xs uppercase">Message</dt>
+                            <dt class="font-bold text-brand-primary dark:text-brand-cream text-xs uppercase">Details</dt>
                             <dd class="mt-1 text-brand-primary dark:text-brand-cream whitespace-pre-wrap">{{ inquiry.message }}</dd>
                         </div>
                     </dl>

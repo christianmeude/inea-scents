@@ -21,13 +21,13 @@ class InquiryController extends Controller
     #[OAT\RequestBody(
         required: true,
         content: new OAT\JsonContent(
-            required: ['name', 'email', 'phone', 'message'],
+            required: ['name', 'email', 'phone'],
             properties: [
                 new OAT\Property(property: 'name', type: 'string'),
                 new OAT\Property(property: 'email', type: 'string'),
                 new OAT\Property(property: 'phone', type: 'string'),
                 new OAT\Property(property: 'event_date', type: 'string', format: 'date', nullable: true),
-                new OAT\Property(property: 'message', type: 'string'),
+                new OAT\Property(property: 'message', type: 'string', nullable: true),
             ]
         )
     )]
@@ -56,8 +56,11 @@ class InquiryController extends Controller
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:30',
             'event_date' => ['nullable', 'date', 'after_or_equal:'.Carbon::now('Asia/Manila')->toDateString()],
-            'message' => 'required|string|max:2000',
+            'message' => 'nullable|string|max:2000',
         ]);
+
+        // Blank Details means absent, like a blank event date.
+        $validated['message'] = $request->filled('message') ? $validated['message'] : null;
 
         $inquiry = Inquiry::create($validated);
 

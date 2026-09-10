@@ -49,6 +49,21 @@ class InquiryTest extends TestCase
         $this->assertDatabaseHas('inquiries', ['email' => 'maria@example.com']);
     }
 
+    public function test_submit_without_message_persists_as_null(): void
+    {
+        $data = $this->payload();
+        unset($data['message']);
+
+        $this->postJson('/api/inquiries', $data)->assertCreated();
+        $this->assertDatabaseHas('inquiries', ['email' => 'maria@example.com', 'message' => null]);
+    }
+
+    public function test_submit_with_blank_message_persists_as_null(): void
+    {
+        $this->postJson('/api/inquiries', $this->payload(['message' => '']))->assertCreated();
+        $this->assertDatabaseHas('inquiries', ['email' => 'maria@example.com', 'message' => null]);
+    }
+
     public function test_email_is_not_unique(): void
     {
         $this->postJson('/api/inquiries', $this->payload())->assertCreated();

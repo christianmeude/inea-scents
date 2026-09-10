@@ -346,8 +346,7 @@
                                 "required": [
                                     "name",
                                     "email",
-                                    "phone",
-                                    "message"
+                                    "phone"
                                 ],
                                 "properties": {
                                     "name": {
@@ -365,7 +364,8 @@
                                         "nullable": true
                                     },
                                     "message": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -692,7 +692,8 @@
                         "nullable": true
                     },
                     "message": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "status": {
                         "type": "string"

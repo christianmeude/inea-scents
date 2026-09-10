@@ -15,7 +15,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'email', type: 'string'),
         new OAT\Property(property: 'phone', type: 'string'),
         new OAT\Property(property: 'event_date', type: 'string', format: 'date', nullable: true),
-        new OAT\Property(property: 'message', type: 'string'),
+        new OAT\Property(property: 'message', type: 'string', nullable: true),
         new OAT\Property(property: 'status', type: 'string'),
         new OAT\Property(property: 'archived', type: 'boolean'),
     ]
