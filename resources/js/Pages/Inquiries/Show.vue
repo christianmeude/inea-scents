@@ -4,6 +4,10 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     inquiry: Object,
+    packages: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const statusOrder = { new: 0, contacted: 1, booked: 2, closed: 3 };
@@ -18,6 +22,23 @@ const form = useForm({
 
 const submit = () => {
     form.put(route('admin.inquiries.update', props.inquiry.id));
+};
+
+const promoteForm = useForm({
+    customer_name: props.inquiry.name ?? '',
+    customer_email: props.inquiry.email ?? '',
+    customer_phone: props.inquiry.phone ?? '',
+    package_id: '',
+    pax: '',
+    event_date: props.inquiry.event_date || '',
+    event_time: '',
+    venue_address: '',
+    payment_method: 'cash',
+    notes: '',
+});
+
+const promote = () => {
+    promoteForm.post(route('admin.inquiries.promote', props.inquiry.id));
 };
 
 const formatDate = (dateString) => {
@@ -48,7 +69,7 @@ const formatDate = (dateString) => {
         </template>
 
         <div class="py-2">
-            <div class="mx-auto max-w-3xl">
+            <div class="mx-auto max-w-3xl space-y-6">
                 <div class="bg-white dark:bg-brand-dark-surface rounded-3xl p-6 sm:p-8 shadow-ambient dark:shadow-none border border-brand-primary/10 dark:border-brand-dark-border">
                     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm mb-8">
                         <div>
@@ -93,6 +114,86 @@ const formatDate = (dateString) => {
                         </button>
                     </form>
                 </div>
+
+                <div v-if="inquiry.status === 'contacted'" class="bg-white dark:bg-brand-dark-surface rounded-3xl p-6 sm:p-8 shadow-ambient dark:shadow-none border border-brand-primary/10 dark:border-brand-dark-border">
+                    <h3 class="text-xl font-semibold text-brand-primary dark:text-brand-cream">Promote to Booking</h3>
+                    <p v-if="!inquiry.event_date" class="text-sm text-brand-muted dark:text-brand-cream/70 mt-1">No date on this Inquiry — set an Available date to promote.</p>
+
+                    <form @submit.prevent="promote" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Customer name</label>
+                            <input v-model="promoteForm.customer_name" type="text" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.customer_name" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.customer_name }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Customer email</label>
+                            <input v-model="promoteForm.customer_email" type="email" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.customer_email" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.customer_email }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Customer phone</label>
+                            <input v-model="promoteForm.customer_phone" type="text" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.customer_phone" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.customer_phone }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Package</label>
+                            <select v-model="promoteForm.package_id" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary">
+                                <option value="" disabled>Select package</option>
+                                <option v-for="p in packages" :key="p.id" :value="p.id">{{ p.name }}</option>
+                            </select>
+                            <div v-if="promoteForm.errors.package_id" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.package_id }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Pax</label>
+                            <input v-model="promoteForm.pax" type="number" min="1" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.pax" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.pax }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Event date</label>
+                            <input v-model="promoteForm.event_date" type="date" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.event_date" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.event_date }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Event time</label>
+                            <input v-model="promoteForm.event_time" type="text" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.event_time" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.event_time }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Venue address</label>
+                            <input v-model="promoteForm.venue_address" type="text" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <div v-if="promoteForm.errors.venue_address" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.venue_address }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Payment method</label>
+                            <div class="flex items-center gap-4 text-sm text-brand-primary dark:text-brand-cream pt-2">
+                                <label class="inline-flex items-center gap-2">
+                                    <input v-model="promoteForm.payment_method" type="radio" value="cash" class="rounded" />
+                                    Cash
+                                </label>
+                                <label class="inline-flex items-center gap-2">
+                                    <input v-model="promoteForm.payment_method" type="radio" value="bank_transfer" class="rounded" />
+                                    Bank transfer
+                                </label>
+                            </div>
+                            <div v-if="promoteForm.errors.payment_method" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.payment_method }}</div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Notes</label>
+                            <textarea v-model="promoteForm.notes" rows="3" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary"></textarea>
+                            <div v-if="promoteForm.errors.notes" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.notes }}</div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <button
+                                type="submit"
+                                :disabled="promoteForm.processing"
+                                class="rounded-full bg-brand-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-brand-primary/90 disabled:opacity-50 transition-all"
+                            >
+                                Promote to Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <p v-else-if="inquiry.status === 'booked'" class="text-sm text-brand-muted dark:text-brand-cream/70">Promoted — status pinned.</p>
             </div>
         </div>
     </AuthenticatedLayout>
