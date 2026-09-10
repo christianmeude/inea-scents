@@ -655,6 +655,10 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "inquiry_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
                     "package": {
                         "$ref": "#/components/schemas/Package"
                     },

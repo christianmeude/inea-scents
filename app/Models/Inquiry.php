@@ -42,4 +42,9 @@ class Inquiry extends Model
         'status' => InquiryStatus::class,
         'archived' => 'boolean',
     ];
+
+    public function booking()
+    {
+        return $this->hasOne(Booking::class);
+    }
 }

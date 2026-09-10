@@ -24,6 +24,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'payment_method', type: 'string'),
         new OAT\Property(property: 'status', type: 'string'),
         new OAT\Property(property: 'checkout_url', type: 'string', nullable: true),
+        new OAT\Property(property: 'inquiry_id', type: 'integer', nullable: true),
         new OAT\Property(property: 'package', ref: '#/components/schemas/Package'),
         new OAT\Property(property: 'scents', type: 'array', items: new OAT\Items(ref: '#/components/schemas/Scent')),
     ]
@@ -65,6 +66,7 @@ class Booking extends Model
         'notes',
         'payment_method',
         'checkout_url',
+        'inquiry_id',
     ];
 
     protected $casts = [
@@ -96,5 +98,10 @@ class Booking extends Model
     public function scents()
     {
         return $this->belongsToMany(Scent::class);
+    }
+
+    public function inquiry()
+    {
+        return $this->belongsTo(Inquiry::class);
     }
 }
