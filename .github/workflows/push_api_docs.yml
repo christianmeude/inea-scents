@@ -1,13 +1,10 @@
 name: Push API Schema to Mobile
 
+# Suspended: both repos live side-by-side locally, sync manually
+# (copy storage/api-docs/api-docs.json -> client api-docs.json).
+# Manual trigger only.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'routes/api.php'
-      - 'app/Http/Controllers/**'
 
 jobs:
   push-schema:
