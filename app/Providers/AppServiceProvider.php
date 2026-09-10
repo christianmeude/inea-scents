@@ -41,8 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         try {
             $migrator = app('migrator');
-            $files = $migrator->getMigrationFiles(database_path('migrations'));
-            $pending = array_diff(array_keys($files), $migrator->getRepository()->getRan());
+            $pending = $this->pendingMigrations($migrator) ?? array_keys($migrator->getMigrationFiles(database_path('migrations')));
 
             if ($pending !== []) {
                 Artisan::call('migrate', ['--force' => true]);
@@ -50,5 +49,18 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Throwable $e) {
             Log::warning('Local auto-migrate skipped.', ['error' => $e->getMessage()]);
         }
+    }
+
+    private function pendingMigrations($migrator): ?array
+    {
+        $files = $migrator->getMigrationFiles(database_path('migrations'));
+
+        try {
+            $ran = $migrator->getRepository()->getRan();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return array_values(array_diff(array_keys($files), $ran));
     }
 }
