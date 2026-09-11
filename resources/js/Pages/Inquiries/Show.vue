@@ -155,7 +155,7 @@ const formatDate = (dateString) => {
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Event time</label>
-                            <input v-model="promoteForm.event_time" type="text" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <input v-model="promoteForm.event_time" type="time" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
                             <div v-if="promoteForm.errors.event_time" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.event_time }}</div>
                         </div>
                         <div>

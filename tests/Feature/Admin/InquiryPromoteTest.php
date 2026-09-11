@@ -102,4 +102,28 @@ class InquiryPromoteTest extends TestCase
         $u = User::factory()->create(['is_admin' => false]);
         $this->actingAs($u)->post(route('admin.inquiries.promote', $this->inquiry(['status' => 'contacted'])), $this->payload($this->pkg()))->assertNotFound();
     }
+
+    public function test_promote_with_blank_event_time_succeeds(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $this->actingAs($this->admin)->post(route('admin.inquiries.promote', $i), $this->payload($this->pkg(), ['event_time' => '']))->assertRedirect();
+        $this->assertDatabaseHas('bookings', ['inquiry_id' => $i->id, 'event_time' => null]);
+        $this->assertDatabaseHas('inquiries', ['id' => $i->id, 'status' => 'booked']);
+    }
+
+    public function test_promote_with_time_slot_label_converts_to_start_time(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $this->actingAs($this->admin)->post(route('admin.inquiries.promote', $i), $this->payload($this->pkg(), ['event_time' => '2:00 PM - 5:00 PM']))->assertRedirect();
+        $this->assertDatabaseHas('bookings', ['inquiry_id' => $i->id, 'event_time' => '14:00:00']);
+    }
+
+    public function test_promote_with_garbage_event_time_rejected(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $r = $this->actingAs($this->admin)->from(route('admin.inquiries.show', $i))->post(route('admin.inquiries.promote', $i), $this->payload($this->pkg(), ['event_time' => 'sometime-ish']));
+        $r->assertSessionHasErrors('event_time');
+        $this->assertDatabaseCount('bookings', 0);
+        $this->assertDatabaseHas('inquiries', ['id' => $i->id, 'status' => 'contacted']);
+    }
 }

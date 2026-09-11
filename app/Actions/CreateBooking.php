@@ -6,6 +6,7 @@ use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\Package;
 use App\Models\User;
+use App\Support\EventTime;
 use App\Enums\BookingStatus;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
@@ -43,6 +44,9 @@ class CreateBooking
         // Total is always derived server-side from the package price so the
         // client can never spoof the PayMongo charge amount (was never set,
         // producing amount 0 at link creation).
+        // event_time is normalized centrally: admin inputs are free text
+        // (labels, blanks) but the column is `time` — raw values 500 here.
+        $data['event_time'] = EventTime::normalize($data['event_time'] ?? null);
         $package = Package::findOrFail($data['package_id']);
         $bookingData = array_merge([
             'status' => BookingStatus::Pending->value,
