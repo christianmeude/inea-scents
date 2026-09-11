@@ -15,7 +15,7 @@ class PackageResource extends JsonResource
             'description' => $this->description,
             'inclusions' => \App\Support\PackageSanitizer::strings($this->inclusions),
             'pax_options' => \App\Support\PackageSanitizer::paxOptions($this->pax_options),
-            'pax_prices' => \App\Support\PackageSanitizer::paxPrices($this->pax_prices),
+            'pax_prices' => (object) \App\Support\PackageSanitizer::paxPrices($this->pax_prices),
             'freebies' => \App\Support\PackageSanitizer::strings($this->freebies),
             'price' => (float) $this->price,
             'rating' => (float) $this->rating,
