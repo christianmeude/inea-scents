@@ -10,7 +10,8 @@ namespace App\Support;
  * - strings(): trims, drops null/empty/whitespace/non-string elements.
  * - paxOptions(): coerces numeric strings and whole floats to ints,
  *   drops null/invalid/fractional/sub-1 entries.
- * Clean data passes through identically.
+ * - paxPrices(): coerces {pax: price} maps with int keys and numeric
+ *   prices, drops invalid pairs. Clean data passes through identically.
  */
 class PackageSanitizer
 {
@@ -53,5 +54,24 @@ class PackageSanitizer
         }
 
         return array_values($cleaned);
+    }
+
+    public static function paxPrices(mixed $value): array
+    {
+        $map = is_string($value) ? json_decode($value, true) : $value;
+        if (! is_array($map)) {
+            return [];
+        }
+
+        $cleaned = [];
+        foreach ($map as $key => $price) {
+            $pax = filter_var($key, FILTER_VALIDATE_INT);
+            if ($pax === false || $pax < 1 || ! is_numeric($price) || (float) $price < 0) {
+                continue;
+            }
+            $cleaned[(int) $pax] = (float) $price;
+        }
+
+        return $cleaned;
     }
 }

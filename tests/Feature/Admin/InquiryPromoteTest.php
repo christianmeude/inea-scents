@@ -31,6 +31,17 @@ class InquiryPromoteTest extends TestCase
         return Package::create(['name' => 'Signature', 'description' => 'Test', 'price' => 2500]);
     }
 
+    private function tieredPkg(): Package
+    {
+        return Package::create([
+            'name' => 'Essential 10ml Perfume Bar',
+            'description' => 'Test tiers',
+            'price' => 4499,
+            'pax_options' => [50, 70, 100, 150],
+            'pax_prices' => [50 => 4499, 70 => 6399, 100 => 8799, 150 => 13119],
+        ]);
+    }
+
     private function payload(Package $p, array $o = []): array
     {
         return array_merge(['package_id' => $p->id, 'pax' => 50, 'venue_address' => '123 Main St', 'payment_method' => 'cash'], $o);
@@ -125,5 +136,29 @@ class InquiryPromoteTest extends TestCase
         $r->assertSessionHasErrors('event_time');
         $this->assertDatabaseCount('bookings', 0);
         $this->assertDatabaseHas('inquiries', ['id' => $i->id, 'status' => 'contacted']);
+    }
+
+    public function test_promote_with_blank_pax_rejected(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $r = $this->actingAs($this->admin)->from(route('admin.inquiries.show', $i))->post(route('admin.inquiries.promote', $i), $this->payload($this->pkg(), ['pax' => '']));
+        $r->assertSessionHasErrors('pax');
+        $this->assertDatabaseCount('bookings', 0);
+        $this->assertDatabaseHas('inquiries', ['id' => $i->id, 'status' => 'contacted']);
+    }
+
+    public function test_promote_with_off_tier_pax_rejected(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $r = $this->actingAs($this->admin)->from(route('admin.inquiries.show', $i))->post(route('admin.inquiries.promote', $i), $this->payload($this->tieredPkg(), ['pax' => 51]));
+        $r->assertSessionHasErrors('pax');
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_promote_with_tier_pax_uses_tier_price(): void
+    {
+        $i = $this->inquiry(['status' => 'contacted']);
+        $this->actingAs($this->admin)->post(route('admin.inquiries.promote', $i), $this->payload($this->tieredPkg(), ['pax' => 70]))->assertRedirect();
+        $this->assertDatabaseHas('bookings', ['inquiry_id' => $i->id, 'pax' => 70, 'total_price' => 6399]);
     }
 }

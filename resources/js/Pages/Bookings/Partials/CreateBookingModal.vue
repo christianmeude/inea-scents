@@ -15,7 +15,7 @@ const form = useForm({
     customer_email: '',
     customer_phone: '',
     package_id: '',
-    pax: '',
+    pax: 50,
     event_date: '',
     event_time: '',
     venue_address: '',

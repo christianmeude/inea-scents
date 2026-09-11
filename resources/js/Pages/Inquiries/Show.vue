@@ -29,7 +29,7 @@ const promoteForm = useForm({
     customer_email: props.inquiry.email ?? '',
     customer_phone: props.inquiry.phone ?? '',
     package_id: '',
-    pax: '',
+    pax: 50,
     event_date: props.inquiry.event_date || '',
     event_time: '',
     venue_address: '',

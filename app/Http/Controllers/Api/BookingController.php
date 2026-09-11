@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Enums\PaymentMethod;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Package;
+use App\Rules\PaxInTiers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -87,12 +89,15 @@ class BookingController extends Controller
     )]
     public function store(Request $request, \App\Actions\CreateBookingWithCheckout $checkout)
     {
+        $request->validate(['package_id' => 'required|exists:packages,id']);
+        $package = Package::findOrFail($request->input('package_id'));
+
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'required|email|max:255',
             'customer_phone' => 'nullable|string|max:255',
-            'pax' => 'required|integer|min:1',
+            'pax' => ['required', new PaxInTiers($package)],
             'event_date' => 'required|date',
             'event_time' => 'nullable|date_format:H:i:s',
             'venue_address' => 'required|string|max:255',

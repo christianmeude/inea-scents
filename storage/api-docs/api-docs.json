@@ -733,6 +733,12 @@
                             "type": "integer"
                         }
                     },
+                    "pax_prices": {
+                        "type": "object",
+                        "example": {
+                            "50": 4499
+                        }
+                    },
                     "freebies": {
                         "type": "array",
                         "items": {

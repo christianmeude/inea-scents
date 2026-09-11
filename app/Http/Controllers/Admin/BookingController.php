@@ -7,6 +7,7 @@ use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\Package;
 use App\Models\User;
+use App\Rules\PaxInTiers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -36,12 +37,15 @@ class BookingController extends Controller
 
     public function store(Request $request, \App\Actions\CreateBookingWithCheckout $checkout)
     {
+        $request->validate(['package_id' => 'required|exists:packages,id']);
+        $package = Package::findOrFail($request->input('package_id'));
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'nullable|email|max:255',
             'customer_phone' => 'nullable|string|max:255',
             'package_id' => 'required|exists:packages,id',
-            'pax' => 'nullable|integer|min:1',
+            'pax' => ['required', new PaxInTiers($package)],
             'event_date' => 'required|date',
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',

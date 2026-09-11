@@ -16,6 +16,7 @@ use OpenApi\Attributes as OAT;
         new OAT\Property(property: 'description', type: 'string', example: 'A nice package for couples.', nullable: true),
         new OAT\Property(property: 'inclusions', type: 'array', items: new OAT\Items(type: 'string')),
         new OAT\Property(property: 'pax_options', type: 'array', items: new OAT\Items(type: 'integer')),
+        new OAT\Property(property: 'pax_prices', type: 'object', example: ['50' => 4499.00]),
         new OAT\Property(property: 'freebies', type: 'array', items: new OAT\Items(type: 'string')),
         new OAT\Property(property: 'price', type: 'number', format: 'float', example: 199.99),
         new OAT\Property(property: 'rating', type: 'number', format: 'float', example: 4.5),
@@ -34,6 +35,7 @@ class Package extends Model
         'description',
         'inclusions',
         'pax_options',
+        'pax_prices',
         'freebies',
         'price',
         'images',
@@ -45,6 +47,7 @@ class Package extends Model
     protected $casts = [
         'inclusions' => 'array',
         'pax_options' => 'array',
+        'pax_prices' => 'array',
         'freebies' => 'array',
         'images' => 'array',
         'price' => 'decimal:2',
@@ -52,6 +55,41 @@ class Package extends Model
         'reviews_count' => 'integer',
         'gallery_images' => 'array',
     ];
+
+    /**
+     * Headcounts this package is sold at, from the tier map keys.
+     * Falls back to the legacy pax_options list for rows predating tiers.
+     *
+     * @return int[]
+     */
+    public function tierPax(): array
+    {
+        $map = $this->pax_prices ?? [];
+        if (is_array($map) && count($map) > 0) {
+            return array_map('intval', array_keys($map));
+        }
+
+        return array_map('intval', (array) ($this->pax_options ?? []));
+    }
+
+    /**
+     * Server-side price for a headcount. Null when the pax has no tier —
+     * callers treat null as "reject", never as free.
+     */
+    public function priceForPax(int $pax): ?float
+    {
+        $map = $this->pax_prices ?? [];
+        if (! is_array($map) || count($map) === 0) {
+            return null;
+        }
+        foreach ($map as $key => $price) {
+            if ((int) $key === $pax) {
+                return (float) $price;
+            }
+        }
+
+        return null;
+    }
 
     public function bookings()
     {

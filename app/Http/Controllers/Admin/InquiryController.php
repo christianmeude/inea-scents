@@ -11,6 +11,7 @@ use App\Models\Booking;
 use App\Models\Inquiry;
 use App\Models\Package;
 use App\Models\User;
+use App\Rules\PaxInTiers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -106,12 +107,15 @@ class InquiryController extends Controller
             'event_date' => $request->input('event_date', $inquiry->event_date?->toDateString()),
         ]);
 
+        $request->validate(['package_id' => 'required|exists:packages,id']);
+        $package = Package::findOrFail($request->input('package_id'));
+
         $data = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'nullable|email|max:255',
             'customer_phone' => 'nullable|string|max:255',
             'package_id' => 'required|exists:packages,id',
-            'pax' => 'nullable|integer|min:1',
+            'pax' => ['required', new PaxInTiers($package)],
             'event_date' => $inquiry->event_date ? 'nullable|date' : 'required|date',
             'event_time' => 'nullable',
             'venue_address' => 'required|string|max:255',

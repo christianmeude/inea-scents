@@ -39,82 +39,61 @@ class DatabaseSeeder extends Seeder
             $scents[] = \App\Models\Scent::create($data);
         }
 
-        // 3. Create Packages
-        $package1 = \App\Models\Package::create([
-            'name' => 'Signature Perfume Workshop',
-            'description' => 'A 2-hour guided session where you learn the basics of perfumery and create your own 30ml signature scent.',
-            'price' => 1500.00,
-            'inclusions' => ['30ml Perfume Bottle', 'Basic Ingredients', 'Gift Box'],
-            'pax_options' => [1, 2, 3, 4],
-            'freebies' => [],
-            'images' => [],
-            'gallery_images' => [],
-            'rating' => 4.8,
-        ]);
-
-        $package2 = \App\Models\Package::create([
-            'name' => 'Couples Scent Experience',
-            'description' => 'An intimate 3-hour session for two. Craft complimentary scents for each other.',
-            'price' => 3500.00,
-            'inclusions' => ['Two 50ml Perfume Bottles', 'Premium Ingredients', 'Engraved Bottles', 'Champagne'],
-            'pax_options' => [2],
-            'freebies' => ['Polaroid Photo'],
-            'images' => [],
-            'gallery_images' => [],
-            'rating' => 5.0,
-        ]);
-
-        $package3 = \App\Models\Package::create([
-            'name' => 'Premium Custom Blend',
-            'description' => 'Work 1-on-1 with a master perfumer to develop a high-end customized fragrance.',
-            'price' => 5000.00,
-            'inclusions' => ['100ml Premium Bottle', 'Rare Ingredients Access', 'Digital Recipe Card'],
-            'pax_options' => [1],
-            'freebies' => ['Travel size 10ml roller'],
+        // 3. Create Packages — single real offering with pax tiers.
+        // Prices live in pax_prices; scalar price is the "starts at" base.
+        $tiers = [50 => 4499.00, 70 => 6399.00, 100 => 8799.00, 150 => 13119.00];
+        $package = \App\Models\Package::create([
+            'name' => 'Essential 10ml Perfume Bar',
+            'description' => 'Perfume bar service starting at Php 4,499.00. One booking lasts 3–4 hrs.',
+            'price' => min($tiers),
+            'inclusions' => [
+                'Featuring your logo and a hemp cord',
+                '4 inspired scents',
+                'Perfume Bar set up',
+                'Claim Stub',
+                'Duration: 3 hrs to 4 hrs',
+                '2 Staff Members',
+            ],
+            'pax_options' => array_keys($tiers),
+            'pax_prices' => $tiers,
+            'freebies' => ['Selfie Mirror', '1 gift for celebrant'],
             'images' => [],
             'gallery_images' => [],
             'rating' => 0.00, // Unrated
         ]);
 
-        // 4. Attach Scents to Packages
-        // Signature workshop gets basic scents
-        $package1->scents()->attach([$scents[0]->id, $scents[1]->id, $scents[2]->id, $scents[3]->id]);
-        
-        // Couples gets all scents
-        $package2->scents()->attach([$scents[0]->id, $scents[1]->id, $scents[2]->id, $scents[3]->id, $scents[4]->id]);
-        
-        // Premium gets exclusive scents (plus some basics)
-        $package3->scents()->attach([$scents[4]->id, $scents[0]->id]);
+        // 4. Attach Scents to Package — the frozen 4 included scents.
+        $package->scents()->attach([$scents[0]->id, $scents[1]->id, $scents[2]->id, $scents[3]->id]);
 
         // 5. Create some Bookings
         $booking1 = \App\Models\Booking::create([
             'booking_reference' => 'BOOKING-TEST01',
-            'package_id' => $package1->id,
+            'package_id' => $package->id,
             'customer_name' => 'Alice Wonderland',
             'customer_email' => 'alice@example.com',
-            'pax' => 2,
+            'pax' => 50,
             'event_date' => now()->addDays(5)->format('Y-m-d'),
             'event_time' => '14:00:00',
             'venue_address' => 'Scent Studio A',
             'status' => 'Confirmed',
             'payment_method' => 'credit_card',
-            'total_price' => $package1->price * 2,
+            'total_price' => $tiers[50],
         ]);
         $booking1->scents()->attach([$scents[0]->id, $scents[1]->id]);
 
         $booking2 = \App\Models\Booking::create([
             'booking_reference' => 'BOOKING-TEST02',
-            'package_id' => $package2->id,
+            'package_id' => $package->id,
             'customer_name' => 'Bob Builder',
             'customer_email' => 'bob@example.com',
-            'pax' => 2,
+            'pax' => 70,
             'event_date' => now()->addDays(10)->format('Y-m-d'),
             'event_time' => '10:00:00',
             'venue_address' => 'Scent Studio B',
             'status' => 'Pending',
             'payment_method' => 'cash',
-            'total_price' => $package2->price,
+            'total_price' => $tiers[70],
         ]);
-        $booking2->scents()->attach([$scents[4]->id]);
+        $booking2->scents()->attach([$scents[0]->id]);
     }
 }

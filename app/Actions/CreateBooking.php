@@ -41,16 +41,17 @@ class CreateBooking
         }
 
         // 2. Prepare defaults for missing data (Mobile API vs Admin differences)
-        // Total is always derived server-side from the package price so the
-        // client can never spoof the PayMongo charge amount (was never set,
-        // producing amount 0 at link creation).
+        // Total is always derived server-side from the package tier price so
+        // the client can never spoof the PayMongo charge amount (was never
+        // set, producing amount 0 at link creation). Falls back to the
+        // scalar price for rows predating tier maps.
         // event_time is normalized centrally: admin inputs are free text
         // (labels, blanks) but the column is `time` — raw values 500 here.
         $data['event_time'] = EventTime::normalize($data['event_time'] ?? null);
         $package = Package::findOrFail($data['package_id']);
         $bookingData = array_merge([
             'status' => BookingStatus::Pending->value,
-            'total_price' => $package->price,
+            'total_price' => $package->priceForPax((int) ($data['pax'] ?? 0)) ?? $package->price,
         ], $data);
         unset($bookingData['scent_ids']);
         
