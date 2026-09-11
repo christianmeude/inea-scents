@@ -24,6 +24,10 @@ class ConfirmBookingFromWebhook
             return $booking->fresh();
         }
 
+        // Paid event with nowhere to go: money in, no Pending booking.
+        // Logged (never stored) so the payments ledger can flag it.
+        Log::channel('webhook')->warning("PayMongo webhook no-match: paid event for unknown or non-pending booking '{$bookingReference}'");
+
         return null;
     }
 }

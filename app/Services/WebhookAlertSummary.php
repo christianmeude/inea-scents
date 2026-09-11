@@ -12,41 +12,53 @@ class WebhookAlertSummary
     public function __construct(private int $tailLines = 500) {}
 
     /**
-     * @return array{rejectedCount: int, latestRejectedAt: ?string}
+     * @return array{rejectedCount: int, latestRejectedAt: ?string, ignoredCount: int, latestIgnoredAt: ?string, unmatchedCount: int, latestUnmatchedAt: ?string}
      */
     public function summarize(): array
     {
+        $empty = [
+            'rejectedCount' => 0, 'latestRejectedAt' => null,
+            'ignoredCount' => 0, 'latestIgnoredAt' => null,
+            'unmatchedCount' => 0, 'latestUnmatchedAt' => null,
+        ];
+
         $path = storage_path('logs/webhook.log');
         if (! is_readable($path)) {
-            return ['rejectedCount' => 0, 'latestRejectedAt' => null];
+            return $empty;
         }
 
+        $markers = [
+            'webhook rejected' => ['rejectedCount', 'latestRejectedAt'],
+            'webhook ignored' => ['ignoredCount', 'latestIgnoredAt'],
+            'webhook no-match' => ['unmatchedCount', 'latestUnmatchedAt'],
+        ];
+
         $lines = $this->tail($path);
-        $count = 0;
-        $latest = null;
         $weekAgo = now()->subWeek();
 
         foreach ($lines as $line) {
-            if (! str_contains($line, 'webhook rejected')) {
-                continue;
-            }
-            if (preg_match('/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/', $line, $m)) {
-                try {
-                    $at = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m[1]);
-                } catch (\Throwable) {
+            foreach ($markers as $marker => [$countKey, $latestKey]) {
+                if (! str_contains($line, $marker)) {
                     continue;
                 }
-                if ($at->lt($weekAgo)) {
-                    continue;
-                }
-                $count++;
-                if ($latest === null || $at->gt(\Carbon\Carbon::parse($latest))) {
-                    $latest = $at->toDateTimeString();
+                if (preg_match('/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/', $line, $m)) {
+                    try {
+                        $at = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m[1]);
+                    } catch (\Throwable) {
+                        continue;
+                    }
+                    if ($at->lt($weekAgo)) {
+                        continue;
+                    }
+                    $empty[$countKey]++;
+                    if ($empty[$latestKey] === null || $at->gt(\Carbon\Carbon::parse($empty[$latestKey]))) {
+                        $empty[$latestKey] = $at->toDateTimeString();
+                    }
                 }
             }
         }
 
-        return ['rejectedCount' => $count, 'latestRejectedAt' => $latest];
+        return $empty;
     }
 
     private function tail(string $path): array
