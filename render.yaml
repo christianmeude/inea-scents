@@ -23,8 +23,9 @@ services:
         value: https://inea-scents.vercel.app
       - key: LANDING_URL
         # Fill with the deployed landing URL when it ships (Inquiry POSTs).
-        # Local + production only, no staging.
-        value: ""
+        # Local + production only, no staging. No trailing slash — origins
+        # are exact-matched in config/cors.php.
+        value: "https://inea-scents-landing.vercel.app"
       - key: CORS_SUPPORTS_CREDENTIALS
         value: false
       - key: SANCTUM_STATEFUL_DOMAINS
@@ -36,7 +37,9 @@ services:
       - key: SESSION_DRIVER
         value: database
       - key: LOG_CHANNEL
-        value: stack
+        # stderr streams to Render logs. Never `stack`/`single` here: file
+        # logs are invisible inside the container (ephemeral storage).
+        value: stderr
       - key: CRON_TOKEN
         generateValue: true
       - key: PAYMONGO_WEBHOOK_SECRET
