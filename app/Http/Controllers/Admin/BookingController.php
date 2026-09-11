@@ -97,6 +97,15 @@ class BookingController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        // Auto-relink only when the email value itself changed: an explicit
+        // unlink sticks until the email is edited again.
+        if (array_key_exists('customer_email', $validated)
+            && $validated['customer_email'] !== $booking->customer_email) {
+            $validated['user_id'] = ! empty($validated['customer_email'])
+                ? User::where('email', $validated['customer_email'])->where('is_admin', false)->value('id')
+                : null;
+        }
+
         $updateBooking->execute($booking, $validated);
 
         return redirect()->route('admin.bookings.index')->with('success', 'Booking updated successfully.');

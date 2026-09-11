@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\CalendarController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -17,6 +18,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::resource('packages', PackageController::class);
     Route::resource('bookings', BookingController::class);
+    Route::resource('customers', CustomerController::class)->only(['index', 'show'])->parameters(['customers' => 'email']);
+    Route::post('customers/link', [CustomerController::class, 'link'])->name('customers.link');
+    Route::post('customers/unlink', [CustomerController::class, 'unlink'])->name('customers.unlink');
     Route::resource('inquiries', InquiryController::class)->only(['index', 'show', 'update']);
     Route::post('inquiries/{inquiry}/promote', [InquiryController::class, 'promote'])->name('inquiries.promote');
     Route::patch('bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');

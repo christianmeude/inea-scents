@@ -16,7 +16,7 @@ const navigation = [
     { name: 'Inquiries', href: route('admin.inquiries.index'), active: route().current('admin.inquiries.*') },
     { name: 'Calendar', href: route('admin.calendar.index'), active: route().current('admin.calendar.*') },
     { name: 'Packages', href: route('admin.packages.index'), active: route().current('admin.packages.*') },
-    { name: 'Customers', href: '#', active: false, disabled: true },
+    { name: 'Customers', href: route('admin.customers.index'), active: route().current('admin.customers.*') },
     { name: 'Payments', href: '#', active: false, disabled: true },
     { name: 'Settings', href: '#', active: false, disabled: true },
 ];
