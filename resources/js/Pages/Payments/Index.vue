@@ -46,7 +46,7 @@ const formatMoney = (value) => {
                         Payments
                     </h2>
                     <p class="text-brand-muted dark:text-brand-cream/70 text-sm mt-1">
-                        Read-only ledger over bookings and webhook events. Confirmed revenue: {{ formatMoney(revenue) }}.
+                        Read-only ledger over bookings and webhook events. Confirmed revenue (all time): {{ formatMoney(revenue) }}.
                     </p>
                 </div>
             </div>

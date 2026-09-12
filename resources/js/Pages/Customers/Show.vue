@@ -42,7 +42,7 @@ const formatDate = (dateString) => {
                         {{ customer.name }}
                     </h2>
                     <p class="text-brand-muted dark:text-brand-cream/70 text-sm mt-1">
-                        {{ customer.email }} · {{ customer.user ? 'Linked account' : 'Guest (no account)' }}
+                        {{ customer.email }} · {{ customer.user ? 'Linked account' : 'No account' }}
                     </p>
                 </div>
                 <Link :href="route('admin.customers.index')" class="text-sm text-cyan-500 font-medium hover:text-cyan-600">

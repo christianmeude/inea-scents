@@ -32,21 +32,27 @@ class PaymentController extends Controller
             });
         }
 
-        $events = DB::table('webhook_events')->orderByDesc('created_at')->paginate(10, ['*'], 'events');
+        $events = DB::table('webhook_events')->orderByDesc('created_at')->paginate(10, ['*'], 'events')->withQueryString();
 
-        $events->getCollection()->transform(function ($event) {
-            $reference = null;
+        $refs = $events->getCollection()->map(function ($event) {
             $payload = json_decode((string) $event->payload, true);
-            if (is_array($payload)) {
-                $remarks = $payload['data']['attributes']['data']['attributes']['remarks'] ?? null;
-                if (is_string($remarks) && $remarks !== '') {
-                    $reference = $remarks;
-                }
-            }
-            $event->booking_reference = $reference;
-            $event->booking_id = $reference
-                ? Booking::where('booking_reference', $reference)->value('id')
+            $remarks = is_array($payload)
+                ? ($payload['data']['attributes']['data']['attributes']['remarks'] ?? null)
                 : null;
+
+            return is_string($remarks) && $remarks !== '' ? $remarks : null;
+        })->filter()->all();
+
+        $ids = Booking::whereIn('booking_reference', $refs)->pluck('id', 'booking_reference');
+
+        $events->getCollection()->transform(function ($event) use ($ids) {
+            $payload = json_decode((string) $event->payload, true);
+            $remarks = is_array($payload)
+                ? ($payload['data']['attributes']['data']['attributes']['remarks'] ?? null)
+                : null;
+            $reference = is_string($remarks) && $remarks !== '' ? $remarks : null;
+            $event->booking_reference = $reference;
+            $event->booking_id = $reference ? $ids->get($reference) : null;
 
             return $event;
         });

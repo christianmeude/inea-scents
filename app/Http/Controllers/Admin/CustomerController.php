@@ -56,8 +56,10 @@ class CustomerController extends Controller
             if (empty($rows[$key]['name'])) {
                 $rows[$key]['name'] = $booking->customer_name;
             }
-            // Linked users count via withCount; only guest rows accumulate here.
-            if ($rows[$key]['user_id'] === null) {
+            // Linked users count via withCount (by user_id); email-matching
+            // bookings linked elsewhere (or unlinked) still belong to this row.
+            if ($rows[$key]['user_id'] === null
+                || $booking->user_id !== $rows[$key]['user_id']) {
                 $rows[$key]['bookings_count']++;
             }
             if ($rows[$key]['last_activity_at'] === null

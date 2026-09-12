@@ -80,7 +80,7 @@ const formatDate = (dateString) => {
                                         {{ customer.email }}
                                     </td>
                                     <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream">
-                                        {{ customer.user_id ? 'Linked' : 'Guest' }}
+                                        {{ customer.user_id ? 'Linked' : 'No account' }}
                                     </td>
                                     <td class="py-5 px-6 font-medium text-brand-primary dark:text-brand-cream">
                                         {{ customer.bookings_count }}

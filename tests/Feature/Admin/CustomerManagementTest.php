@@ -55,7 +55,7 @@ class CustomerManagementTest extends TestCase
     {
         $linked = User::factory()->create(['is_admin' => false, 'email' => 'jane@example.com']);
         $this->makeBooking(['user_id' => $linked->id]);
-        $this->makeBooking(['customer_name' => 'Walk-in Guest', 'customer_email' => 'guest@example.com']);
+        $this->makeBooking(['customer_name' => 'No-account Booker', 'customer_email' => 'guest@example.com']);
 
         $response = $this->actingAs($this->user)->get(route('admin.customers.index'));
 
@@ -63,6 +63,20 @@ class CustomerManagementTest extends TestCase
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Customers/Index')
             ->has('customers.data', 2)
+        );
+    }
+
+    public function test_linked_row_counts_unlinked_same_email_bookings()
+    {
+        $linked = User::factory()->create(['is_admin' => false, 'email' => 'jane@example.com']);
+        $this->makeBooking(['user_id' => $linked->id]);
+        $this->makeBooking(['customer_name' => 'Jane Variant']);
+
+        $response = $this->actingAs($this->user)->get(route('admin.customers.index', ['search' => 'jane']));
+
+        $response->assertInertia(fn (Assert $page) => $page
+            ->has('customers.data', 1)
+            ->where('customers.data.0.bookings_count', 2)
         );
     }
 
