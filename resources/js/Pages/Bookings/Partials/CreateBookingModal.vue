@@ -36,7 +36,12 @@ const submit = () => {
 };
 
 watch(() => props.show, (newVal) => {
-    if (!newVal) form.reset();
+    if (!newVal) {
+        form.reset();
+    } else if (props.packages?.length === 1 && !form.package_id) {
+        // One-product world: preselect the sole package; >1 keeps the placeholder.
+        form.package_id = props.packages[0].id;
+    }
 });
 </script>
 

@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import BackLink from '@/Components/BackLink.vue';
 
 const props = defineProps({
     customer: Object,
@@ -45,9 +46,7 @@ const formatDate = (dateString) => {
                         {{ customer.email }} · {{ customer.user ? 'Linked account' : 'No account' }}
                     </p>
                 </div>
-                <Link :href="route('admin.customers.index')" class="text-sm text-cyan-500 font-medium hover:text-cyan-600">
-                    ← Back to Customers
-                </Link>
+                <BackLink :href="route('admin.customers.index')" label="Customers" />
             </div>
         </template>
 

@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
+import BackLink from '@/Components/BackLink.vue';
 
 const props = defineProps({
     inquiry: Object,
@@ -37,6 +38,11 @@ const promoteForm = useForm({
     notes: '',
 });
 
+// One-product world: preselect the sole package; >1 keeps the placeholder.
+if (props.packages?.length === 1) {
+    promoteForm.package_id = props.packages[0].id;
+}
+
 const promote = () => {
     promoteForm.post(route('admin.inquiries.promote', props.inquiry.id));
 };
@@ -62,9 +68,7 @@ const formatDate = (dateString) => {
                         {{ inquiry.email }} · {{ inquiry.phone }}
                     </p>
                 </div>
-                <Link :href="route('admin.inquiries.index')" class="text-sm text-cyan-500 font-medium hover:text-cyan-600">
-                    ← Back to Inquiries
-                </Link>
+                <BackLink :href="route('admin.inquiries.index')" label="Inquiries" />
             </div>
         </template>
 

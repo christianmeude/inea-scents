@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
+import BackLink from '@/Components/BackLink.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -97,12 +98,7 @@ const submit = () => {
                 <h2 class="text-xl font-semibold leading-tight text-brand-primary dark:text-brand-cream">
                     Edit Package: {{ package.name }}
                 </h2>
-                <Link
-                    :href="route('admin.packages.index')"
-                    class="text-sm font-medium text-brand-muted dark:text-brand-cream/70 hover:text-brand-primary dark:text-brand-cream"
-                >
-                    Back to Packages
-                </Link>
+                <BackLink :href="route('admin.packages.index')" label="Packages" />
             </div>
             <p class="text-sm text-brand-muted dark:text-brand-cream/70">Manages the perfume-bar packages.</p>
         </template>

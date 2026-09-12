@@ -1,29 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Chip from '@/Components/Chip.vue';
-import { formatMoney as formatAmount, tiersFromPackage } from '@/Components/usePaxTiers.js';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref } from 'vue';
-
-const tierEntries = (pkg) => {
-    return tiersFromPackage(pkg)
-        .filter((tier) => String(tier.pax).trim() !== '')
-        .map((tier) => ({
-            pax: Number(tier.pax),
-            price: String(tier.price).trim() === '' ? null : Number(tier.price),
-        }))
-        .sort((a, b) => a.pax - b.pax);
-};
-
-const startsAt = (pkg) => {
-    const prices = tierEntries(pkg).map((tier) => tier.price).filter((price) => price !== null && !isNaN(price));
-    return prices.length ? Math.min(...prices) : parseFloat(pkg.price);
-};
-
-const formatMoney = (value) => 'Php. ' + formatAmount(value);
 
 defineProps({
     packages: {
@@ -121,21 +102,7 @@ const closeModal = () => {
                                     {{ pkg.description || 'No description yet.' }}
                                 </p>
 
-                                <div class="flex flex-wrap gap-1.5 mb-4">
-                                    <Chip
-                                        v-for="tier in tierEntries(pkg)"
-                                        :key="tier.pax"
-                                        tone="blue"
-                                    >
-                                        {{ tier.pax }} pax<template v-if="tier.price !== null"> · {{ formatMoney(tier.price) }}</template>
-                                    </Chip>
-                                    <span v-if="!tierEntries(pkg).length" class="text-xs text-brand-muted dark:text-brand-cream/60">No prices set</span>
-                                </div>
-
-                                <div class="mt-auto flex items-center justify-between">
-                                    <span class="font-medium text-brand-primary dark:text-brand-cream">
-                                        <span class="text-xs font-normal text-brand-muted dark:text-brand-cream/60">Starts at </span>{{ formatMoney(startsAt(pkg)) }}
-                                    </span>
+                                <div class="mt-auto flex items-center justify-end">
                                     <Link
                                         :href="route('admin.packages.edit', pkg.id)"
                                         class="bg-brand-primary text-white text-xs font-medium px-6 py-2 rounded-full hover:opacity-90 transition-opacity"
