@@ -160,7 +160,7 @@ const yearMonthName = (month) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="flex items-end justify-between border-b border-brand-primary/10 dark:border-brand-dark-border pb-4 mb-4">
+            <div class="flex items-end justify-between border-b border-brand-primary/10 dark:border-brand-dark-border pb-3 mb-3">
                 <div>
                     <h2 class="text-3xl font-semibold text-brand-primary dark:text-brand-cream">
                         Calendar
@@ -226,7 +226,7 @@ const yearMonthName = (month) => {
 
                 <template v-else>
                     <!-- Calendar Controls -->
-                    <div class="flex justify-center items-center mb-6">
+                    <div class="flex justify-center items-center mb-4">
                         <button @click="prevMonth" class="text-brand-primary dark:text-brand-cream font-bold px-4 py-2 hover:bg-brand-primary/10 rounded-lg transition-colors">
                             &lt;
                         </button>
@@ -239,7 +239,7 @@ const yearMonthName = (month) => {
                     </div>
 
                     <!-- Calendar Grid -->
-                    <div class="bg-white dark:bg-brand-dark-surface rounded-xl border border-brand-primary/10 dark:border-brand-dark-border overflow-hidden">
+                    <div class="mx-auto max-w-5xl bg-white dark:bg-brand-dark-surface rounded-xl border border-brand-primary/10 dark:border-brand-dark-border overflow-hidden">
                         <div class="grid grid-cols-7 border-b border-brand-primary/20 dark:border-brand-dark-border bg-white dark:bg-brand-dark-surface">
                             <div v-for="day in ['MON', 'TUE', 'WED', 'THUR', 'FRI', 'SAT', 'SUN']" :key="day" class="py-3 px-4 text-xs font-semibold text-brand-muted dark:text-brand-cream/70 uppercase tracking-wider border-r border-brand-primary/10 dark:border-brand-dark-border last:border-r-0">
                                 {{ day }}
@@ -273,7 +273,7 @@ const yearMonthName = (month) => {
                                                 class="w-full text-left px-2 py-1.5 bg-brand-primary text-white text-xs rounded-lg transition-opacity hover:opacity-90"
                                             >
                                                 <span class="block font-bold truncate">{{ formatTime(booking) }} · {{ booking.customer_name }}</span>
-                                                <span class="block opacity-80 truncate">{{ booking.pax ? booking.pax + ' pax · ' : '' }}{{ booking.package?.name }} · {{ booking.status }}</span>
+                                                <span class="block opacity-80 truncate">{{ booking.package?.name }} · {{ booking.status }}</span>
                                             </button>
                                         </template>
                                         <span v-else-if="isDateBlocked(dayObj.dateString)" class="block w-full text-center px-2 py-1 bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold rounded-lg">
@@ -281,9 +281,6 @@ const yearMonthName = (month) => {
                                         </span>
                                         <span v-else-if="dayObj.state === 'Booked'" class="block w-full text-center px-2 py-1 bg-amber-100 dark:bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs font-semibold rounded-lg">
                                             Booked
-                                        </span>
-                                        <span v-else class="block w-full text-center px-2 py-1 text-cyan-600 dark:text-cyan-400/70 text-xs font-medium">
-                                            Available
                                         </span>
                                     </div>
                                 </template>
