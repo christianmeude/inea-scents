@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Ping endpoint for health checks (decoupled CI test)
 Route::get('/ping', fn() => 'pong');
 
-Route::post('/webhooks/paymongo', [\App\Http\Controllers\Api\PayMongoWebhookController::class, 'handle']);
+Route::post('/webhooks/paymongo', [\App\Http\Controllers\Api\PayMongoWebhookController::class, 'handle'])->middleware('throttle:60,1');
 
 Route::post('/bookings/expire', function (Request $request) {
     if ($request->header('X-Cron-Token') !== env('CRON_TOKEN')) {

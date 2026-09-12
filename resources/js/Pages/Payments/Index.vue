@@ -150,7 +150,8 @@ const eventColumns = [
                 </div>
 
                 <div class="bg-white dark:bg-brand-dark-surface rounded-3xl p-6 sm:p-8 border border-brand-primary/10 dark:border-brand-dark-border">
-                    <h3 class="text-xl font-semibold text-brand-primary dark:text-brand-cream mb-4">Webhook events</h3>
+                    <h3 class="text-xl font-semibold text-brand-primary dark:text-brand-cream mb-1">Webhook events</h3>
+                    <p class="text-xs text-brand-muted dark:text-brand-cream/60 mb-4">Only verified PayMongo payments land here — rejected probes never create rows.</p>
                     <DataTable
                         :columns="eventColumns"
                         :items="events.data"

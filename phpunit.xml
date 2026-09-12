@@ -28,6 +28,7 @@
         <env name="DB_PASSWORD" value="postgres"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
+        <env name="LOG_WEBHOOK_PATH" value="storage/logs/webhook-testing.log"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>

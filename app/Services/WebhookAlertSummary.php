@@ -9,7 +9,7 @@ namespace App\Services;
  */
 class WebhookAlertSummary
 {
-    public function __construct(private int $tailLines = 500) {}
+    public function __construct(private int $tailLines = 500, private ?string $path = null) {}
 
     /**
      * @return array{rejectedCount: int, latestRejectedAt: ?string, ignoredCount: int, latestIgnoredAt: ?string, unmatchedCount: int, latestUnmatchedAt: ?string}
@@ -22,7 +22,7 @@ class WebhookAlertSummary
             'unmatchedCount' => 0, 'latestUnmatchedAt' => null,
         ];
 
-        $path = storage_path('logs/webhook.log');
+        $path = $this->path ?? storage_path('logs/webhook.log');
         if (! is_readable($path)) {
             return $empty;
         }
@@ -37,6 +37,11 @@ class WebhookAlertSummary
         $weekAgo = now()->subWeek();
 
         foreach ($lines as $line) {
+            // Test-suite writes never pollute the prod banner, even when
+            // both land in the same file (log lines carry their env).
+            if (preg_match('/^\[[^\]]+\] testing\./', $line)) {
+                continue;
+            }
             foreach ($markers as $marker => [$countKey, $latestKey]) {
                 if (! str_contains($line, $marker)) {
                     continue;

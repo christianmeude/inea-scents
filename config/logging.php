@@ -67,7 +67,7 @@ return [
 
         'webhook' => [
             'driver' => 'single',
-            'path' => storage_path('logs/webhook.log'),
+            'path' => env('LOG_WEBHOOK_PATH', storage_path('logs/webhook.log')),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
