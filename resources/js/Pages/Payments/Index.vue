@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Chip from '@/Components/Chip.vue';
 import DataTable from '@/Components/DataTable.vue';
+import { methodTone, statusTone } from '@/Components/tones.js';
 import { Head, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
@@ -24,23 +25,6 @@ watch([method, status, search], ([methodValue, statusValue, searchValue]) => {
         { preserveState: true, preserveScroll: true, replace: true }
     );
 });
-
-const statusTone = (value) => {
-    switch (value) {
-        case 'Confirmed': return 'green';
-        case 'Pending': return 'amber';
-        case 'Cancelled': return 'gray';
-        default: return 'gray';
-    }
-};
-
-const methodTone = (value) => {
-    switch ((value || '').toLowerCase()) {
-        case 'online': return 'blue';
-        case 'cash': return 'gray';
-        default: return 'gray';
-    }
-};
 
 const formatDate = (dateString) => {
     if (!dateString) return '—';

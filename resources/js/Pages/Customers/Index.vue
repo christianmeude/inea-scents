@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Chip from '@/Components/Chip.vue';
 import DataTable from '@/Components/DataTable.vue';
+import { accountTone } from '@/Components/tones.js';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
@@ -81,7 +82,7 @@ const columns = [
                                 {{ customer.email }}
                             </td>
                             <td class="py-4 px-4">
-                                <Chip :tone="customer.user_id ? 'blue' : 'gray'">
+                                <Chip :tone="accountTone(customer.user_id)">
                                     {{ customer.user_id ? 'USER' : 'GUEST' }}
                                 </Chip>
                             </td>

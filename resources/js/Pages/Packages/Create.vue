@@ -4,7 +4,8 @@ import { Head, useForm, Link } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref, computed } from 'vue';
+import { tiersToMap, useStartsAt, validTiers } from '@/Components/usePaxTiers.js';
+import { ref } from 'vue';
 
 const form = useForm({
     name: '',
@@ -39,12 +40,7 @@ const removeField = (field, index) => {
     form[field].splice(index, 1);
 };
 
-const startsAt = computed(() => {
-    const prices = form.tiers
-        .map((tier) => parseFloat(tier.price))
-        .filter((price) => !isNaN(price) && price >= 0);
-    return prices.length ? Math.min(...prices) : null;
-});
+const startsAt = useStartsAt(() => form.tiers);
 
 const addTier = () => {
     form.tiers.push({ pax: '', price: '' });
@@ -58,14 +54,8 @@ const removeTier = (index) => {
 
 const submit = () => {
     form.transform((data) => {
-        const map = {};
-        (data.tiers ?? []).forEach((tier) => {
-            if (String(tier.pax ?? '').trim() !== '' && String(tier.price ?? '').trim() !== '') {
-                map[String(tier.pax).trim()] = tier.price;
-            }
-        });
         const { tiers, pax_options, ...rest } = data;
-        return { ...rest, pax_prices: map };
+        return { ...rest, pax_prices: tiersToMap(tiers) };
     }).post(route('admin.packages.store'), {
         forceFormData: true,
     });
@@ -168,7 +158,7 @@ const submit = () => {
 
                             <!-- Pax tiers: each row is one client card (pax + price) -->
                             <div>
-                                <InputLabel value="Pax Tiers (one row per client card):" class="text-brand-primary dark:text-brand-cream" />
+                                <InputLabel value="Pax pricing (one row per client card):" class="text-brand-primary dark:text-brand-cream" />
                                 <div v-for="(tier, index) in form.tiers" :key="`tier-${index}`" class="flex gap-2 mt-1 items-center">
                                     <input
                                         type="number"
@@ -186,7 +176,7 @@ const submit = () => {
                                         class="bg-white dark:bg-brand-dark-base block w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                         v-model="tier.price"
                                     />
-                                    <button type="button" @click="removeTier(index)" v-if="form.tiers.length > 1" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors" title="Remove Tier">
+                                    <button type="button" @click="removeTier(index)" v-if="form.tiers.length > 1" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors" title="Remove Row">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                                         </svg>
@@ -309,12 +299,12 @@ const submit = () => {
                                         </div>
 
                                         <div class="mb-4">
-                                            <strong class="text-xs mb-1 block">Pax Tiers:</strong>
+                                            <strong class="text-xs mb-1 block">Pax Pricing:</strong>
                                             <ul class="list-disc pl-4 text-xs text-brand-muted dark:text-brand-cream/70">
-                                                <li v-for="(tier, i) in form.tiers.filter(t => String(t.pax).trim() !== '')" :key="i">
+                                                <li v-for="(tier, i) in validTiers(form.tiers)" :key="i">
                                                     {{ tier.pax }} pax<template v-if="String(tier.price).trim() !== ''"> — &#8369;{{ parseFloat(tier.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</template>
                                                 </li>
-                                                <li v-if="!form.tiers.filter(t => String(t.pax).trim() !== '').length">No tiers listed</li>
+                                                <li v-if="!validTiers(form.tiers).length">No prices listed</li>
                                             </ul>
                                         </div>
 

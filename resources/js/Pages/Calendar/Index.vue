@@ -50,8 +50,13 @@ const prevMonth = () => {
     goMonth(prevM, prevY);
 };
 
+const hasActiveBooking = (dateString) => {
+    return getBookingsForDate(dateString).some((booking) => booking.status !== 'Cancelled');
+};
+
 const toggleBlockDate = (dateString, isPast) => {
-    if (isPast || getBookingsForDate(dateString).length > 0) return;
+    // Mirrors the backend guard: cancelled bookings don't hold the date.
+    if (isPast || hasActiveBooking(dateString)) return;
 
     router.post(route('admin.calendar.toggle-block'), { date: dateString }, {
         preserveScroll: true,
@@ -247,7 +252,7 @@ const yearMonthName = (month) => {
                                  :class="{
                                      'bg-brand-primary/[0.03]': !dayObj,
                                      'bg-black/[0.03] dark:bg-white/[0.03]': dayObj?.isPast,
-                                     'hover:bg-brand-primary/5 cursor-pointer': dayObj && !dayObj.isPast && getBookingsForDate(dayObj.dateString).length === 0 && dayObj.state === 'Available',
+                                     'hover:bg-brand-primary/5 cursor-pointer': dayObj && !dayObj.isPast && !hasActiveBooking(dayObj.dateString) && dayObj.state === 'Available',
                                      'border-r-0': (index + 1) % 7 === 0,
                                  }"
                                  @click="dayObj && toggleBlockDate(dayObj.dateString, dayObj.isPast)"

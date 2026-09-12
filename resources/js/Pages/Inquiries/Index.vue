@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Chip from '@/Components/Chip.vue';
 import DataTable from '@/Components/DataTable.vue';
+import { statusTone } from '@/Components/tones.js';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
@@ -21,16 +22,6 @@ watch([search, status, archived], ([searchValue, statusValue, archivedValue]) =>
         { preserveState: true, preserveScroll: true, replace: true }
     );
 });
-
-const statusTone = (value) => {
-    switch ((value || '').toLowerCase()) {
-        case 'booked': return 'green';
-        case 'contacted': return 'blue';
-        case 'new': return 'amber';
-        case 'closed': return 'gray';
-        default: return 'gray';
-    }
-};
 
 const formatDate = (dateString) => {
     if (!dateString) return '—';

@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Chip from '@/Components/Chip.vue';
+import { formatMoney as formatAmount, tiersFromPackage } from '@/Components/usePaxTiers.js';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -8,14 +9,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref } from 'vue';
 
 const tierEntries = (pkg) => {
-    const map = pkg.pax_prices ?? {};
-    const entries = Object.entries(map);
-    if (entries.length) {
-        return entries
-            .map(([pax, price]) => ({ pax: Number(pax), price: Number(price) }))
-            .sort((a, b) => a.pax - b.pax);
-    }
-    return (pkg.pax_options ?? []).map((pax) => ({ pax: Number(pax), price: null }));
+    return tiersFromPackage(pkg)
+        .filter((tier) => String(tier.pax).trim() !== '')
+        .map((tier) => ({
+            pax: Number(tier.pax),
+            price: String(tier.price).trim() === '' ? null : Number(tier.price),
+        }))
+        .sort((a, b) => a.pax - b.pax);
 };
 
 const startsAt = (pkg) => {
@@ -23,9 +23,7 @@ const startsAt = (pkg) => {
     return prices.length ? Math.min(...prices) : parseFloat(pkg.price);
 };
 
-const formatMoney = (value) => {
-    return 'Php. ' + Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-};
+const formatMoney = (value) => 'Php. ' + formatAmount(value);
 
 defineProps({
     packages: {
@@ -131,7 +129,7 @@ const closeModal = () => {
                                     >
                                         {{ tier.pax }} pax<template v-if="tier.price !== null"> · {{ formatMoney(tier.price) }}</template>
                                     </Chip>
-                                    <span v-if="!tierEntries(pkg).length" class="text-xs text-brand-muted dark:text-brand-cream/60">No tiers set</span>
+                                    <span v-if="!tierEntries(pkg).length" class="text-xs text-brand-muted dark:text-brand-cream/60">No prices set</span>
                                 </div>
 
                                 <div class="mt-auto flex items-center justify-between">

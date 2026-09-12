@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class NotificationTest extends TestCase
@@ -129,6 +130,38 @@ class NotificationTest extends TestCase
         ], $raw)->assertOk();
 
         $this->assertDatabaseHas('notifications', ['data->type' => 'webhook.ignored']);
+    }
+
+    public function test_expire_cron_notifies_when_stale_bookings_die()
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        $booking = Booking::create([
+            'booking_reference' => 'INEA-STALE-1',
+            'user_id' => $user->id,
+            'customer_name' => 'John Doe',
+            'customer_email' => 'john@example.com',
+            'package_id' => $this->package->id,
+            'pax' => 50,
+            'event_date' => '2026-12-20',
+            'venue_address' => '123 Test St',
+            'payment_method' => 'online',
+            'status' => 'Pending',
+        ]);
+        DB::table('bookings')->where('id', $booking->id)->update([
+            'created_at' => now()->subMinutes(16),
+            'updated_at' => now()->subMinutes(16),
+        ]);
+
+        $this->postJson('/api/bookings/expire', [], ['X-Cron-Token' => env('CRON_TOKEN')])->assertOk();
+
+        $this->assertDatabaseHas('notifications', ['data->type' => 'booking.expired']);
+    }
+
+    public function test_expire_cron_silent_when_nothing_expires()
+    {
+        $this->postJson('/api/bookings/expire', [], ['X-Cron-Token' => env('CRON_TOKEN')])->assertOk();
+
+        $this->assertDatabaseCount('notifications', 0);
     }
 
     public function test_rejected_signature_does_not_notify()

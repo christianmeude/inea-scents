@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 const POLL_MS = 30000;
@@ -45,6 +45,9 @@ const openItem = (notification) => {
         markRead([notification.id]);
     }
     open.value = false;
+    if (notification.link) {
+        router.visit(notification.link);
+    }
 };
 
 const onFocus = () => fetchNotifications();
@@ -98,18 +101,17 @@ onUnmounted(() => {
                 <p v-if="!notifications.length" class="px-4 py-6 text-sm text-brand-muted dark:text-brand-cream/60 text-center">
                     You're all caught up.
                 </p>
-                <component
+                <button
                     v-for="notification in notifications"
                     :key="notification.id"
-                    :is="notification.link ? Link : 'div'"
-                    :href="notification.link ?? undefined"
-                    @click="notification.link ? openItem(notification) : null"
-                    class="block px-4 py-3 border-b border-brand-primary/5 dark:border-white/5 last:border-0 hover:bg-brand-primary/5 dark:hover:bg-white/5 transition-colors"
+                    type="button"
+                    @click="openItem(notification)"
+                    class="block w-full text-left px-4 py-3 border-b border-brand-primary/5 dark:border-white/5 last:border-0 hover:bg-brand-primary/5 dark:hover:bg-white/5 transition-colors"
                     :class="{ 'bg-brand-primary/[0.03] dark:bg-white/[0.03]': !notification.read_at }"
                 >
                     <p class="text-sm font-semibold text-brand-primary dark:text-brand-cream">{{ notification.title }}</p>
                     <p class="text-xs text-brand-muted dark:text-brand-cream/70 mt-0.5">{{ notification.body }}</p>
-                </component>
+                </button>
             </div>
         </div>
     </div>

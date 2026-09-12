@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Chip from '@/Components/Chip.vue';
 import DataTable from '@/Components/DataTable.vue';
+import { statusTone } from '@/Components/tones.js';
 import { Head, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import ViewBookingModal from './Partials/ViewBookingModal.vue';
@@ -31,15 +32,6 @@ const isCreateModalOpen = ref(false);
 const openViewModal = (booking) => {
     selectedBooking.value = booking;
     isViewModalOpen.value = true;
-};
-
-const statusTone = (status) => {
-    switch (status) {
-        case 'Confirmed': return 'green';
-        case 'Pending': return 'amber';
-        case 'Cancelled': return 'gray';
-        default: return 'gray';
-    }
 };
 
 const formatDate = (dateString) => {

@@ -36,5 +36,14 @@ Route::post('/bookings/expire', function (Request $request) {
 
     $expired = \App\Models\Booking::expireStalePending();
 
+    if ($expired > 0) {
+        app(\App\Services\AdminNotifier::class)->alert(
+            'booking.expired',
+            'Stale bookings expired',
+            "{$expired} unpaid booking(s) passed the hold window and were cancelled.",
+            route('admin.bookings.index'),
+        );
+    }
+
     return response()->json(['message' => "Expired {$expired} bookings."]);
 });
