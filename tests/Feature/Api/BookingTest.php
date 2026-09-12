@@ -33,7 +33,7 @@ class BookingTest extends TestCase
             'pax' => 2,
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $booking2 = Booking::create([
@@ -119,5 +119,39 @@ class BookingTest extends TestCase
     {
         $response = $this->postJson('/api/bookings', []);
         $response->assertStatus(401);
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('retiredPaymentMethods')]
+    public function test_retired_payment_methods_are_rejected(string $method): void
+    {
+        $user = User::factory()->create();
+        $package = Package::create([
+            'name' => 'Test Package',
+            'description' => 'Desc',
+            'price' => 100,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/bookings', [
+            'package_id' => $package->id,
+            'customer_name' => 'Jane Doe',
+            'customer_email' => 'jane@example.com',
+            'pax' => 4,
+            'event_date' => '2026-12-15',
+            'venue_address' => '789 Event Place',
+            'payment_method' => $method,
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public static function retiredPaymentMethods(): array
+    {
+        return [
+            'bank_transfer' => ['bank_transfer'],
+            'gcash' => ['gcash'],
+            'maya' => ['maya'],
+            'credit_card' => ['credit_card'],
+        ];
     }
 }

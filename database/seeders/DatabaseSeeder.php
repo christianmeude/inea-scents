@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder
             'event_time' => '14:00:00',
             'venue_address' => 'Scent Studio A',
             'status' => 'Confirmed',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
             'total_price' => $tiers[50],
         ]);
         $booking1->scents()->attach([$scents[0]->id, $scents[1]->id]);

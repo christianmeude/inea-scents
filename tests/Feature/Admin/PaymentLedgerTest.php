@@ -39,7 +39,7 @@ class PaymentLedgerTest extends TestCase
             'venue_address' => '123 Test St',
             'status' => 'Confirmed',
             'total_price' => 1500,
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ], $overrides));
     }
 
@@ -72,7 +72,7 @@ class PaymentLedgerTest extends TestCase
         $response->assertInertia(fn (Assert $page) => $page
             ->component('Payments/Index')
             ->has('bookings.data', 1)
-            ->where('bookings.data.0.payment_method', 'credit_card')
+            ->where('bookings.data.0.payment_method', 'online')
             ->has('events.data', 1)
             ->where('events.data.0.booking_reference', $booking->booking_reference)
             ->has('alerts.rejectedCount')
@@ -84,7 +84,7 @@ class PaymentLedgerTest extends TestCase
 
     public function test_admin_can_filter_ledger_by_method_status_and_search()
     {
-        $this->makeBooking(['booking_reference' => 'INEA-CARD', 'payment_method' => 'credit_card', 'status' => 'Confirmed']);
+        $this->makeBooking(['booking_reference' => 'INEA-CARD', 'payment_method' => 'online', 'status' => 'Confirmed']);
         $this->makeBooking(['booking_reference' => 'INEA-CASH', 'payment_method' => 'cash', 'status' => 'Pending', 'customer_name' => 'John Doe']);
 
         $response = $this->actingAs($this->user)->get(route('admin.payments.index', ['method' => 'cash']));

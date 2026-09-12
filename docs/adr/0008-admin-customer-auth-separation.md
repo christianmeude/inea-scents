@@ -4,7 +4,7 @@ Admin sessions were reachable through the customer login path: `POST /api/login`
 
 We now treat them as separate principals on one user table. An **Admin** is a portal-only operator: exactly one seeded account, no self-registration, session auth via Breeze at `/admin/login` only, guarded by the `admin` middleware (`is_admin`). Authentication through the customer API rejects admin accounts at `POST /api/login` with the same generic `The provided credentials are incorrect.` (no account enumeration). The magic-link bridge is deleted. The Flutter app no longer references magic URLs, admin-login routing, or an admin dashboard tile.
 
-Booking creation is split: customer-created bookings may use any payment method (incl. online `credit_card`); an Admin creating a booking on a customer's behalf may only use offline methods (`cash`, `bank_transfer`), and `user_id` is auto-linked when the entered `customer_email` matches an existing non-admin User. Terminology: **User** (App User) = authenticated customer account; **Customer** = booking contact (name/email/phone); **Admin** = portal principal.
+Booking creation is split: customer-created bookings may use `online` (PayMongo link page) or `cash`; an Admin creating a booking on a customer's behalf may only use offline `cash`, and `user_id` is auto-linked when the entered `customer_email` matches an existing non-admin User. Terminology: **User** (App User) = authenticated customer account; **Customer** = booking contact (name/email/phone); **Admin** = portal principal.
 
 ## Consequences
 - Admin credentials never pass through the customer API; login path is explicit per principal (`/admin/login` vs `POST /api/login`).

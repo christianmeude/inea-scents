@@ -121,7 +121,6 @@ class InquiryController extends Controller
             'venue_address' => 'required|string|max:255',
             'payment_method' => ['required', Rule::in([
                 PaymentMethod::CASH->value,
-                PaymentMethod::BANK_TRANSFER->value,
             ])],
             'notes' => 'nullable|string',
             'scent_ids' => 'nullable|array',

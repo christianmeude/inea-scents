@@ -24,7 +24,7 @@ class ExpireStalePendingTest extends TestCase
             'pax' => 2,
             'event_date' => $date,
             'venue_address' => '123 Test',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
         // Backdate past the hold window via the query builder: created_at is
         // not mass-assignable, so create()/update() would silently drop it.
@@ -82,7 +82,7 @@ class ExpireStalePendingTest extends TestCase
             'pax' => 2,
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $response = $this->actingAs($user, 'sanctum')->postJson('/api/bookings', [

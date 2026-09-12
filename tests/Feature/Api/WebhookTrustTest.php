@@ -55,7 +55,7 @@ class WebhookTrustTest extends TestCase
             'pax' => 2,
             'event_date' => '2026-12-15',
             'venue_address' => '789 Event Place',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
             'status' => 'Pending',
             'total_price' => 3500,
         ]);

@@ -51,9 +51,8 @@ class BookingController extends Controller
             'venue_address' => 'required|string|max:255',
             'payment_method' => ['required', Rule::in([
                 \App\Enums\PaymentMethod::CASH->value,
-                \App\Enums\PaymentMethod::BANK_TRANSFER->value,
             ])],
-            'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
+            'status' => 'required|string|in:Confirmed,Pending,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
@@ -90,9 +89,8 @@ class BookingController extends Controller
             'venue_address' => 'required|string|max:255',
             'payment_method' => ['required', Rule::in([
                 \App\Enums\PaymentMethod::CASH->value,
-                \App\Enums\PaymentMethod::BANK_TRANSFER->value,
             ])],
-            'status' => 'required|string|in:Confirmed,Pending,Unavailable,Cancelled',
+            'status' => 'required|string|in:Confirmed,Pending,Cancelled',
             'total_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string',
         ]);

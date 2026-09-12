@@ -32,7 +32,7 @@ class CreateBookingWithCheckout
         return DB::transaction(function () use ($data, $user) {
             $booking = $this->createBooking->execute($data, $user);
 
-            if ($booking->payment_method === PaymentMethod::CREDIT_CARD) {
+            if ($booking->payment_method === PaymentMethod::ONLINE) {
                 try {
                     $booking->update([
                         'checkout_url' => $this->gateway->createLink($booking),

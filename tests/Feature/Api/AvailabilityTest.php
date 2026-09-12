@@ -37,7 +37,7 @@ class AvailabilityTest extends TestCase
             'venue_address' => '123 Test St',
             'status' => 'Confirmed',
             'total_price' => 500.00,
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $response = $this->getJson('/api/availability?month=8&year=2024');

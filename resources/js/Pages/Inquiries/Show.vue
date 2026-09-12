@@ -170,10 +170,6 @@ const formatDate = (dateString) => {
                                     <input v-model="promoteForm.payment_method" type="radio" value="cash" class="rounded" />
                                     Cash
                                 </label>
-                                <label class="inline-flex items-center gap-2">
-                                    <input v-model="promoteForm.payment_method" type="radio" value="bank_transfer" class="rounded" />
-                                    Bank transfer
-                                </label>
                             </div>
                             <div v-if="promoteForm.errors.payment_method" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.payment_method }}</div>
                         </div>

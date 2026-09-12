@@ -24,7 +24,7 @@ class CheckoutFlowTest extends TestCase
             'event_date' => '2026-12-15',
             'event_time' => '14:00:00',
             'venue_address' => '789 Event Place',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ];
     }
 

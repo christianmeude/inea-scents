@@ -42,7 +42,7 @@ _Avoid_: account, member
 _Repos_: backend, client
 
 **Admin**:
-The business principal operating the Admin Dashboard. A single seeded account with no self-registration; authenticates only at `/admin/login` and never through the customer API. May create Bookings on a Customer's behalf using offline payment methods (`cash`, `bank_transfer`).
+The business principal operating the Admin Dashboard. A single seeded account with no self-registration; authenticates only at `/admin/login` and never through the customer API. May create Bookings on a Customer's behalf using offline payment method (`cash`).
 _Avoid_: Super admin, owner
 _Repos_: backend, client
 
@@ -93,7 +93,7 @@ _Repos_: client
 ## Payments
 
 **Payment Method**:
-The declared way to settle a Booking: online `credit_card` (PayMongo link page) or offline `cash | bank_transfer` (admin confirms). `isOnline` indicates PayMongo flow. Backend enum: `credit_card | cash | bank_transfer` (legacy `gcash | maya` values no longer emitted).
+The declared way to settle a Booking: `online` (PayMongo link page) or `cash` (admin confirms). Backend enum: `online | cash` (`credit_card` renamed 2026-09-12; `bank_transfer` deleted, rows purged; legacy `gcash | maya` values never emitted).
 _Avoid_: payment type, mode
 _Repos_: client
 

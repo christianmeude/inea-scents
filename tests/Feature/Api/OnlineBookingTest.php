@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class CreditCardBookingTest extends TestCase
+class OnlineBookingTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -24,11 +24,11 @@ class CreditCardBookingTest extends TestCase
             'event_date' => '2026-12-15',
             'event_time' => '14:00:00',
             'venue_address' => '789 Event Place',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ];
     }
 
-    public function test_card_booking_returns_checkout_url_on_paymongo_success(): void
+    public function test_online_booking_returns_checkout_url_on_paymongo_success(): void
     {
         $user = User::factory()->create();
         $package = Package::create([
@@ -57,7 +57,7 @@ class CreditCardBookingTest extends TestCase
         ]);
     }
 
-    public function test_card_booking_is_rolled_back_when_paymongo_fails(): void
+    public function test_online_booking_is_rolled_back_when_paymongo_fails(): void
     {
         $user = User::factory()->create();
         $package = Package::create([
@@ -79,7 +79,7 @@ class CreditCardBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 0);
     }
 
-    public function test_card_booking_is_rolled_back_when_paymongo_unreachable(): void
+    public function test_online_booking_is_rolled_back_when_paymongo_unreachable(): void
     {
         $user = User::factory()->create();
         $package = Package::create([

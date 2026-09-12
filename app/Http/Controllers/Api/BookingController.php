@@ -69,7 +69,7 @@ class BookingController extends Controller
                 new OAT\Property(property: 'event_date', type: 'string', format: 'date'),
                 new OAT\Property(property: 'event_time', type: 'string', format: 'time'),
                 new OAT\Property(property: 'venue_address', type: 'string'),
-                new OAT\Property(property: 'payment_method', type: 'string', enum: ['credit_card', 'cash', 'bank_transfer']),
+                new OAT\Property(property: 'payment_method', type: 'string', enum: ['online', 'cash']),
                 new OAT\Property(property: 'scent_ids', type: 'array', items: new OAT\Items(type: 'integer')),
             ]
         )

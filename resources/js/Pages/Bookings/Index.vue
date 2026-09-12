@@ -35,7 +35,6 @@ const getStatusColor = (status) => {
     switch (status) {
         case 'Confirmed': return 'text-green-500 dark:text-green-400 font-semibold';
         case 'Pending': return 'text-yellow-500 dark:text-yellow-400 font-semibold';
-        case 'Unavailable': return 'text-red-500 dark:text-red-400 font-semibold';
         case 'Cancelled': return 'text-gray-500 dark:text-gray-400 font-semibold';
         default: return 'text-gray-700 dark:text-gray-300 font-semibold';
     }

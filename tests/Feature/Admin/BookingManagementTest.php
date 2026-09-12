@@ -34,7 +34,7 @@ class BookingManagementTest extends TestCase
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
             'status' => 'Confirmed',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $response = $this->actingAs($this->user)->get(route('admin.bookings.index'));
@@ -61,7 +61,7 @@ class BookingManagementTest extends TestCase
             'package_id' => $package->id,
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
         Booking::create([
             'customer_name' => 'Jane Smith',
@@ -161,7 +161,7 @@ class BookingManagementTest extends TestCase
             'event_date' => '2026-12-03',
             'venue_address' => '789 Party Ave',
             'status' => 'Pending',
-            'payment_method' => 'bank_transfer',
+            'payment_method' => 'cash',
         ]);
 
         $this->assertDatabaseHas('bookings', [
@@ -186,12 +186,37 @@ class BookingManagementTest extends TestCase
             'event_date' => '2026-12-04',
             'venue_address' => '789 Party Ave',
             'status' => 'Pending',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $response->assertSessionHasErrors('payment_method');
         $this->assertDatabaseMissing('bookings', [
             'customer_email' => 'online@example.com',
+        ]);
+    }
+
+    public function test_admin_cannot_create_booking_with_retired_bank_transfer()
+    {
+        $package = Package::create([
+            'name' => 'Signature',
+            'description' => 'Test',
+            'price' => 1000,
+        ]);
+
+        $response = $this->actingAs($this->user)->post(route('admin.bookings.store'), [
+            'customer_name' => 'Legacy Customer',
+            'customer_email' => 'legacy@example.com',
+            'package_id' => $package->id,
+            'pax' => 1,
+            'event_date' => '2026-12-05',
+            'venue_address' => '789 Party Ave',
+            'status' => 'Pending',
+            'payment_method' => 'bank_transfer',
+        ]);
+
+        $response->assertSessionHasErrors('payment_method');
+        $this->assertDatabaseMissing('bookings', [
+            'customer_email' => 'legacy@example.com',
         ]);
     }
 
@@ -210,7 +235,7 @@ class BookingManagementTest extends TestCase
             'event_date' => '2026-10-24',
             'venue_address' => '123 Test St',
             'status' => 'Pending',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
         ]);
 
         $response = $this->actingAs($this->user)->put(route('admin.bookings.update', $booking), [

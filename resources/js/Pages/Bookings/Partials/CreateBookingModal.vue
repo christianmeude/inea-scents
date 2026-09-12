@@ -172,7 +172,6 @@ watch(() => props.show, (newVal) => {
                             >
                                 <option value="Pending">Pending</option>
                                 <option value="Confirmed">Confirmed</option>
-                                <option value="Unavailable">Unavailable</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                             <div v-if="form.errors.status" class="text-red-500 text-xs mt-1">{{ form.errors.status }}</div>
@@ -187,7 +186,6 @@ watch(() => props.show, (newVal) => {
                             >
                                 <option value="cash">Cash</option>
                                 <option value="credit_card">Credit Card</option>
-                                <option value="bank_transfer">Bank Transfer</option>
                             </select>
                             <div v-if="form.errors.payment_method" class="text-red-500 text-xs mt-1">{{ form.errors.payment_method }}</div>
                         </div>

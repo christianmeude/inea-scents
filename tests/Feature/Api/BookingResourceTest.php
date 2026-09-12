@@ -36,7 +36,7 @@ class BookingResourceTest extends TestCase
             'pax' => 2,
             'event_date' => '2026-10-10',
             'venue_address' => '123 Test',
-            'payment_method' => 'credit_card',
+            'payment_method' => 'online',
             'checkout_url' => 'https://checkout.paymongo.test/session-123',
         ]);
 
