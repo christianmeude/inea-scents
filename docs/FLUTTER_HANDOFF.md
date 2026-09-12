@@ -50,10 +50,10 @@ The UI mockups have been provided to you separately. Here is how those screens m
 - **Endpoint:** `GET /api/packages`
 - **Logic:** Fetch the array of `Package` models. Display them in a grid or list using the `image` or `gallery_images` properties. Cache this response so navigating back to Home feels instantaneous.
 
-### C. Package Details & Wishlist
+### C. Package Details
 - **Endpoint:** `GET /api/packages/{id}`
 - **Logic:** Display the `inclusions`, `freebies`, and `pax_options`.
-- **Wishlist Action:** When a user favorites a package, call `POST /api/wishlist/toggle` with `{"package_id": <id>}`.
+- **Wishlist removed:** `POST /api/wishlist/toggle` and `GET /api/wishlist` no longer exist (2026-09-12).
 
 ### D. Booking Flow (Calendar & Scents)
 This is the most complex feature. The mobile app must strictly follow this flow:
@@ -63,7 +63,6 @@ This is the most complex feature. The mobile app must strictly follow this flow:
 
 ### E. User Profile Data
 - **My Bookings:** `GET /api/bookings` -> Displays a list of all past/upcoming bookings for the logged-in user.
-- **My Wishlist:** `GET /api/wishlist` -> Displays the packages the user has favorited.
 
 ---
 
