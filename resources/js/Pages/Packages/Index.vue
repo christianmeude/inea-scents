@@ -1,10 +1,31 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Chip from '@/Components/Chip.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref } from 'vue';
+
+const tierEntries = (pkg) => {
+    const map = pkg.pax_prices ?? {};
+    const entries = Object.entries(map);
+    if (entries.length) {
+        return entries
+            .map(([pax, price]) => ({ pax: Number(pax), price: Number(price) }))
+            .sort((a, b) => a.pax - b.pax);
+    }
+    return (pkg.pax_options ?? []).map((pax) => ({ pax: Number(pax), price: null }));
+};
+
+const startsAt = (pkg) => {
+    const prices = tierEntries(pkg).map((tier) => tier.price).filter((price) => price !== null && !isNaN(price));
+    return prices.length ? Math.min(...prices) : parseFloat(pkg.price);
+};
+
+const formatMoney = (value) => {
+    return 'Php. ' + Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
 
 defineProps({
     packages: {
@@ -98,16 +119,27 @@ const closeModal = () => {
                             <!-- Content -->
                             <div class="p-5 flex flex-col flex-1 bg-white dark:bg-brand-dark-surface">
                                 <h4 class="font-semibold text-brand-primary dark:text-brand-cream text-lg">{{ pkg.name }}</h4>
-                                <p class="text-brand-muted dark:text-brand-cream/70 text-xs mt-1 mb-4">
-                                    Perfect for intimate celebrations and small gatherings.
+                                <p class="text-brand-muted dark:text-brand-cream/70 text-xs mt-1 mb-3">
+                                    {{ pkg.description || 'No description yet.' }}
                                 </p>
-                                
+
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    <Chip
+                                        v-for="tier in tierEntries(pkg)"
+                                        :key="tier.pax"
+                                        tone="blue"
+                                    >
+                                        {{ tier.pax }} pax<template v-if="tier.price !== null"> · {{ formatMoney(tier.price) }}</template>
+                                    </Chip>
+                                    <span v-if="!tierEntries(pkg).length" class="text-xs text-brand-muted dark:text-brand-cream/60">No tiers set</span>
+                                </div>
+
                                 <div class="mt-auto flex items-center justify-between">
                                     <span class="font-medium text-brand-primary dark:text-brand-cream">
-                                        Php. {{ parseFloat(pkg.price).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
+                                        <span class="text-xs font-normal text-brand-muted dark:text-brand-cream/60">Starts at </span>{{ formatMoney(startsAt(pkg)) }}
                                     </span>
-                                    <Link 
-                                        :href="route('admin.packages.edit', pkg.id)" 
+                                    <Link
+                                        :href="route('admin.packages.edit', pkg.id)"
                                         class="bg-brand-primary text-white text-xs font-medium px-6 py-2 rounded-full hover:opacity-90 transition-opacity"
                                     >
                                         Modify

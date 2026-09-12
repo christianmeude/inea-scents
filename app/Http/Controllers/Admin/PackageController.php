@@ -32,23 +32,51 @@ class PackageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, \App\Services\ImageUploader $imageUploader)
+    /**
+     * Tier map wins when present: options derive from its keys and price
+     * becomes the starts-at minimum. Invalid pairs drop silently via the
+     * sanitizer; legacy pax_options + explicit price apply otherwise.
+     */
+    private function withTiers(array $validated): array
     {
-        $validated = $request->validate([
+        $tiers = \App\Support\PackageSanitizer::paxPrices($validated['pax_prices'] ?? null);
+
+        if (count($tiers) > 0) {
+            ksort($tiers);
+            $validated['pax_prices'] = $tiers;
+            $validated['pax_options'] = array_map('intval', array_keys($tiers));
+            $validated['price'] = min($tiers);
+        } else {
+            $validated['pax_prices'] = [];
+            $validated['pax_options'] = \App\Support\PackageSanitizer::paxOptions($validated['pax_options'] ?? null);
+        }
+
+        return $validated;
+    }
+
+    private function rules(): array
+    {
+        return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'inclusions' => 'nullable|array',
             'inclusions.*' => 'nullable|string|max:255',
             'pax_options' => 'nullable|array',
             'pax_options.*' => 'nullable|integer|min:1',
+            'pax_prices' => 'nullable|array',
+            'pax_prices.*' => 'nullable|numeric',
             'freebies' => 'nullable|array',
             'freebies.*' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
             'images' => 'nullable|array|max:3',
-        ]);
+        ];
+    }
+
+    public function store(Request $request, \App\Services\ImageUploader $imageUploader)
+    {
+        $validated = $this->withTiers($request->validate($this->rules()));
 
         $validated['inclusions'] = \App\Support\PackageSanitizer::strings($validated['inclusions'] ?? null);
-        $validated['pax_options'] = \App\Support\PackageSanitizer::paxOptions($validated['pax_options'] ?? null);
         $validated['freebies'] = \App\Support\PackageSanitizer::strings($validated['freebies'] ?? null);
 
         if (isset($validated['images'])) {
@@ -83,21 +111,9 @@ class PackageController extends Controller
      */
     public function update(Request $request, Package $package, \App\Services\ImageUploader $imageUploader)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'inclusions' => 'nullable|array',
-            'inclusions.*' => 'nullable|string|max:255',
-            'pax_options' => 'nullable|array',
-            'pax_options.*' => 'nullable|integer|min:1',
-            'freebies' => 'nullable|array',
-            'freebies.*' => 'nullable|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'images' => 'nullable|array|max:3',
-        ]);
+        $validated = $this->withTiers($request->validate($this->rules()));
 
         $validated['inclusions'] = \App\Support\PackageSanitizer::strings($validated['inclusions'] ?? null);
-        $validated['pax_options'] = \App\Support\PackageSanitizer::paxOptions($validated['pax_options'] ?? null);
         $validated['freebies'] = \App\Support\PackageSanitizer::strings($validated['freebies'] ?? null);
 
         if (isset($validated['images'])) {
