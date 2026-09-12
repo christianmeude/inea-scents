@@ -47,6 +47,13 @@ class PayMongoWebhookController extends Controller
                 'event_id' => $eventId,
             ]);
 
+            app(\App\Services\AdminNotifier::class)->alert(
+                'webhook.ignored',
+                'Webhook event ignored',
+                "PayMongo sent unverified type '{$eventType}' ({$eventId}).",
+                route('admin.payments.index'),
+            );
+
             return response()->json(['message' => 'Event ignored']);
         }
 
@@ -65,7 +72,24 @@ class PayMongoWebhookController extends Controller
 
         $remarks = $eventData['attributes']['data']['attributes']['remarks'] ?? null;
         if (is_string($remarks) && $remarks !== '') {
-            $confirm->execute($remarks);
+            $confirmed = $confirm->execute($remarks);
+            $notifier = app(\App\Services\AdminNotifier::class);
+
+            if ($confirmed) {
+                $notifier->alert(
+                    'payment.confirmed',
+                    'Payment confirmed',
+                    "{$remarks} paid via PayMongo.",
+                    route('admin.payments.index', ['search' => $remarks]),
+                );
+            } else {
+                $notifier->alert(
+                    'webhook.no_match',
+                    'Paid event has no booking',
+                    "PayMongo payment for '{$remarks}' matches no pending booking.",
+                    route('admin.payments.index'),
+                );
+            }
         }
 
         return response()->json(['message' => 'Webhook received']);

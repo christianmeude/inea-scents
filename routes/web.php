@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\InquiryController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\CalendarController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -25,6 +26,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('inquiries', InquiryController::class)->only(['index', 'show', 'update']);
     Route::post('inquiries/{inquiry}/promote', [InquiryController::class, 'promote'])->name('inquiries.promote');
     Route::patch('bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
+
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/read', [NotificationController::class, 'read'])->name('notifications.read');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('payments', [PaymentController::class, 'index'])->name('payments.index');

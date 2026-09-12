@@ -64,6 +64,13 @@ class InquiryController extends Controller
 
         $inquiry = Inquiry::create($validated);
 
+        app(\App\Services\AdminNotifier::class)->alert(
+            'inquiry.submitted',
+            'New inquiry',
+            "{$inquiry->name} requested an event consultation.",
+            route('admin.inquiries.show', $inquiry->id),
+        );
+
         return new InquiryResource($inquiry);
     }
 }

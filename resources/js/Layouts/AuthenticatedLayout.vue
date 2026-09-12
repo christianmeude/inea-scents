@@ -4,6 +4,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import NotificationBell from '@/Components/NotificationBell.vue';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 import { Link } from '@inertiajs/vue3';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-vue';
@@ -91,8 +92,13 @@ const navigation = [
                     </span>
                 </div>
 
+                <div class="md:hidden flex items-center">
+                    <NotificationBell />
+                </div>
+
                 <!-- Right side (Theme + User menu on Desktop) -->
                 <div class="hidden md:flex items-center ml-auto gap-2">
+                    <NotificationBell />
                     <ThemeToggle />
                     <div class="relative ms-3">
                         <Dropdown align="right" width="48">

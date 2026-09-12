@@ -113,6 +113,13 @@ class BookingController extends Controller
             return response()->json(['message' => $e->getMessage()], 502);
         }
 
+        app(\App\Services\AdminNotifier::class)->alert(
+            'booking.created',
+            'New booking',
+            "{$booking->customer_name} booked {$booking->event_date} ({$booking->booking_reference}).",
+            route('admin.bookings.index', ['search' => $booking->booking_reference]),
+        );
+
         return new \App\Http\Resources\BookingResource($booking->load(['package', 'scents']));
     }
 }

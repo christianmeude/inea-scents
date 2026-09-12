@@ -114,6 +114,13 @@ class BookingController extends Controller
         // Capitalized because the validation rules in store/update use Title Case
         $booking->update(['status' => \App\Enums\BookingStatus::Confirmed->value]);
 
+        app(\App\Services\AdminNotifier::class)->alert(
+            'booking.confirmed',
+            'Booking approved',
+            "{$booking->booking_reference} confirmed by admin.",
+            route('admin.bookings.index', ['search' => $booking->booking_reference]),
+        );
+
         return back()->with('success', 'Booking approved successfully.');
     }
 }
