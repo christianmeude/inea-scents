@@ -108,7 +108,7 @@ watch(() => props.show, (newVal) => {
                             <select 
                                 v-model="form.package_id"
                                 required
-                                class="bg-white dark:bg-brand-dark-base w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
+                                class="bg-white dark:bg-brand-dark-base w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                             >
                                 <option value="" disabled>Select a package...</option>
                                 <option v-for="pkg in packages" :key="pkg.id" :value="pkg.id">
@@ -120,12 +120,17 @@ watch(() => props.show, (newVal) => {
 
                         <div>
                             <label class="block text-sm font-medium text-brand-primary dark:text-brand-cream mb-1">Pax (Guests)</label>
-                            <input 
+                            <select 
                                 v-model="form.pax" 
-                                type="number" 
-                                placeholder="50"
-                                class="bg-white dark:bg-brand-dark-base w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors placeholder:text-brand-primary/30 dark:placeholder:text-brand-cream/30"
+                                required
+                                class="bg-white dark:bg-brand-dark-base w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                             >
+                                <option value="" disabled>Select pax</option>
+                                <option :value="50">50</option>
+                                <option :value="70">70</option>
+                                <option :value="100">100</option>
+                                <option :value="150">150</option>
+                            </select>
                             <div v-if="form.errors.pax" class="text-red-500 text-xs mt-1">{{ form.errors.pax }}</div>
                         </div>
 
@@ -173,7 +178,7 @@ watch(() => props.show, (newVal) => {
                             <select 
                                 v-model="form.status"
                                 required
-                                class="bg-white dark:bg-brand-dark-base w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
+                                class="bg-white dark:bg-brand-dark-base w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                             >
                                 <option value="Pending">Pending</option>
                                 <option value="Confirmed">Confirmed</option>
@@ -187,7 +192,7 @@ watch(() => props.show, (newVal) => {
                             <select 
                                 v-model="form.payment_method"
                                 required
-                                class="bg-white dark:bg-brand-dark-base w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
+                                class="bg-white dark:bg-brand-dark-base w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                             >
                                 <option value="cash">Cash</option>
                                 <option value="credit_card">Credit Card</option>

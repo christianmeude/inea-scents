@@ -95,7 +95,7 @@ const formatDate = (dateString) => {
                             <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Move status</label>
                             <select
                                 v-model="form.status"
-                                class="px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary"
+                                class="pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary"
                             >
                                 <option :value="inquiry.status">{{ inquiry.status }} (current)</option>
                                 <option v-for="s in nextStatuses" :key="s" :value="s">{{ s }}</option>
@@ -141,7 +141,7 @@ const formatDate = (dateString) => {
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Package</label>
-                            <select v-model="promoteForm.package_id" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary">
+                            <select v-model="promoteForm.package_id" class="w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary">
                                 <option value="" disabled>Select package</option>
                                 <option v-for="p in packages" :key="p.id" :value="p.id">{{ p.name }}</option>
                             </select>
@@ -149,7 +149,13 @@ const formatDate = (dateString) => {
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase text-brand-primary dark:text-brand-cream mb-1">Pax</label>
-                            <input v-model="promoteForm.pax" type="number" min="1" class="w-full px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary" />
+                            <select v-model="promoteForm.pax" class="w-full pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm bg-white dark:bg-brand-dark-surface text-brand-primary dark:text-brand-cream focus:outline-none focus:border-brand-primary">
+                                <option value="" disabled>Select pax</option>
+                                <option :value="50">50</option>
+                                <option :value="70">70</option>
+                                <option :value="100">100</option>
+                                <option :value="150">150</option>
+                            </select>
                             <div v-if="promoteForm.errors.pax" class="text-red-500 text-xs mt-1">{{ promoteForm.errors.pax }}</div>
                         </div>
                         <div>

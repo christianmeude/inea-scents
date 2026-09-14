@@ -272,8 +272,8 @@ const yearMonthName = (month) => {
                                                 @click.stop="openViewModal(booking)"
                                                 class="w-full text-left px-2 py-1.5 bg-brand-primary text-white text-xs rounded-lg transition-opacity hover:opacity-90"
                                             >
-                                                <span class="block font-bold truncate">{{ formatTime(booking) }} · {{ booking.customer_name }}</span>
-                                                <span class="block opacity-80 truncate">{{ booking.package?.name }} · {{ booking.status }}</span>
+                                                <span class="block font-bold truncate">{{ booking.customer_name }}</span>
+                                                <span class="block opacity-80 truncate">{{ formatTime(booking) }} · {{ booking.pax }} Pax</span>
                                             </button>
                                         </template>
                                         <span v-else-if="isDateBlocked(dayObj.dateString)" class="block w-full text-center px-2 py-1 bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-400 text-xs font-semibold rounded-lg">

@@ -3,23 +3,49 @@ import { router } from '@inertiajs/vue3';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 const POLL_MS = 30000;
+const MAX_BACKOFF_MS = 300000; // 5 minutes
 
 const unreadCount = ref(0);
 const notifications = ref([]);
 const open = ref(false);
 let timer = null;
+let currentInterval = POLL_MS;
+let isMounted = false;
+
+const scheduleNextPoll = () => {
+    if (timer) clearTimeout(timer);
+    if (!isMounted || document.visibilityState === 'hidden') return;
+    
+    timer = setTimeout(() => {
+        fetchNotifications();
+    }, currentInterval);
+};
 
 const fetchNotifications = async () => {
+    if (!isMounted) return;
     try {
         const response = await fetch(route('admin.notifications.index'), {
             headers: { Accept: 'application/json' },
         });
-        if (!response.ok) return;
+        
+        if (!isMounted) return;
+        
+        if (!response.ok) {
+            currentInterval = Math.min(currentInterval * 2, MAX_BACKOFF_MS);
+            scheduleNextPoll();
+            return;
+        }
+        
         const data = await response.json();
         unreadCount.value = data.unread_count ?? 0;
         notifications.value = data.notifications ?? [];
+        
+        currentInterval = POLL_MS;
+        scheduleNextPoll();
     } catch {
-        // Bell stays silent on failure; badge keeps last known count.
+        if (!isMounted) return;
+        currentInterval = Math.min(currentInterval * 2, MAX_BACKOFF_MS);
+        scheduleNextPoll();
     }
 };
 
@@ -50,17 +76,26 @@ const openItem = (notification) => {
     }
 };
 
-const onFocus = () => fetchNotifications();
+const onVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+        currentInterval = POLL_MS;
+        if (timer) clearTimeout(timer);
+        fetchNotifications();
+    } else {
+        if (timer) clearTimeout(timer);
+    }
+};
 
 onMounted(() => {
+    isMounted = true;
     fetchNotifications();
-    timer = setInterval(fetchNotifications, POLL_MS);
-    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 });
 
 onUnmounted(() => {
-    if (timer) clearInterval(timer);
-    window.removeEventListener('focus', onFocus);
+    isMounted = false;
+    if (timer) clearTimeout(timer);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
 });
 </script>
 

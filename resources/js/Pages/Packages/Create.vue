@@ -156,14 +156,16 @@ const submit = () => {
                             <div>
                                 <InputLabel value="Pax pricing (one row per client card):" class="text-brand-primary dark:text-brand-cream" />
                                 <div v-for="(tier, index) in form.tiers" :key="`tier-${index}`" class="flex gap-2 mt-1 items-center">
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        step="1"
-                                        placeholder="Pax"
-                                        class="bg-white dark:bg-brand-dark-base block w-28 px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
+                                    <select
+                                        class="bg-white dark:bg-brand-dark-base block w-28 pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-brand-primary dark:text-brand-cream focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors"
                                         v-model="tier.pax"
-                                    />
+                                    >
+                                        <option value="" disabled>Pax</option>
+                                        <option value="50">50</option>
+                                        <option value="70">70</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                    </select>
                                     <input
                                         type="number"
                                         min="0"

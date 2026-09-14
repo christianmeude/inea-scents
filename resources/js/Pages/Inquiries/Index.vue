@@ -73,7 +73,7 @@ const columns = [
                             >
                             <select
                                 v-model="status"
-                                class="px-4 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm text-brand-primary dark:text-brand-cream bg-white dark:bg-brand-dark-surface focus:outline-none focus:border-brand-primary"
+                                class="pl-4 pr-10 py-2 border border-brand-primary/20 dark:border-brand-dark-border rounded-lg text-sm text-brand-primary dark:text-brand-cream bg-white dark:bg-brand-dark-surface focus:outline-none focus:border-brand-primary"
                             >
                                 <option value="">All statuses</option>
                                 <option value="new">New</option>
