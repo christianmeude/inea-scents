@@ -34,7 +34,8 @@ class InquiryPromoteTest extends TestCase
     private function tieredPkg(): Package
     {
         return Package::create([
-            'name' => 'Essential 10ml Perfume Bar',
+            // Distinct from the seeded real offering: names are unique now.
+            'name' => 'Tiered Test Bar',
             'description' => 'Test tiers',
             'price' => 4499,
             'pax_options' => [50, 70, 100, 150],
