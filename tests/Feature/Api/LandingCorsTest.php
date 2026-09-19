@@ -31,6 +31,8 @@ class LandingCorsTest extends TestCase
     public function test_preflight_from_landing_origin_succeeds(): void
     {
         config(['cors.allowed_origins' => ['https://landing.test']]);
+        // Pin patterns so the verdict never leaks from local .env.
+        config(['cors.allowed_origins_patterns' => ['~^https://landing\\.test$~']]);
 
         $response = $this->call(
             'OPTIONS',
@@ -51,6 +53,11 @@ class LandingCorsTest extends TestCase
     public function test_preflight_from_unknown_origin_gets_no_allow_header(): void
     {
         config(['cors.allowed_origins' => ['https://landing.test']]);
+        // Pin patterns: fruitcake treats a single origin with zero
+        // patterns as always-allowed, so an empty local .env would
+        // echo the header here. A pattern matching only the allowed
+        // origin keeps the verdict on the origin check in every env.
+        config(['cors.allowed_origins_patterns' => ['~^https://landing\\.test$~']]);
 
         $response = $this->call(
             'OPTIONS',
