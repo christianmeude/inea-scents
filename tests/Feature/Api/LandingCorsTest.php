@@ -73,4 +73,27 @@ class LandingCorsTest extends TestCase
 
         $this->assertFalse($response->headers->has('Access-Control-Allow-Origin'));
     }
+
+    public function test_preflight_from_flutter_web_random_port_succeeds(): void
+    {
+        config(['cors.allowed_origins' => ['https://landing.test']]);
+        // Mirrors the CORS_ALLOWED_ORIGIN_PATTERNS default shipped in
+        // .env.example: Flutter web serves on a random localhost port.
+        config(['cors.allowed_origins_patterns' => ['~^http://(localhost|127\\.0\\.0\\.1):\\d+$~']]);
+
+        $response = $this->call(
+            'OPTIONS',
+            '/api/inquiries',
+            [],
+            [],
+            [],
+            [
+                'HTTP_ORIGIN' => 'http://localhost:61234',
+                'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+            ]
+        );
+
+        $response->assertStatus(204);
+        $response->assertHeader('Access-Control-Allow-Origin', 'http://localhost:61234');
+    }
 }

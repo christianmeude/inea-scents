@@ -63,6 +63,7 @@ By default, the local API will be available at `http://127.0.0.1:8000`. The Admi
 
 - `vendor/autoload.php` missing (any `php artisan` command fails): `vendor/` is git-ignored by design — rebuild it with `composer install`, then re-run the failing command.
 - `SQLSTATE` connection refused on `127.0.0.1:54322`: the local Supabase stack isn't running — run `supabase start` (needs Docker) first.
+- Browser blocks Flutter-web calls with a CORS error: `CORS_ALLOWED_ORIGIN_PATTERNS` must cover the app origin (Flutter web uses a random localhost port; the `.env.example` default does). Custom ports or LAN-device testing need an explicit entry.
 
 ---
 *Status: Active Development*
