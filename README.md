@@ -41,7 +41,7 @@ npm run dev
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Laravel 11
+- **Framework**: Laravel 13
 - **Database**: PostgreSQL (via Supabase)
 - **Admin UI**: Inertia.js + Vue 3
 - **Styling**: Tailwind CSS
@@ -58,6 +58,11 @@ npm run dev
 
 This backend serves as the central source of truth for the entire platform. 
 By default, the local API will be available at `http://127.0.0.1:8000`. The Admin dashboard can be accessed via the browser at this address, while the mobile and web clients should point their API requests to `http://127.0.0.1:8000/api`.
+
+## 🩺 Troubleshooting
+
+- `vendor/autoload.php` missing (any `php artisan` command fails): `vendor/` is git-ignored by design — rebuild it with `composer install`, then re-run the failing command.
+- `SQLSTATE` connection refused on `127.0.0.1:54322`: the local Supabase stack isn't running — run `supabase start` (needs Docker) first.
 
 ---
 *Status: Active Development*
