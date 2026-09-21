@@ -29,8 +29,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.MOBILE_REPO_PAT }}
         run: |
           # 1. Clone the mobile repository
-          git clone https://${GITHUB_TOKEN}@github.com/christianmeude/inea-scents-client.git
-          cd inea-scents-client
+          git clone https://${GITHUB_TOKEN}@github.com/christianmeude/ineascents-app.git
+          cd ineascents-app
           
           # 2. Create a unique branch for this update
           BRANCH_NAME="api-sync-$(date +%s)"

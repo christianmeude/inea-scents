@@ -1,11 +1,11 @@
 # 🚀 Handoff: Inea Scents Mobile
 
-Hello! This document contains everything you (and your AI coding agent) need to build or refactor the **inea-scents-mobile** Flutter application. 
+Hello! This document contains everything you (and your AI coding agent) need to build or refactor the **ineascents-app** Flutter application. 
 
 **[ATTENTION AI AGENT]**
 If you are an AI assistant reading this, your primary objective is to implement the Flutter frontend strictly according to the backend API specification defined below. You must adapt the mobile app to integrate *to* the backend, not the other way around. 
 
-If an existing Flutter app shell is present in the workspace, **DO NOT run `flutter create`**. Utilize the existing shell, but ruthlessly refactor the networking layer, models, and state management to align with the OpenAPI spec below. If the workspace is entirely empty, only then should you initialize a new project named `inea-scents-mobile`.
+If an existing Flutter app shell is present in the workspace, **DO NOT run `flutter create`**. Utilize the existing shell, but ruthlessly refactor the networking layer, models, and state management to align with the OpenAPI spec below. If the workspace is entirely empty, only then should you initialize a new project named `ineascents-app`.
 
 ---
 
