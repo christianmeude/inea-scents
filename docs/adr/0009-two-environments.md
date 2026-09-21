@@ -11,7 +11,7 @@ The project previously defined three isolated environments (`local`, `staging`, 
 Only **two** environments:
 
 - **local** — the developer machine. Supabase CLI Postgres via Docker (`supabase start`, DB 54322, Studio 54323) for PG parity, `php artisan serve`, Flutter web/desktop `flutter run`. All integrations use PayMongo **test** keys. No cloud state.
-- **production** — the single cloud env. Render `inea-scents` (Docker runtime) + Supabase Cloud `inea-scents-db` + Vercel Production client. PayMongo **live** keys via Render Env Group. Prod seeds only the `ADMIN_*` bootstrap; never demo data.
+- **production** — the single cloud env. Render `ineascents` (Docker runtime) + Supabase Cloud `ineascents-db` + Vercel Production client. PayMongo **live** keys via Render Env Group. Prod seeds only the `ADMIN_*` bootstrap; never demo data.
 
 `staging` is removed everywhere: `render.yaml` holds one service, the ops runbook documents two envs, `.env.example` is the contract for local + prod, and the glossary (`CONTEXT.md`) reflects the two-env topology. The local test suite keeps its own dedicated `postgres_test` database (test infrastructure, not an environment).
 

@@ -32,7 +32,7 @@ services:
         value: false
       - key: SANCTUM_STATEFUL_DOMAINS
         # Mirror of Render dashboard (dashboard wins over blueprint).
-        value: ineascents-app-christianmeude1.vercel.app,inea-scents.vercel.app
+        value: ineascents-app.vercel.app,ineascents-app-christianmeude1.vercel.app
       - key: SESSION_DOMAIN
         value: "" # host-only
       - key: SESSION_SECURE_COOKIE
@@ -48,6 +48,6 @@ services:
       - key: PAYMONGO_WEBHOOK_SECRET
         sync: false
       - key: DATABASE_URL
-        sync: false # Supabase project `inea-scents-db` (christianmeude org)
+        sync: false # Supabase project `ineascents-db` (christianmeude org)
         # Real values (PayMongo sk/pk live) set via Env Group in dashboard.
 databases: []

@@ -8,9 +8,9 @@ Accepted (revised 2026-09)
 
 The Inea Scents product comprises three distinct applications that share a domain but differ in stack, audience, hosting, and deployment cadence:
 
-1. **Admin Dashboard** (`inea-scents`): Laravel PHP API + Inertia admin portal. Exclusively for the business principal. Session auth at `/admin/login`. Hosted on Render (`inea-scents.onrender.com`).
-2. **Landing Page** (`inea-scents-landing`): Developer-maintained React + Vite + Tailwind marketing site. Generates Inquiries via public API; does not create Bookings. Hosted on Vercel. SEO, lead generation, and brand storytelling.
-3. **Mobile App** (`inea-scents-client`): Flutter app for customers to browse packages, pick scents, check availability, and complete bookings. Communicates with the shared backend via OpenAPI-typed API. Ships to iOS and Android.
+1. **Admin Dashboard** (`ineascents-backend`): Laravel PHP API + Inertia admin portal. Exclusively for the business principal. Session auth at `/admin/login`. Hosted on Render (`ineascents.onrender.com`).
+2. **Landing Page** (`ineascents-landing`): Developer-maintained React + Vite + Tailwind marketing site. Generates Inquiries via public API; does not create Bookings. Hosted on Vercel. SEO, lead generation, and brand storytelling.
+3. **Mobile App** (`ineascents-app`): Flutter app for customers to browse packages, pick scents, check availability, and complete bookings. Communicates with the shared backend via OpenAPI-typed API. Ships to iOS and Android.
 
 All three repos live under the `christianmeude` GitHub account (private). A canonical parent folder (`Inea Scents/`) holds shared docs (DESIGN.md, CONTEXT.md, PRODUCT.md) and a Node-based doc-sync watcher that copies canonical files into each repo root.
 

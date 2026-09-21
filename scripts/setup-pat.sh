@@ -193,7 +193,7 @@ say "We need a GitHub Personal Access Token (PAT) so this repository can push sc
 open_url "https://github.com/settings/tokens?type=beta"
 step "Click 'Generate new token'."
 step "Name it 'Backend API Sync' and set the expiration as desired."
-step "Under 'Repository access', select 'Only select repositories' and choose 'inea-scents-client'."
+step "Under 'Repository access', select 'Only select repositories' and choose 'ineascents-app'."
 step "Under 'Permissions', grant Read and Write access to 'Contents' and 'Pull Requests'."
 step "Click 'Generate token' at the bottom, and copy the new token."
 ask_secret MOBILE_REPO_PAT "Paste the token here:"

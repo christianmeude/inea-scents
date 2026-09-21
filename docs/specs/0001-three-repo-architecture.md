@@ -5,9 +5,9 @@ The project needs to define its high-level architecture across the admin web das
 ## Solution
 
 Adopt a Three-Repository Architecture utilizing free-tier hosting URLs to separate concerns:
-1. **Admin Dashboard** (`inea-scents.onrender.com`): Laravel API and Admin Dashboard. Exclusively for admins.
-2. **Landing Page** (e.g., `inea-scents.webflow.io`): A no-code CMS (Webflow/Framer) for the marketing landing page, allowing non-technical business owners to easily update it.
-3. **Mobile App** (e.g., `inea-scents-app.web.app`): The mobile Flutter application.
+1. **Admin Dashboard** (`ineascents.onrender.com`): Laravel API and Admin Dashboard. Exclusively for admins.
+2. **Landing Page** (`ineascents.vercel.app`): The marketing landing page, allowing non-technical business owners to easily update it.
+3. **Mobile App** (`ineascents-app.vercel.app`): The mobile Flutter application.
 
 ## User Stories
 

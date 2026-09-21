@@ -4,13 +4,13 @@
 The CI/CD pipeline correctly establishes a cross-repository automated workflow that propagates backend API schema changes down to the mobile client, ultimately resulting in a pull request containing automatically generated code. 
 
 ## Backend Pipeline (`.github/workflows/push_api_docs.yml`)
-**Location:** `c:\Users\Christian\Projects\inea-scents`
+**Location:** `c:\Users\Christian\Projects\ineascents-backend`
 **Trigger:** Pushes to `main` modifying `routes/api.php` or `app/Http/Controllers/**`. 
 
 **Process:**
 1. Sets up PHP 8.4 and installs dependencies.
 2. Generates a fresh OpenAPI spec via `php artisan l5-swagger:generate`.
-3. Clones the mobile repository (`inea-scents-client`) and checks out a unique branch named with a timestamp (`api-sync-<timestamp>`).
+3. Clones the mobile repository (`ineascents-app`) and checks out a unique branch named with a timestamp (`api-sync-<timestamp>`).
 4. Commits the new `api-docs.json` schema.
 5. Uses a Personal Access Token (PAT) via `secrets.MOBILE_REPO_PAT` to push the branch and open a PR using the GitHub CLI (`gh`).
 

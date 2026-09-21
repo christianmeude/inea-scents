@@ -199,12 +199,12 @@ ask_secret MOBILE_REPO_PAT "Paste the generated token:"
 stage "GitHub â€” Configure Repository Secrets"
 say "Now we will set the secret in both the backend and mobile repositories."
 
-step "Setting secret in the backend repository (inea-scents)..."
-cd "C:/Users/Christian/Projects/inea-scents"
+step "Setting secret in the backend repository (ineascents-backend)..."
+cd "C:/Users/Christian/Projects/ineascents-backend"
 set_secret MOBILE_REPO_PAT "$MOBILE_REPO_PAT"
 
-step "Setting secret in the mobile repository (inea_mobile)..."
-cd "C:/Users/Christian/Projects/inea_mobile"
+step "Setting secret in the mobile repository (ineascents-app)..."
+cd "C:/Users/Christian/Projects/ineascents-app"
 set_secret MOBILE_REPO_PAT "$MOBILE_REPO_PAT"
 
 finish

@@ -5,9 +5,9 @@
 ## 🌍 The Ecosystem
 
 The Inea Scents platform consists of three separate repositories. This repository is the backend that powers the other two:
-1. **`inea-scents` (This Repo)**: Laravel backend, PostgreSQL database, and Vue/Inertia Admin Dashboard.
-2. **`inea-scents-landing`**: React/Vite customer-facing marketing website.
-3. **`inea_scents_client`**: Flutter cross-platform mobile/web application for customer bookings.
+1. **`ineascents-backend` (This Repo)**: Laravel backend, PostgreSQL database, and Vue/Inertia Admin Dashboard.
+2. **`ineascents-landing`**: React/Vite customer-facing marketing website.
+3. **`ineascents-app`**: Flutter cross-platform mobile/web application for customer bookings.
 
 ## ⚡ Quick Start
 
