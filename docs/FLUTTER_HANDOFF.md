@@ -13,9 +13,9 @@ If an existing Flutter app shell is present in the workspace, **DO NOT run `flut
 
 The backend is fully built, tested, and deployed to Staging. 
 
-- **Staging Base URL:** [https://inea-scents.onrender.com](https://inea-scents.onrender.com)
-- **Swagger UI (For Human Reference):** [https://inea-scents.onrender.com/api/documentation](https://inea-scents.onrender.com/api/documentation)
-- **OpenAPI JSON Spec:** [https://inea-scents.onrender.com/docs?api-docs.json](https://inea-scents.onrender.com/docs?api-docs.json)
+- **Staging Base URL:** [https://ineascents.onrender.com](https://ineascents.onrender.com)
+- **Swagger UI (For Human Reference):** [https://ineascents.onrender.com/api/documentation](https://ineascents.onrender.com/api/documentation)
+- **OpenAPI JSON Spec:** [https://ineascents.onrender.com/docs?api-docs.json](https://ineascents.onrender.com/docs?api-docs.json)
 
 **[AI INSTRUCTION]**
 Do not write API models or HTTP clients by hand! Consume the OpenAPI JSON specification linked above (or provided in your conversation context) to generate the complete networking layer. 
