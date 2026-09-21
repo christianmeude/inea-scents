@@ -17,7 +17,7 @@ Supabase project `inea-scents-db`, local `.env` (gitignored). Runtime on Render 
 | Env | Backend (Render) | URL | Supabase | Client (Vercel) | API_URL |
 |-----|------------------|-----|----------|-----------------|---------|
 | local | — (dev machine) | http://127.0.0.1:8000 | Supabase CLI (DB 54322) | `flutter run` | http://127.0.0.1:8000 |
-| production | `inea-scents` | https://inea-scents.onrender.com | `inea-scents-db` | Production + Preview | https://inea-scents.onrender.com |
+| production | `ineascents` (slug still `inea-scents` → service URL old) | https://inea-scents.onrender.com | `inea-scents-db` | Production + Preview | https://ineascents.onrender.com |
 
 No env references another env's URL/DB. `core_providers.dart` requires `API_URL` in release;
 there is no code fallback to another env. Vercel Preview has no dedicated backend and passes the
@@ -28,17 +28,19 @@ prod `API_URL` (accepted limitation, see ADR-0009).
 ## Render
 
 ### Applied: production service
-`inea-scents` (`srv-d9t811ijobas73c9h50g`, workspace `tea-d9t7ggajobas73c885mg`, Docker,
-free, oregon) is live. Applied vars: `APP_ENV=production`, `APP_DEBUG=false`,
-`APP_URL=https://inea-scents.onrender.com`, `FRONTEND_URL=https://inea-scents-client.vercel.app`,
-`CORS_SUPPORTS_CREDENTIALS=false`, `SANCTUM_STATEFUL_DOMAINS=inea-scents-client.vercel.app`,
+`ineascents` (`srv-d9t811ijobas73c9h50g`, workspace `tea-d9t7ggajobas73c885mg`, Docker,
+free, oregon, repo `christianmeude/inea-scents-backend`) is live. Applied vars (dashboard wins
+over `render.yaml`): `APP_ENV=production`, `APP_DEBUG=false`,
+`APP_URL=https://ineascents.onrender.com`, `FRONTEND_URL=https://ineascents-app.vercel.app`,
+`LANDING_URL=https://ineascents.vercel.app`,
+`CORS_SUPPORTS_CREDENTIALS=false`, `SANCTUM_STATEFUL_DOMAINS=ineascents-app-christianmeude1.vercel.app,inea-scents.vercel.app`,
 `SESSION_DOMAIN=""`, `SESSION_SECURE_COOKIE=true`, `SESSION_DRIVER=database`, `LOG_CHANNEL=stack`,
 `APP_LOCALE=en`, `APP_FALLBACK_LOCALE=en`, `BCRYPT_ROUNDS=12`.
 
 ### Manual (dashboard): environment group
 Render **Environment Groups** are dashboard-managed; the MCP server has no env-group tool. Keep
 secrets out of `render.yaml` (`sync: false`) and manage in dashboard:
-- **`inea-scents-prod`** env group → attached to `inea-scents`: PayMongo **live** keys
+- **`inea-scents-prod`** env group → attached to `ineascents`: PayMongo **live** keys
   (`PAYMONGO_PUBLIC_KEY`, `PAYMONGO_SECRET_KEY`), `PAYMONGO_WEBHOOK_SECRET`, `CRON_TOKEN`,
   `DATABASE_URL` → Supabase `inea-scents-db`, `APP_KEY`.
 - `APP_KEY` must be unique to prod and never shared with local.
@@ -49,9 +51,9 @@ secrets out of `render.yaml` (`sync: false`) and manage in dashboard:
 
 ### Manual (dashboard): client project env vars + build
 The installed Vercel MCP has **no set-env-var tool**, so do this in the Vercel dashboard or CLI.
-Project `inea-scents` is linked to `christianmeude/inea-scents-client`.
+Project `ineascents-app` is linked to `christianmeude/inea-scents-client`.
 - Set project env var **`API_URL`** for both Production and Preview →
-  `https://inea-scents.onrender.com` (only cloud backend; see ADR-0009).
+  `https://ineascents.onrender.com` (only cloud backend; see ADR-0009).
 - Set **Build Command** to `bash vercel_build.sh` (the client build requires `API_URL` at build
   time; see `vercel_build.sh`). Framework "Other". Output dir = Flutter web `build/web`.
 
@@ -63,7 +65,8 @@ Vercel's GitHub app cannot see the (private) repo. To fix:
    Project → Import and authorize the repo).
 2. Create project linked to `christianmeude/inea-scents-landing @ main`. Framework auto-detects
    Vite/React (landing is React+Vite). Production = main.
-3. Landing needs no `API_URL` (static); if it later posts Inquiries, add the prod backend URL.
+3. Landing posts Inquiries: `VITE_API_URL=https://ineascents.onrender.com` is set on the
+   landing project (production + preview).
 
 ---
 
@@ -109,8 +112,8 @@ Local PHP ships without a CA bundle, so TLS to PayMongo/Supabase fails
 ---
 
 ## Verification checklist
-1. `curl https://inea-scents.onrender.com/api/availability` returns 200 (prod backend up).
-2. Prod `FRONTEND_URL` = `https://inea-scents-client.vercel.app`.
-3. Vercel Production and Preview builds both use `API_URL=https://inea-scents.onrender.com`.
+1. `curl https://inea-scents.onrender.com/api/availability` returns 200 (prod backend up; slug still old).
+2. Prod `FRONTEND_URL` = `https://ineascents-app.vercel.app`, prod `LANDING_URL` = `https://ineascents.vercel.app`.
+3. Vercel Production and Preview builds both use `API_URL=https://ineascents.onrender.com`.
 4. `php artisan migrate` against prod only after local verification (no remote checkpoint).
 5. No `FRONTEND_URL`/`DATABASE_URL`/PayMongo value appears in more than one env.
