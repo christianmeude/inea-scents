@@ -20,19 +20,21 @@ services:
         value: https://ineascents.onrender.com
       - key: FRONTEND_URL
         # 12-Factor: isolated per env — Production Vercel URL for client
-        # Cutover (#28): new first, old retained until smoke green, then trim.
-        value: https://ineascents-app.vercel.app,https://inea-scents.vercel.app
+        # Cutover (#28): suffixed canonical (bare ineascents*.vercel.app
+        # unassigned) first, old retained until smoke green, then trim.
+        value: https://ineascents-app-christianmeude1.vercel.app,https://inea-scents.vercel.app
       - key: LANDING_URL
         # Fill with the deployed landing URL when it ships (Inquiry POSTs).
         # Local + production only, no staging. No trailing slash — origins
         # are exact-matched in config/cors.php.
-        # Cutover (#28): new first, old retained until smoke green, then trim.
-        value: "https://ineascents.vercel.app,https://inea-scents-landing.vercel.app"
+        # Cutover (#28): suffixed canonical (bare ineascents*.vercel.app
+        # unassigned) first, old retained until smoke green, then trim.
+        value: "https://ineascents-christianmeude1.vercel.app,https://inea-scents-landing.vercel.app"
       - key: CORS_SUPPORTS_CREDENTIALS
         value: false
       - key: SANCTUM_STATEFUL_DOMAINS
-        # Cutover (#28): new first, old retained until smoke green, then trim.
-        value: ineascents-app.vercel.app,inea-scents.vercel.app
+        # Cutover (#28): suffixed canonical first, old retained until smoke green, then trim.
+        value: ineascents-app-christianmeude1.vercel.app,inea-scents.vercel.app
       - key: SESSION_DOMAIN
         value: "" # host-only
       - key: SESSION_SECURE_COOKIE
