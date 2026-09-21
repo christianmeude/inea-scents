@@ -4,7 +4,7 @@
 # Runtime: Docker (./Dockerfile, php:8.4-apache).
 services:
   - type: web
-    name: inea-scents
+    name: ineascents
     env: docker
     dockerfilePath: ./Dockerfile
     region: oregon
@@ -17,19 +17,22 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        value: https://inea-scents.onrender.com
+        value: https://ineascents.onrender.com
       - key: FRONTEND_URL
         # 12-Factor: isolated per env — Production Vercel URL for client
-        value: https://inea-scents.vercel.app
+        # Cutover (#28): new first, old retained until smoke green, then trim.
+        value: https://ineascents-app.vercel.app,https://inea-scents.vercel.app
       - key: LANDING_URL
         # Fill with the deployed landing URL when it ships (Inquiry POSTs).
         # Local + production only, no staging. No trailing slash — origins
         # are exact-matched in config/cors.php.
-        value: "https://inea-scents-landing.vercel.app"
+        # Cutover (#28): new first, old retained until smoke green, then trim.
+        value: "https://ineascents.vercel.app,https://inea-scents-landing.vercel.app"
       - key: CORS_SUPPORTS_CREDENTIALS
         value: false
       - key: SANCTUM_STATEFUL_DOMAINS
-        value: inea-scents.vercel.app
+        # Cutover (#28): new first, old retained until smoke green, then trim.
+        value: ineascents-app.vercel.app,inea-scents.vercel.app
       - key: SESSION_DOMAIN
         value: "" # host-only
       - key: SESSION_SECURE_COOKIE
