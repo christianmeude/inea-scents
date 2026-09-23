@@ -16,7 +16,7 @@ Supabase project `ineascents-db`, local `.env` (gitignored). Runtime on Render i
 
 | Env | Backend (Render) | URL | Supabase | Client (Vercel) | API_URL |
 |-----|------------------|-----|----------|-----------------|---------|
-| local | — (dev machine) | http://127.0.0.1:8000 | Supabase CLI (DB 54322) | `flutter run` | http://127.0.0.1:8000 |
+| local | — (dev machine) | http://127.0.0.1:8080 | Supabase CLI (DB 54322) | `flutter run` | http://127.0.0.1:8080 |
 | production | `ineascents` | https://ineascents.onrender.com | `ineascents-db` | Production + Preview | https://ineascents.onrender.com |
 
 No env references another env's URL/DB. `core_providers.dart` requires `API_URL` in release;
