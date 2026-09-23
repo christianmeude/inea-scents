@@ -57,16 +57,32 @@ cp .env.example .env
 php artisan key:generate
 supabase start          # local Postgres (needs Docker)
 php artisan migrate --seed
-php artisan serve       # http://127.0.0.1:8000
+php artisan serve --port=8080   # http://127.0.0.1:8080
 npm run dev             # Vite
 ```
+
+### Local ports & tunnel
+
+Backend is pinned to port 8080 via `composer dev`
+(`php artisan serve --port=8080`, `composer.json:51`) — the ngrok tunnel and
+the PayMongo webhook URL registered in the dashboard both point at 8080, so
+serving on the default 8000 silently breaks local webhooks.
+
+- Tunnel stays manual: `ngrok http 8080`. Free ngrok URLs rotate — if the
+  forwarding URL changes, re-register it as the webhook URL in the PayMongo
+  dashboard.
+- Secrets per env: local `.env` uses the PayMongo TEST secret key;
+  production env uses the LIVE secret key. Never mix them.
+- App `API_URL` per platform (build-time `--dart-define`, rebuild after
+  changing): Android emulator `http://10.0.2.2:8080`, Chrome/desktop
+  `http://localhost:8080`, physical device `http://<LAN-IP>:8080`.
 
 ## Two-Environment Model
 
 Local + production only, no staging (`render.yaml:2`):
 
 - **Local:** Supabase CLI Postgres on `127.0.0.1:54322` (see `.env.example:24-33`),
-  app at `http://127.0.0.1:8000` (`.env.example:6`).
+  app at `http://127.0.0.1:8080` (`.env.example:6`).
 - **Production:** Render web service + Supabase Cloud project `ineascents-db`
   (`render.yaml:50-51`). Real secrets live in Render dashboard Env Groups —
   never committed (`render.yaml:3`).
@@ -88,7 +104,7 @@ LANDING_URL=https://ineascents.vercel.app
 Local defaults (`.env.example`):
 
 ```bash
-APP_URL=http://127.0.0.1:8000
+APP_URL=http://127.0.0.1:8080
 FRONTEND_URL=http://127.0.0.1:5173,http://localhost:5173
 LANDING_URL=http://localhost:5173
 ```
