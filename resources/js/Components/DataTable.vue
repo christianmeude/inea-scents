@@ -64,14 +64,21 @@ defineProps({
 
         <div class="mt-6 flex justify-end" v-if="links && links.length > 3">
             <div class="flex gap-1">
-                <Link
-                    v-for="(link, k) in links"
-                    :key="k"
-                    :href="link.url"
-                    v-html="link.label"
-                    class="px-3 py-1 rounded-md border text-sm"
-                    :class="link.active ? 'bg-brand-primary text-white border-brand-primary' : 'border-gray-200 dark:border-brand-dark-border text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'"
-                />
+                <template v-for="(link, k) in links" :key="k">
+                    <span
+                        v-if="!link.url"
+                        v-html="link.label"
+                        aria-disabled="true"
+                        class="px-3 py-1 rounded-md border text-sm border-gray-200 dark:border-brand-dark-border text-gray-500 opacity-50 cursor-not-allowed"
+                    />
+                    <Link
+                        v-else
+                        :href="link.url"
+                        v-html="link.label"
+                        class="px-3 py-1 rounded-md border text-sm"
+                        :class="link.active ? 'bg-brand-primary text-white border-brand-primary' : 'border-gray-200 dark:border-brand-dark-border text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5'"
+                    />
+                </template>
             </div>
         </div>
     </div>
